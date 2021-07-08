@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3123,8 +3123,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9db885a917498de40932e60fc5684f8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  menu_PlayerPrefab: {fileID: 7196939804918446622, guid: ecb2ab08525d46141b365080cc815773, type: 3}
-  menu_RoomPrefab: {fileID: 5981264317333148504, guid: 0e64ac0dda5f28042be0e5723fb7f3cb, type: 3}
+  menu_PlayerPrefab: {fileID: 7196939804918446622, guid: a04a600a63ed10e439677a675583789c, type: 3}
+  menu_RoomPrefab: {fileID: 5981264317333148504, guid: 8ba9e9a2c0242d540a4339f64eb1b3a3, type: 3}
   menu_PlayerParent: {fileID: 722632906}
   menu_RoomParent: {fileID: 1928721832}
   roomNameUI: {fileID: 969295325}
