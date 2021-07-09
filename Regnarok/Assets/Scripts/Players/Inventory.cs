@@ -7,25 +7,42 @@ public class Inventory : MonoBehaviour
     bool inventoryEnabled;
     public GameObject inventory;
 
-    private int allSlots;
+    private int allSlots, allEquipmentSlots, allHotbarSlots;
     private int enabledSlots;
-    private GameObject[] slot;
+    public GameObject[] slot, equipmentSlots, hotbarSlots; // equipment / hotbar / drop
 
-    public GameObject slotHolder;
+    public GameObject slotHolder, equipmentSlotHolder, hotbarSlotsHolder;
     public GameObject testItem;
 
     public Transform mouseItemHolder;
     private GameObject itemBeingDragged;
     public int itemReleaseRange;
+    private int itemLocationInUi;
 
     private void Start()
     {
+        //lists
         allSlots = 25;
+        allEquipmentSlots = 6;
+        allHotbarSlots = 6;
         slot = new GameObject[allSlots];
+        equipmentSlots = new GameObject[allEquipmentSlots];
+        hotbarSlots = new GameObject[allHotbarSlots];
+
         for (int i = 0; i < allSlots; i++)
         {
             slot[i] = slotHolder.transform.GetChild(i).gameObject;
         }
+        for (int i = 0; i < allEquipmentSlots; i++)
+        {
+            equipmentSlots[i] = equipmentSlotHolder.transform.GetChild(i).gameObject;
+        }
+        for (int i = 0; i < allHotbarSlots; i++)
+        {
+            hotbarSlots[i] = hotbarSlotsHolder.transform.GetChild(i).gameObject;
+        }
+
+        //test
         for (int i = 0; i < 5; i++)
         {
             GameObject test = Instantiate(testItem, mouseItemHolder);
@@ -65,22 +82,68 @@ public class Inventory : MonoBehaviour
     {
         for (int i = 0; i < allSlots; i++)
         {
-            if(slotNumber > -1)
+            if (itemLocationInUi == 0)
             {
-                if (slot[slotNumber].GetComponent<Slot>().CheckForItem() == false)
+                //inventory
+                if (slotNumber > -1)
                 {
-                    slot[slotNumber].GetComponent<Slot>().RecieveItem(newItem);
-                    return;
+                    if (slot[slotNumber].GetComponent<Slot>().CheckForItem() == false)
+                    {
+                        slot[slotNumber].GetComponent<Slot>().RecieveItem(newItem);
+                        return;
+                    }
+                    else
+                    {
+                        return;
+                    }
                 }
-                else
+                if (slot[i].GetComponent<Slot>().CheckForItem() == false)
                 {
+                    slot[i].GetComponent<Slot>().RecieveItem(newItem);
                     return;
                 }
             }
-            if (slot[i].GetComponent<Slot>().CheckForItem() == false)
+            else if (itemLocationInUi == 1)
             {
-                slot[i].GetComponent<Slot>().RecieveItem(newItem);
-                return;
+                //hotbar
+                if (slotNumber > -1)
+                {
+                    if (hotbarSlots[slotNumber].GetComponent<Slot>().CheckForItem() == false)
+                    {
+                        hotbarSlots[slotNumber].GetComponent<Slot>().RecieveItem(newItem);
+                        return;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                if (hotbarSlots[i].GetComponent<Slot>().CheckForItem() == false)
+                {
+                    hotbarSlots[i].GetComponent<Slot>().RecieveItem(newItem);
+                    return;
+                }
+            }
+            else if (itemLocationInUi == 2)
+            {
+                //equipment
+                if (slotNumber > -1)
+                {
+                    if (equipmentSlots[slotNumber].GetComponent<Slot>().CheckForItem() == false)
+                    {
+                        equipmentSlots[slotNumber].GetComponent<Slot>().RecieveItem(newItem);
+                        return;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                if (equipmentSlots[i].GetComponent<Slot>().CheckForItem() == false)
+                {
+                    equipmentSlots[i].GetComponent<Slot>().RecieveItem(newItem);
+                    return;
+                }
             }
         }
     }
@@ -96,16 +159,60 @@ public class Inventory : MonoBehaviour
         {
             int thisSlot = -1;
             float smallestDistance = itemReleaseRange;
-            for (int i = 0; i < allSlots; i++)
+            if (itemLocationInUi == 0)
             {
-                float distance = Vector3.Distance(slot[i].transform.position, Input.mousePosition);
-                if (distance < smallestDistance)
+                //inventory
+                for (int i = 0; i < allSlots; i++)
                 {
-                    smallestDistance = distance;
-                    thisSlot = i;
+                    float distance = Vector3.Distance(slot[i].transform.position, Input.mousePosition);
+                    if (distance < smallestDistance)
+                    {
+                        smallestDistance = distance;
+                        thisSlot = i;
+                    }
                 }
             }
+            else if (itemLocationInUi == 1)
+            {
+                //hotbar
+                for (int i = 0; i < allHotbarSlots; i++)
+                {
+                    float distance = Vector3.Distance(hotbarSlots[i].transform.position, Input.mousePosition);
+                    if (distance < smallestDistance)
+                    {
+                        smallestDistance = distance;
+                        thisSlot = i;
+                    }
+                }
+            }
+            else if (itemLocationInUi == 2)
+            {
+                //equipment
+                for (int i = 0; i < allEquipmentSlots; i++)
+                {
+                    float distance = Vector3.Distance(equipmentSlots[i].transform.position, Input.mousePosition);
+                    if (distance < smallestDistance)
+                    {
+                        smallestDistance = distance;
+                        thisSlot = i;
+                    }
+                }
+            }
+            else if (itemLocationInUi == 3)
+            {
+                //drop
+            }
+
             AddItemToInventory(itemBeingDragged, thisSlot);
+            itemBeingDragged = null;
         }
+    }
+    public void GiveItemLocation(int location)
+    {
+        //0 = default
+        //1 = hotbar
+        //2 = equipment
+        //3 = drop
+        itemLocationInUi = location;
     }
 }

@@ -25,7 +25,6 @@ public class Slot : MonoBehaviour
         item = newItem;
         item.transform.SetParent(transform);
         item.transform.position = transform.position;
-        print(item.transform.position);
     }
 
     public void BeginDrag()
@@ -35,6 +34,6 @@ public class Slot : MonoBehaviour
             inv.BeginDrag(item);
             item = null;
         }
-        //end drag in inventory
+        //end drag in inventory-script
     }
 }
