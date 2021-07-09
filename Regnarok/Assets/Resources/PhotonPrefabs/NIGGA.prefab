@@ -9170,10 +9170,10 @@ RectTransform:
   m_Father: {fileID: 4288243377869481107}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2937828473101156493
 CanvasRenderer:
@@ -9424,7 +9424,7 @@ GameObject:
   - component: {fileID: 8116562756992753319}
   m_Layer: 0
   m_Name: NIGGA
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12576,7 +12576,7 @@ GameObject:
   - component: {fileID: 9018347659648820499}
   m_Layer: 0
   m_Name: PlayerMovementObject
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12718,6 +12718,7 @@ MonoBehaviour:
   equipmentSlotHolder: {fileID: 7712634195101945151}
   hotbarSlotsHolder: {fileID: 1961327018467140095}
   testItem: {fileID: 5954981646708915816, guid: 7e74a1f5d72d7c842aeed41766af6912, type: 3}
+  testItemWorld: {fileID: 4645942473558860494, guid: 2cd61c039955f024bb4c42cff8344913, type: 3}
   mouseItemHolder: {fileID: 782059167299518462}
   itemReleaseRange: 1000
 --- !u!1 &8542545179266066452

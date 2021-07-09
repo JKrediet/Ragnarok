@@ -25,6 +25,7 @@ public class Slot : MonoBehaviour
         item = newItem;
         item.transform.SetParent(transform);
         item.transform.position = transform.position;
+        item.GetComponent<Item>().ToInventory(true);
     }
 
     public void BeginDrag()
