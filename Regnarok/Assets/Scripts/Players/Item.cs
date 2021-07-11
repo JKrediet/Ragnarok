@@ -30,7 +30,7 @@ public class Item : MonoBehaviour
             {
                 if (other.CompareTag("Player"))
                 {
-                    other.GetComponent<Inventory>().AddItemFromOutsideOfInventory(ItemId);
+                    other.GetComponent<Inventory>().AddItemFromOutsideOfInventory(gameObject);
                     Destroy(gameObject);
                 }
             }

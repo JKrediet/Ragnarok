@@ -14,13 +14,15 @@ public class Inventory : MonoBehaviour
     public GameObject slotHolder, equipmentSlotHolder, hotbarSlotsHolder;
     public GameObject testItem, testItemWorld;
 
+    [Header("IDK WTF dit is")]
     public Transform mouseItemHolder;
     private GameObject itemBeingDragged;
     public int itemReleaseRange;
     private int itemLocationInUi;
 
-    //nani?
-    Vector3 inventoryLocation;
+    //hotbar indecator
+    public GameObject hotbarIndecator;
+    int hotbarLocation;
 
     private void Start()
     {
@@ -31,8 +33,8 @@ public class Inventory : MonoBehaviour
         slot = new GameObject[allSlots];
         equipmentSlots = new GameObject[allEquipmentSlots];
         hotbarSlots = new GameObject[allHotbarSlots];
-        inventoryLocation = inventory.transform.position;
-        inventory.transform.position = new Vector3(10000, 0, 0);
+
+        inventory.SetActive(false);
 
         for (int i = 0; i < allSlots; i++)
         {
@@ -50,7 +52,7 @@ public class Inventory : MonoBehaviour
         //test
         for (int i = 0; i < 5; i++)
         {
-            AddItemFromOutsideOfInventory(0);
+            AddItemFromOutsideOfInventory(testItem);
         }
     }
 
@@ -61,6 +63,27 @@ public class Inventory : MonoBehaviour
         {
             mouseItemHolder.position = Input.mousePosition;
         }
+        if(Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            SelectItemInHotbar(0);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            SelectItemInHotbar(1);
+        }
+        if(Input.mouseScrollDelta.y > 0 || Input.mouseScrollDelta.y < 0)
+        {
+            hotbarLocation += (int)Input.mouseScrollDelta.y;
+            if(hotbarLocation > hotbarSlots.Length -1)
+            {
+                hotbarLocation = 0;
+            }
+            else if(hotbarLocation < 0)
+            {
+                hotbarLocation = hotbarSlots.Length -1;
+            }
+            SelectItemInHotbar(hotbarLocation);
+        }
     }
 
     //functions
@@ -69,14 +92,7 @@ public class Inventory : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             inventoryEnabled = !inventoryEnabled;
-            if(inventoryEnabled)
-            {
-                inventory.transform.position = inventoryLocation;
-            }
-            else
-            {
-                inventory.transform.position = new Vector3(10000, 0, 0);
-            }
+            inventory.SetActive(inventoryEnabled);
             GetComponent<PlayerController>().LockCamera();
         }
         Cursor.visible = inventoryEnabled;
@@ -89,10 +105,10 @@ public class Inventory : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
         }
     }
-    public void AddItemFromOutsideOfInventory(int itemId)
+    public void AddItemFromOutsideOfInventory(GameObject itemId)
     {
         //uses test item
-        GameObject test = Instantiate(testItem, mouseItemHolder);
+        GameObject test = Instantiate(ItemList.itemListUi[itemId.GetComponent<Item>().ItemId], mouseItemHolder);
         AddItemToInventory(test, -1);
         itemLocationInUi = 0;
         //list needs to be made
@@ -204,9 +220,9 @@ public class Inventory : MonoBehaviour
             else if (itemLocationInUi == 3)
             {
                 //drop
+                DropItem(itemBeingDragged);
                 Destroy(itemBeingDragged);
                 itemBeingDragged = null;
-                DropItem();
             }
             if (itemBeingDragged)
             {
@@ -227,10 +243,14 @@ public class Inventory : MonoBehaviour
         //3 = drop
         itemLocationInUi = location;
     }
-    public void DropItem()
+    public void DropItem(GameObject itemId)
     {
-        GameObject droppedItem = Instantiate(testItemWorld, transform.position + transform.forward * 2, Quaternion.identity);
+        GameObject droppedItem = Instantiate(ItemList.itemListIngame[itemId.GetComponent<Item>().ItemId], transform.position + transform.forward * 2, Quaternion.identity);
         droppedItem.GetComponent<Rigidbody>().AddExplosionForce(100, transform.position + transform.forward - transform.up, 2);
         droppedItem.GetComponent<Item>().ToInventory(false);
+    }
+    void SelectItemInHotbar(int nummertje)
+    {
+        hotbarIndecator.transform.position = hotbarSlots[nummertje].transform.position;
     }
 }
