@@ -3331,6 +3331,36 @@ Transform:
   m_Father: {fileID: 1104863601182125343}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2572679563755151183
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4314972581917546939}
+  m_Layer: 0
+  m_Name: Hand(no idea waar klee is)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4314972581917546939
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2572679563755151183}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 1.39}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8038180982882237030}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2637555122903393562
 GameObject:
   m_ObjectHideFlags: 0
@@ -12720,6 +12750,7 @@ Transform:
   - {fileID: 7983149086972796822}
   - {fileID: 2329939965393957030}
   - {fileID: 7177082956796722594}
+  - {fileID: 4314972581917546939}
   m_Father: {fileID: 5806909519055139399}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -12844,6 +12875,7 @@ MonoBehaviour:
   testItem: {fileID: 5954981646708915816, guid: 7e74a1f5d72d7c842aeed41766af6912, type: 3}
   testItemWorld: {fileID: 4645942473558860494, guid: 2cd61c039955f024bb4c42cff8344913, type: 3}
   mouseItemHolder: {fileID: 782059167299518462}
+  handHolder: {fileID: 4314972581917546939}
   itemReleaseRange: 1000
   hotbarIndecator: {fileID: 4132301925615422509}
 --- !u!1 &8542545179266066452

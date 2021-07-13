@@ -14,8 +14,7 @@ public class Inventory : MonoBehaviour
     public GameObject slotHolder, equipmentSlotHolder, hotbarSlotsHolder;
     public GameObject testItem, testItemWorld;
 
-    [Header("IDK WTF dit is")]
-    public Transform mouseItemHolder;
+    public Transform mouseItemHolder, handHolder;
     private GameObject itemBeingDragged;
     public int itemReleaseRange;
     private int itemLocationInUi;
@@ -24,7 +23,16 @@ public class Inventory : MonoBehaviour
     public GameObject hotbarIndecator;
     int hotbarLocation;
 
-    private void Start()
+    private KeyCode[] keyCodes = {
+         KeyCode.Alpha1,
+         KeyCode.Alpha2,
+         KeyCode.Alpha3,
+         KeyCode.Alpha4,
+         KeyCode.Alpha5,
+         KeyCode.Alpha6
+     };
+
+private void Start()
     {
         //lists
         allSlots = 25;
@@ -59,33 +67,32 @@ public class Inventory : MonoBehaviour
     void Update()
     {
         OpenInventory();
-        if(inventoryEnabled)
+        if (inventoryEnabled)
         {
             mouseItemHolder.position = Input.mousePosition;
         }
-        if(Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.mouseScrollDelta.y > 0 || Input.mouseScrollDelta.y < 0)
         {
-            SelectItemInHotbar(0);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            SelectItemInHotbar(1);
-        }
-        if(Input.mouseScrollDelta.y > 0 || Input.mouseScrollDelta.y < 0)
-        {
-            hotbarLocation += (int)Input.mouseScrollDelta.y;
-            if(hotbarLocation > hotbarSlots.Length -1)
+            hotbarLocation -= (int)Input.mouseScrollDelta.y;
+            if (hotbarLocation > hotbarSlots.Length - 1)
             {
                 hotbarLocation = 0;
             }
-            else if(hotbarLocation < 0)
+            else if (hotbarLocation < 0)
             {
-                hotbarLocation = hotbarSlots.Length -1;
+                hotbarLocation = hotbarSlots.Length - 1;
             }
             SelectItemInHotbar(hotbarLocation);
         }
+        for (int i = 0; i < keyCodes.Length; i++)
+        {
+            if (Input.GetKeyDown(keyCodes[i]))
+            {
+                hotbarLocation = i;
+                SelectItemInHotbar(hotbarLocation);
+            }
+        }
     }
-
     //functions
     void OpenInventory()
     {
@@ -252,5 +259,27 @@ public class Inventory : MonoBehaviour
     void SelectItemInHotbar(int nummertje)
     {
         hotbarIndecator.transform.position = hotbarSlots[nummertje].transform.position;
+        if(hotbarSlots[nummertje].transform.childCount > 0)
+        {
+            ShowItemInHand(hotbarSlots[nummertje].GetComponent<Slot>().item.GetComponent<Item>().ItemId);
+        }
+        else
+        {
+            ShowItemInHand(-1);
+        }
+    }
+    void ShowItemInHand(int itemId)
+    {
+        if(handHolder.childCount > 0)
+        {
+            Destroy(handHolder.GetChild(0).gameObject);
+        }
+        if(itemId >= 0)
+        {
+            GameObject handItem = Instantiate(ItemList.itemListIngame[itemId], handHolder.transform.position, handHolder.rotation, handHolder);
+            handItem.GetComponent<Rigidbody>().isKinematic = true;
+            handItem.GetComponent<Rigidbody>().useGravity = false;
+            handItem.GetComponent<Collider>().enabled = false;
+        }
     }
 }
