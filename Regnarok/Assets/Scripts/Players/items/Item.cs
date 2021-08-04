@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
-    public int itemType; //0=default / 1= equipment
-    public int ItemId;
+    public int itemType; //0=default / 1= axe
+    public int itemId;
+    public int itemDamage;
+    public bool isEquipment, stackAble;
+    public int stackAmount;
 
     private bool isInInventory, mayBePickedUp;
 
@@ -22,7 +25,7 @@ public class Item : MonoBehaviour
     {
         isInInventory = value;
     }
-    private void OnTriggerEnter(Collider other)
+    protected void OnTriggerEnter(Collider other)
     {
         if (mayBePickedUp)
         {
@@ -30,7 +33,7 @@ public class Item : MonoBehaviour
             {
                 if (other.CompareTag("Player"))
                 {
-                    other.GetComponent<Inventory>().AddItemFromOutsideOfInventory(gameObject);
+                    other.GetComponent<Inventory>().AddItemFromOutsideOfInventory(gameObject, stackAmount);
                     Destroy(gameObject);
                 }
             }

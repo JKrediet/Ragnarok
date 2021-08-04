@@ -10,7 +10,9 @@ public class PlayerController : MonoBehaviour
     CharacterController controller;
 
     //attackStats
-    [SerializeField] float axePower;
+    [SerializeField] float totalDamage;
+    [SerializeField] Item heldItem;
+    //0= nothin, 1=axe
 
     //movement
     [SerializeField] float speed, sprintSpeed, weight, jumpForce;
@@ -154,12 +156,16 @@ public class PlayerController : MonoBehaviour
         {
             if(hitObject.CompareTag("Tree"))
             {
-                hitObject.GetComponent<Tree>().HitByPlayer(axePower, gameObject);
+                hitObject.GetComponent<Tree>().HitByPlayer(heldItem.itemDamage, gameObject, heldItem.itemType);
             }
         }
     }
     public void LockCamera()
     {
         InventoryIsOpen = !InventoryIsOpen;
+    }
+    public void GiveItemStats(Item _itemType)
+    {
+        heldItem = _itemType;
     }
 }

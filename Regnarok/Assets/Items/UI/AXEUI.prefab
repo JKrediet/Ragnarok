@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 5509320606450371908}
   - component: {fileID: 2167559037673637646}
   - component: {fileID: 672101290531997884}
-  - component: {fileID: -4937806425492944763}
   - component: {fileID: 504649600863270002}
+  - component: {fileID: -3675160587418040551}
   m_Layer: 5
-  m_Name: ITEMUI
+  m_Name: AXEUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -67,7 +67,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ce200c7deca5b6546bfa80c91c111c58, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b3f45b8187efc66488b25c5fd3dd6b27, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -77,24 +77,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &-4937806425492944763
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5954981646708915816}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0dbc4b77fcb30d4ea8f22b7bf31773a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemType: 0
-  itemId: 0
-  itemDamage: 0
-  isEquipment: 0
-  stackAble: 1
-  stackAmount: 0
 --- !u!114 &504649600863270002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -139,7 +121,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: -4937806425492944763}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Item, Assembly-CSharp
         m_MethodName: SelectItem
         m_Mode: 1
@@ -151,3 +133,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &-3675160587418040551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5954981646708915816}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c7e6ac72970cc34385339677c396ded, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemType: 1
+  itemId: 1
+  itemDamage: 0
+  isEquipment: 0
+  stackAble: 0
+  stackAmount: 0
