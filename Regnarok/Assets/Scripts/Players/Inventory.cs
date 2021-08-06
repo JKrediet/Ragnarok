@@ -8,7 +8,6 @@ public class Inventory : MonoBehaviour
     public GameObject inventory;
 
     private int allSlots, allEquipmentSlots, allHotbarSlots;
-    private int enabledSlots;
     public GameObject[] slot, equipmentSlots, hotbarSlots; // equipment / hotbar / drop
 
     public GameObject slotHolder, equipmentSlotHolder, hotbarSlotsHolder;
@@ -27,6 +26,7 @@ public class Inventory : MonoBehaviour
 
     //test
     List<int> checkTheseNumbers;
+    public List<Item> inventoryContent;
 
     private KeyCode[] keyCodes = {
          KeyCode.Alpha1,
@@ -61,6 +61,12 @@ private void Start()
         for (int i = 0; i < allHotbarSlots; i++)
         {
             hotbarSlots[i] = hotbarSlotsHolder.transform.GetChild(i).gameObject;
+        }
+
+        //put empty items in inventory list
+        for (int i = 0; i < 25; i++)
+        {
+            inventoryContent.Add(Instantiate(testItem.GetComponent<Item>(), slot[i].transform));
         }
 
         //test
@@ -122,11 +128,53 @@ private void Start()
             itemAmount = 1;
         }
         //uses test item
-        GameObject uiItem = Instantiate(ItemList.itemListUi[itemId.GetComponent<Item>().itemId]);
-        print(uiItem.name);
+        //GameObject uiItem = Instantiate(ItemList.itemListUi[itemId.GetComponent<Item>().itemId]);
         itemLocationInUi = 0;
-        AddItemToInventory(uiItem, -1, itemAmount);
+        AddItemToInventoryList(5, 5);
     }
+    public void AddItemToInventoryList(int itemId, int itemAmount)
+    {
+        //filter out all slots that have items in it
+        checkTheseNumbers.Clear();
+        for (int i = 0; i < inventoryContent.Count; i++)
+        {
+            checkTheseNumbers.Add(i);
+            if (inventoryContent[i].stackAmount > 0)
+            {
+                //-1 == this slot has an item
+                checkTheseNumbers[i] = -1;
+            }
+        }
+        for (int i = 0; i < inventoryContent.Count; i++)
+        {
+            if(checkTheseNumbers[i] == i)
+            {
+                inventoryContent[i].itemId = itemId;
+                inventoryContent[i].stackAmount = itemAmount;
+                UpdateInventory();
+                return;
+            }
+        }
+    }
+    public void UpdateInventory()
+    {
+        for (int i = 0; i < inventoryContent.Count; i++)
+        {
+            //check if item exists
+            if(inventoryContent[i].itemId >= ItemList.itemListUi.Count)
+            {
+                inventoryContent[i].itemId = 1;
+            }
+
+            foreach (Transform item in slot[i].transform)
+            {
+                Destroy(item.gameObject);
+            }
+            Instantiate(ItemList.itemListUi[inventoryContent[i].itemId], slot[i].transform).GetComponent<Item>().SetUp(inventoryContent[i].stackAmount);
+        }
+    }
+
+    //werkt niet half maybe?
     public void AddItemToInventory(GameObject newItem, int slotNumber, int itemAmount)
     {
         newItem.GetComponent<Item>().stackAmount = itemAmount;

@@ -39,4 +39,8 @@ public class Item : MonoBehaviour
             }
         }
     }
+    public void SetUp(int numberOfItems)
+    {
+        stackAmount = numberOfItems;
+    }
 }
