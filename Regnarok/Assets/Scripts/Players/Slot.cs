@@ -5,6 +5,7 @@ using TMPro;
 
 public class Slot : MonoBehaviour
 {
+    public int slotNumber;
     public GameObject item;
     public int slotType = 0;
     public int stackSize;

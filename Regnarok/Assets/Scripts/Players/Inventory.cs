@@ -8,7 +8,7 @@ public class Inventory : MonoBehaviour
     public GameObject inventory;
 
     private int allSlots, allEquipmentSlots, allHotbarSlots;
-    public GameObject[] slot, equipmentSlots, hotbarSlots; // equipment / hotbar / drop
+    public GameObject[] slot; 
 
     public GameObject slotHolder, equipmentSlotHolder, hotbarSlotsHolder;
     public GameObject testItem, testItemWorld;
@@ -43,34 +43,35 @@ private void Start()
         allSlots = 25;
         allEquipmentSlots = 6;
         allHotbarSlots = 6;
-        slot = new GameObject[allSlots];
-        equipmentSlots = new GameObject[allEquipmentSlots];
-        hotbarSlots = new GameObject[allHotbarSlots];
+        slot = new GameObject[allSlots + allEquipmentSlots + allHotbarSlots];
         checkTheseNumbers = new List<int>();
 
         inventory.SetActive(false);
 
-        for (int i = 0; i < allSlots; i++)
-        {
-            slot[i] = slotHolder.transform.GetChild(i).gameObject;
-        }
-        for (int i = 0; i < allEquipmentSlots; i++)
-        {
-            equipmentSlots[i] = equipmentSlotHolder.transform.GetChild(i).gameObject;
-        }
         for (int i = 0; i < allHotbarSlots; i++)
         {
-            hotbarSlots[i] = hotbarSlotsHolder.transform.GetChild(i).gameObject;
+            slot[i] = hotbarSlotsHolder.transform.GetChild(i).gameObject;
+            slot[i].GetComponent<Slot>().slotNumber = i;
+        }
+        for (int i = 6; i < allEquipmentSlots + 6; i++)
+        {
+            slot[i] = equipmentSlotHolder.transform.GetChild(i - 6).gameObject;
+            slot[i].GetComponent<Slot>().slotNumber = i + 6;
+        }
+        for (int i = 12; i < allSlots + 12; i++)
+        {
+            slot[i] = slotHolder.transform.GetChild(i - 12).gameObject;
+            slot[i].GetComponent<Slot>().slotNumber = i + 12;
         }
 
         //put empty items in inventory list
-        for (int i = 0; i < 25; i++)
+        for (int i = 0; i < 37; i++)
         {
             inventoryContent.Add(Instantiate(testItem.GetComponent<Item>(), slot[i].transform));
         }
 
         //test
-        AddItemFromOutsideOfInventory(testItem, 5);
+        AddItemFromOutsideOfInventory(2, 5);
     }
 
     void Update()
@@ -80,16 +81,17 @@ private void Start()
         {
             mouseItemHolder.position = Input.mousePosition;
         }
+        //scroll in hotbar
         if (Input.mouseScrollDelta.y > 0 || Input.mouseScrollDelta.y < 0)
         {
             hotbarLocation -= (int)Input.mouseScrollDelta.y;
-            if (hotbarLocation > hotbarSlots.Length - 1)
+            if (hotbarLocation > allHotbarSlots - 1)
             {
                 hotbarLocation = 0;
             }
             else if (hotbarLocation < 0)
             {
-                hotbarLocation = hotbarSlots.Length - 1;
+                hotbarLocation = allHotbarSlots - 1;
             }
             SelectItemInHotbar(hotbarLocation);
         }
@@ -121,16 +123,14 @@ private void Start()
             Cursor.lockState = CursorLockMode.Locked;
         }
     }
-    public void AddItemFromOutsideOfInventory(GameObject itemId, int itemAmount)
+    public void AddItemFromOutsideOfInventory(int itemId, int itemAmount)
     {
         if(itemAmount == 0)
         {
             itemAmount = 1;
         }
-        //uses test item
-        //GameObject uiItem = Instantiate(ItemList.itemListUi[itemId.GetComponent<Item>().itemId]);
         itemLocationInUi = 0;
-        AddItemToInventoryList(5, 5);
+        AddItemToInventoryList(itemId, itemAmount);
     }
     public void AddItemToInventoryList(int itemId, int itemAmount)
     {
@@ -142,6 +142,11 @@ private void Start()
             if (inventoryContent[i].stackAmount > 0)
             {
                 //-1 == this slot has an item
+                checkTheseNumbers[i] = -1;
+            }
+            if(i > 5 && i < 12)
+            {
+                //exclude equipment slots
                 checkTheseNumbers[i] = -1;
             }
         }
@@ -198,32 +203,32 @@ private void Start()
                     return;
                 }
             }
-            if (itemLocationInUi == 1)
-            {
-                if (hotbarSlots[slotNumber].GetComponent<Slot>().CheckForItem() == false)
-                {
-                    hotbarSlots[slotNumber].GetComponent<Slot>().RecieveItem(newItem);
-                    return;
-                }
-                else
-                {
-                    //AddItemToInventory(newItem, -1, itemAmount);
-                    return;
-                }
-            }
-            if (itemLocationInUi == 2)
-            {
-                if (equipmentSlots[slotNumber].GetComponent<Slot>().CheckForItem() == false)
-                {
-                    equipmentSlots[slotNumber].GetComponent<Slot>().RecieveItem(newItem);
-                    return;
-                }
-                else
-                {
-                    //AddItemToInventory(newItem, -1, itemAmount);
-                    return;
-                }
-            }
+            //if (itemLocationInUi == 1)
+            //{
+            //    if (hotbarSlots[slotNumber].GetComponent<Slot>().CheckForItem() == false)
+            //    {
+            //        hotbarSlots[slotNumber].GetComponent<Slot>().RecieveItem(newItem);
+            //        return;
+            //    }
+            //    else
+            //    {
+            //        //AddItemToInventory(newItem, -1, itemAmount);
+            //        return;
+            //    }
+            //}
+            //if (itemLocationInUi == 2)
+            //{
+            //    if (equipmentSlots[slotNumber].GetComponent<Slot>().CheckForItem() == false)
+            //    {
+            //        equipmentSlots[slotNumber].GetComponent<Slot>().RecieveItem(newItem);
+            //        return;
+            //    }
+            //    else
+            //    {
+            //        //AddItemToInventory(newItem, -1, itemAmount);
+            //        return;
+            //    }
+            //}
         }
         else
         {
@@ -307,12 +312,12 @@ private void Start()
                 //hotbar
                 for (int i = 0; i < allHotbarSlots; i++)
                 {
-                    float distance = Vector3.Distance(hotbarSlots[i].transform.position, Input.mousePosition);
-                    if (distance < smallestDistance)
-                    {
-                        smallestDistance = distance;
-                        thisSlot = i;
-                    }
+                    //float distance = Vector3.Distance(hotbarSlots[i].transform.position, Input.mousePosition);
+                    //if (distance < smallestDistance)
+                    //{
+                    //    smallestDistance = distance;
+                    //    thisSlot = i;
+                    //}
                 }
             }
             else if (itemLocationInUi == 2)
@@ -322,12 +327,12 @@ private void Start()
                     //equipment
                     for (int i = 0; i < allEquipmentSlots; i++)
                     {
-                        float distance = Vector3.Distance(equipmentSlots[i].transform.position, Input.mousePosition);
-                        if (distance < smallestDistance)
-                        {
-                            smallestDistance = distance;
-                            thisSlot = i;
-                        }
+                        //float distance = Vector3.Distance(equipmentSlots[i].transform.position, Input.mousePosition);
+                        //if (distance < smallestDistance)
+                        //{
+                        //    smallestDistance = distance;
+                        //    thisSlot = i;
+                        //}
                     }
                 }
                 else
@@ -378,14 +383,16 @@ private void Start()
     }
     void SelectItemInHotbar(int nummertje)
     {
-        hotbarIndecator.transform.position = hotbarSlots[nummertje].transform.position;
+        hotbarIndecator.transform.position = slot[nummertje].transform.position;
         CheckIfItemInHand(nummertje);
     }
+    #region works!
     void CheckIfItemInHand(int slotNumber)
     {
-        if (hotbarSlots[slotNumber].GetComponent<Slot>().item)
+        if (slot[slotNumber].transform.childCount > 0)
         {
-            ShowItemInHand(hotbarSlots[slotNumber].GetComponent<Slot>().item.GetComponent<Item>().itemId);
+            print(slotNumber);
+            ShowItemInHand(slot[slotNumber].transform.GetChild(0).GetComponent<Item>().itemId);
             //hier check welk item in hand
             GiveItemStats(slotNumber);
         }
@@ -408,8 +415,9 @@ private void Start()
             handItem.GetComponent<Collider>().enabled = false;
         }
     }
+    #endregion
     void GiveItemStats(int nummertje)
     {
-        GetComponent<PlayerController>().GiveItemStats(hotbarSlots[nummertje].GetComponent<Slot>().item.GetComponent<Item>());
+        //GetComponent<PlayerController>().GiveItemStats(hotbarSlots[nummertje].GetComponent<Slot>().item.GetComponent<Item>());
     }
 }

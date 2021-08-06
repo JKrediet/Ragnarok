@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Item : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class Item : MonoBehaviour
     public int stackAmount;
 
     private bool isInInventory, mayBePickedUp;
+
+    public TextMeshProUGUI stackAmountText;
 
     private void Start()
     {
@@ -33,7 +36,7 @@ public class Item : MonoBehaviour
             {
                 if (other.CompareTag("Player"))
                 {
-                    other.GetComponent<Inventory>().AddItemFromOutsideOfInventory(gameObject, stackAmount);
+                    other.GetComponent<Inventory>().AddItemFromOutsideOfInventory(itemId, stackAmount);
                     Destroy(gameObject);
                 }
             }
@@ -42,5 +45,10 @@ public class Item : MonoBehaviour
     public void SetUp(int numberOfItems)
     {
         stackAmount = numberOfItems;
+        if (stackAmountText != null)
+        {
+            stackAmountText.gameObject.SetActive(true);
+            stackAmountText.text = stackAmount.ToString();
+        }
     }
 }
