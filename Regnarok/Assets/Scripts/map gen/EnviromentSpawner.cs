@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEditor.AI;
 public class EnviromentSpawner : MonoBehaviour
 {
     [Header("Prefabs")]
@@ -27,6 +28,7 @@ public class EnviromentSpawner : MonoBehaviour
     {
         mesh.AddComponent<MeshCollider>();
         Generate();
+        NavMeshBuilder.BuildNavMesh();
     }
     public void Generate()
     {
