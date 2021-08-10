@@ -20,14 +20,7 @@ public class Slot : MonoBehaviour
     }
     public bool CheckForItem()
     {
-        if(item)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return item ? true : false;
     }
     public void RecieveItem(GameObject newItem)
     {
@@ -41,16 +34,13 @@ public class Slot : MonoBehaviour
         }
         stackText.text = stackSize.ToString();
     }
-
-    public void BeginDrag()
+    public void GiveSlotnumber()
     {
-        if(item)
-        {
-            stackText.text = "";
-            inv.BeginDrag(item, stackSize);
-            stackSize = 0;
-            item = null;
-        }
-        //end drag in inventory-script
+        inv.GiveMouseLocationForInventory(slotNumber);
+    }
+    public void GiveItemToSlot()
+    {
+        inv.itemBeingDragged = false;
+        inv.AddItemToInventoryList(-1, -1, true, -1);
     }
 }

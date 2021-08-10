@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class Item : MonoBehaviour
 {
@@ -10,11 +11,19 @@ public class Item : MonoBehaviour
     public int itemDamage;
     public bool isEquipment, stackAble;
     public int stackAmount;
+    public int oldSlotNumber;
+    [HideInInspector] public Inventory inv;
 
     private bool isInInventory, mayBePickedUp;
 
     public TextMeshProUGUI stackAmountText;
 
+    private bool isBeingDragged;
+
+    public void Awake()
+    {
+        inv = FindObjectOfType<Inventory>();
+    }
     private void Start()
     {
         Invoke("Cooldown", 0.5f);
@@ -42,13 +51,48 @@ public class Item : MonoBehaviour
             }
         }
     }
-    public void SetUp(int numberOfItems)
+    public void SetUp(int numberOfItems, int slot, Inventory _inv)
     {
+        ToInventory(true);
         stackAmount = numberOfItems;
+        oldSlotNumber = slot;
+        inv = _inv;
         if (stackAmountText != null)
         {
             stackAmountText.gameObject.SetActive(true);
             stackAmountText.text = stackAmount.ToString();
+        }
+    }
+    public void BeginDrag()
+    {
+        if (isInInventory)
+        {
+            if (!inv.itemBeingDragged)
+            {
+                inv.itemBeingDragged = true;
+                //get mouse pos
+                transform.SetParent(inv.BeginDrag());
+                transform.position = Input.mousePosition;
+            }
+            else
+            {
+                inv.itemBeingDragged = false;
+                inv.AddItemToInventoryList(-1, -1, true, -1);
+            }
+        }
+        //end drag in inventory-script
+    }
+    private void Update()
+    {
+        if(isInInventory)
+        {
+            if (inv.itemBeingDragged)
+            {
+                if (GetComponent<Image>())
+                {
+                    GetComponent<Image>().raycastTarget = !inv.itemBeingDragged;
+                }
+            }
         }
     }
 }

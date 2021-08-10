@@ -14,11 +14,12 @@ public class Inventory : MonoBehaviour
     public GameObject testItem, testItemWorld;
 
     public Transform mouseItemHolder, handHolder;
-    private GameObject itemBeingDragged;
+    public bool itemBeingDragged;
     public int itemReleaseRange;
     private int itemLocationInUi;
 
     private int draggedStackAmount;
+    private int slotNumberDragged;
 
     //hotbar indecator
     public GameObject hotbarIndecator;
@@ -56,12 +57,12 @@ private void Start()
         for (int i = 6; i < allEquipmentSlots + 6; i++)
         {
             slot[i] = equipmentSlotHolder.transform.GetChild(i - 6).gameObject;
-            slot[i].GetComponent<Slot>().slotNumber = i + 6;
+            slot[i].GetComponent<Slot>().slotNumber = i;
         }
         for (int i = 12; i < allSlots + 12; i++)
         {
             slot[i] = slotHolder.transform.GetChild(i - 12).gameObject;
-            slot[i].GetComponent<Slot>().slotNumber = i + 12;
+            slot[i].GetComponent<Slot>().slotNumber = i;
         }
 
         //put empty items in inventory list
@@ -129,35 +130,92 @@ private void Start()
         {
             itemAmount = 1;
         }
-        itemLocationInUi = 0;
-        AddItemToInventoryList(itemId, itemAmount);
+        slotNumberDragged = 0;
+        AddItemToInventoryList(itemId, itemAmount, false, -1);
     }
-    public void AddItemToInventoryList(int itemId, int itemAmount)
+    public void AddItemToInventoryList(int itemId, int itemAmount, bool isAlreadyInInventory, int oldSlot)
     {
         //filter out all slots that have items in it
-        checkTheseNumbers.Clear();
-        for (int i = 0; i < inventoryContent.Count; i++)
+        if (!isAlreadyInInventory)
         {
-            checkTheseNumbers.Add(i);
-            if (inventoryContent[i].stackAmount > 0)
+            checkTheseNumbers.Clear();
+            int temp = -1;
+            for (int i = 0; i < inventoryContent.Count; i++)
             {
-                //-1 == this slot has an item
-                checkTheseNumbers[i] = -1;
+                checkTheseNumbers.Add(i);
+                if(inventoryContent[i].itemId == itemId)
+                {
+                    temp = i;
+                    print(temp);
+                }
+                if (inventoryContent[i].stackAmount > 0 && inventoryContent[i].itemId != itemId)
+                {
+                    //-1 == this slot has an item
+                    checkTheseNumbers[i] = -1;
+                }
+                if (i > 5 && i < 12)
+                {
+                    //exclude equipment slots
+                    checkTheseNumbers[i] = -1;
+                }
             }
-            if(i > 5 && i < 12)
+            for (int i = 0; i < inventoryContent.Count; i++)
             {
-                //exclude equipment slots
-                checkTheseNumbers[i] = -1;
+                if(temp > 0)
+                {
+                    itemAmount += inventoryContent[temp].stackAmount;
+                    inventoryContent[temp].itemId = itemId;
+                    inventoryContent[temp].stackAmount = itemAmount;
+                    UpdateInventory();
+                    return;
+                }
+                else
+                {
+                    if (checkTheseNumbers[i] == i)
+                    {
+                        if (inventoryContent[i].itemId == itemId)
+                        {
+                            itemAmount += inventoryContent[i].stackAmount;
+                        }
+                        inventoryContent[i].itemId = itemId;
+                        inventoryContent[i].stackAmount = itemAmount;
+                        UpdateInventory();
+                        return;
+                    }
+                }
             }
         }
-        for (int i = 0; i < inventoryContent.Count; i++)
+        else
         {
-            if(checkTheseNumbers[i] == i)
+            if (slotNumberDragged > -1)
             {
-                inventoryContent[i].itemId = itemId;
-                inventoryContent[i].stackAmount = itemAmount;
-                UpdateInventory();
-                return;
+                if (mouseItemHolder.childCount > 0)
+                {
+                    int tempId = mouseItemHolder.GetChild(0).GetComponent<Item>().itemId;
+                    int tempAmount = mouseItemHolder.GetChild(0).GetComponent<Item>().stackAmount;
+                    int tempOld = mouseItemHolder.GetChild(0).GetComponent<Item>().oldSlotNumber;
+                    Destroy(mouseItemHolder.GetChild(0).gameObject);
+
+                    if (inventoryContent[slotNumberDragged].stackAmount > 0 && inventoryContent[slotNumberDragged].itemId != tempId)
+                    {
+                        inventoryContent[tempOld].itemId = inventoryContent[slotNumberDragged].itemId;
+                        inventoryContent[tempOld].stackAmount = inventoryContent[slotNumberDragged].stackAmount;
+                    }
+                    else if(inventoryContent[slotNumberDragged].itemId == tempId)
+                    {
+                        tempAmount += inventoryContent[slotNumberDragged].stackAmount;
+                        inventoryContent[tempOld].itemId = 0;
+                        inventoryContent[tempOld].stackAmount = 0;
+                    }
+                    else
+                    {
+                        inventoryContent[tempOld].itemId = 0;
+                        inventoryContent[tempOld].stackAmount = 0;
+                    }
+                    inventoryContent[slotNumberDragged].itemId = tempId;
+                    inventoryContent[slotNumberDragged].stackAmount = tempAmount;
+                    UpdateInventory();
+                }
             }
         }
     }
@@ -175,193 +233,7 @@ private void Start()
             {
                 Destroy(item.gameObject);
             }
-            Instantiate(ItemList.itemListUi[inventoryContent[i].itemId], slot[i].transform).GetComponent<Item>().SetUp(inventoryContent[i].stackAmount);
-        }
-    }
-
-    //werkt niet half maybe?
-    public void AddItemToInventory(GameObject newItem, int slotNumber, int itemAmount)
-    {
-        newItem.GetComponent<Item>().stackAmount = itemAmount;
-        if (slotNumber > -1)
-        {
-            if (itemLocationInUi == 0)
-            {
-                if (slot[slotNumber].GetComponent<Slot>().CheckForItem() == false)
-                {
-                    slot[slotNumber].GetComponent<Slot>().RecieveItem(newItem);
-                    return;
-                }
-                else
-                {
-                    checkTheseNumbers.Clear();
-                    for (int i = 0; i < allSlots; i++)
-                    {
-                        checkTheseNumbers.Add(i);
-                    }
-                    InventorySort(newItem, checkTheseNumbers, itemAmount);
-                    return;
-                }
-            }
-            //if (itemLocationInUi == 1)
-            //{
-            //    if (hotbarSlots[slotNumber].GetComponent<Slot>().CheckForItem() == false)
-            //    {
-            //        hotbarSlots[slotNumber].GetComponent<Slot>().RecieveItem(newItem);
-            //        return;
-            //    }
-            //    else
-            //    {
-            //        //AddItemToInventory(newItem, -1, itemAmount);
-            //        return;
-            //    }
-            //}
-            //if (itemLocationInUi == 2)
-            //{
-            //    if (equipmentSlots[slotNumber].GetComponent<Slot>().CheckForItem() == false)
-            //    {
-            //        equipmentSlots[slotNumber].GetComponent<Slot>().RecieveItem(newItem);
-            //        return;
-            //    }
-            //    else
-            //    {
-            //        //AddItemToInventory(newItem, -1, itemAmount);
-            //        return;
-            //    }
-            //}
-        }
-        else
-        {
-            checkTheseNumbers.Clear();
-            for (int i = 0; i < allSlots; i++)
-            {
-                checkTheseNumbers.Add(i);
-            }
-            InventorySort(newItem, checkTheseNumbers, itemAmount);
-        }
-    }
-    void InventorySort(GameObject newItem, List<int> checkTheseSlots, int itemAmount)
-    {
-        //filter slots on wich can be used
-        for (int i = 0; i < allSlots; i++)
-        {
-            if (checkTheseSlots[i] == i)
-            {
-                if (slot[i].GetComponent<Slot>().CheckForItem() == true)
-                {
-                    if (slot[i].GetComponent<Slot>().item.GetComponent<Item>().itemId == newItem.GetComponent<Item>().itemId && slot[i].GetComponent<Slot>().item.GetComponent<Item>().stackAble)
-                    {
-                        //dummie
-                    }
-                    else
-                    {
-                        checkTheseNumbers[i] = -1;
-                    }
-                }
-            }
-        }
-        for (int i = 0; i < allSlots; i++)
-        {
-            if(checkTheseSlots[i] == i)
-            {
-                if (slot[i].GetComponent<Slot>().CheckForItem() == true)
-                {
-                    if (slot[i].GetComponent<Slot>().item.GetComponent<Item>().itemId == newItem.GetComponent<Item>().itemId && slot[i].GetComponent<Slot>().item.GetComponent<Item>().stackAble)
-                    {
-                        slot[i].GetComponent<Slot>().RecieveItem(newItem);
-                        return;
-                    }
-                    return;
-                }
-                else
-                {
-                    slot[i].GetComponent<Slot>().RecieveItem(newItem);
-                    return;
-                }
-            }
-        }
-    }
-    public void BeginDrag(GameObject draggedItem, int stackAmount)
-    {
-        draggedStackAmount = stackAmount;
-        draggedItem.transform.SetParent(mouseItemHolder);
-        draggedItem.transform.position = Input.mousePosition;
-        itemBeingDragged = draggedItem;
-    }
-    public void EndDrag()
-    {
-        if (itemBeingDragged)
-        {
-            int thisSlot = -1;
-            float smallestDistance = itemReleaseRange;
-            if (itemLocationInUi == 0)
-            {
-                //inventory
-                for (int i = 0; i < allSlots; i++)
-                {
-                    float distance = Vector3.Distance(slot[i].transform.position, Input.mousePosition);
-                    if (distance < smallestDistance)
-                    {
-                        smallestDistance = distance;
-                        thisSlot = i;
-                    }
-                }
-            }
-            else if (itemLocationInUi == 1)
-            {
-                //hotbar
-                for (int i = 0; i < allHotbarSlots; i++)
-                {
-                    //float distance = Vector3.Distance(hotbarSlots[i].transform.position, Input.mousePosition);
-                    //if (distance < smallestDistance)
-                    //{
-                    //    smallestDistance = distance;
-                    //    thisSlot = i;
-                    //}
-                }
-            }
-            else if (itemLocationInUi == 2)
-            {
-                if (itemBeingDragged.GetComponent<Item>().isEquipment == true)
-                {
-                    //equipment
-                    for (int i = 0; i < allEquipmentSlots; i++)
-                    {
-                        //float distance = Vector3.Distance(equipmentSlots[i].transform.position, Input.mousePosition);
-                        //if (distance < smallestDistance)
-                        //{
-                        //    smallestDistance = distance;
-                        //    thisSlot = i;
-                        //}
-                    }
-                }
-                else
-                {
-                    itemLocationInUi = -1;
-                    EndDrag();
-                }
-            }
-            else if (itemLocationInUi == 3)
-            {
-                //drop
-                DropItem(itemBeingDragged);
-                Destroy(itemBeingDragged);
-                itemBeingDragged = null;
-            }
-            if (itemBeingDragged)
-            {
-                for (int i = 0; i < draggedStackAmount; i++)
-                {
-                    AddItemToInventory(itemBeingDragged, thisSlot, itemBeingDragged.GetComponent<Item>().stackAmount);
-                }
-                itemBeingDragged = null;
-                draggedStackAmount = 0;
-            }
-            CheckIfItemInHand(hotbarLocation);
-            //foreach (Transform child in mouseItemHolder)
-            //{
-            //    Destroy(child.gameObject);
-            //}
+            Instantiate(ItemList.itemListUi[inventoryContent[i].itemId], slot[i].transform).GetComponent<Item>().SetUp(inventoryContent[i].stackAmount, i, this);
         }
     }
     public void GiveItemLocation(int location)
@@ -372,6 +244,14 @@ private void Start()
         //2 = equipment
         //3 = drop
         itemLocationInUi = location;
+    }
+    public Transform BeginDrag()
+    {
+        return mouseItemHolder;
+    }
+    public void GiveMouseLocationForInventory(int slotNumber)
+    {
+        slotNumberDragged = slotNumber;
     }
     public void DropItem(GameObject itemId)
     {
@@ -391,7 +271,6 @@ private void Start()
     {
         if (slot[slotNumber].transform.childCount > 0)
         {
-            print(slotNumber);
             ShowItemInHand(slot[slotNumber].transform.GetChild(0).GetComponent<Item>().itemId);
             //hier check welk item in hand
             GiveItemStats(slotNumber);
