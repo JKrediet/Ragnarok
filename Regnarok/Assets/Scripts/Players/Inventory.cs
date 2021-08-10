@@ -113,15 +113,19 @@ private void Start()
             inventoryEnabled = !inventoryEnabled;
             inventory.SetActive(inventoryEnabled);
             GetComponent<PlayerController>().LockCamera();
-        }
-        Cursor.visible = inventoryEnabled;
-        if (inventoryEnabled)
-        {
-            Cursor.lockState = CursorLockMode.Confined;
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.Locked;
+            if(!inventoryEnabled)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                if (mouseItemHolder.childCount > 0)
+                {
+                    DropItem();
+                }
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Confined;
+            }
+            Cursor.visible = inventoryEnabled;
         }
     }
     public void AddItemFromOutsideOfInventory(int itemId, int itemAmount)
@@ -143,10 +147,9 @@ private void Start()
             for (int i = 0; i < inventoryContent.Count; i++)
             {
                 checkTheseNumbers.Add(i);
-                if(inventoryContent[i].itemId == itemId)
+                if (inventoryContent[i].itemId == itemId)
                 {
                     temp = i;
-                    print(temp);
                 }
                 if (inventoryContent[i].stackAmount > 0 && inventoryContent[i].itemId != itemId)
                 {
@@ -161,7 +164,7 @@ private void Start()
             }
             for (int i = 0; i < inventoryContent.Count; i++)
             {
-                if(temp > 0)
+                if (temp > 0)
                 {
                     itemAmount += inventoryContent[temp].stackAmount;
                     inventoryContent[temp].itemId = itemId;
@@ -201,9 +204,12 @@ private void Start()
                         inventoryContent[tempOld].itemId = inventoryContent[slotNumberDragged].itemId;
                         inventoryContent[tempOld].stackAmount = inventoryContent[slotNumberDragged].stackAmount;
                     }
-                    else if(inventoryContent[slotNumberDragged].itemId == tempId)
+                    else if (inventoryContent[slotNumberDragged].itemId == tempId)
                     {
-                        tempAmount += inventoryContent[slotNumberDragged].stackAmount;
+                        if(tempOld != slotNumberDragged)
+                        {
+                            tempAmount += inventoryContent[slotNumberDragged].stackAmount;
+                        }
                         inventoryContent[tempOld].itemId = 0;
                         inventoryContent[tempOld].stackAmount = 0;
                     }
@@ -236,15 +242,6 @@ private void Start()
             Instantiate(ItemList.itemListUi[inventoryContent[i].itemId], slot[i].transform).GetComponent<Item>().SetUp(inventoryContent[i].stackAmount, i, this);
         }
     }
-    public void GiveItemLocation(int location)
-    {
-        //function called from ui
-        //0 = default
-        //1 = hotbar
-        //2 = equipment
-        //3 = drop
-        itemLocationInUi = location;
-    }
     public Transform BeginDrag()
     {
         return mouseItemHolder;
@@ -253,13 +250,25 @@ private void Start()
     {
         slotNumberDragged = slotNumber;
     }
-    public void DropItem(GameObject itemId)
+    public void DropItem()
     {
-        GameObject droppedItem = Instantiate(ItemList.itemListIngame[itemId.GetComponent<Item>().itemId], transform.position + transform.forward * 2, Quaternion.identity);
-        droppedItem.GetComponent<Rigidbody>().AddExplosionForce(100, transform.position + transform.forward - transform.up, 2);
-        droppedItem.GetComponent<Item>().ToInventory(false);
-        droppedItem.GetComponent<Item>().stackAmount = draggedStackAmount;
-        draggedStackAmount = 0;
+        if (mouseItemHolder.childCount > 0)
+        {
+            int tempId = mouseItemHolder.GetChild(0).GetComponent<Item>().itemId;
+            int tempAmount = mouseItemHolder.GetChild(0).GetComponent<Item>().stackAmount;
+            int tempOld = mouseItemHolder.GetChild(0).GetComponent<Item>().oldSlotNumber;
+            Destroy(mouseItemHolder.GetChild(0).gameObject);
+            inventoryContent[tempOld].stackAmount = 0;
+            inventoryContent[tempOld].itemId = 0;
+
+            itemBeingDragged = false;
+            UpdateInventory();
+
+            GameObject droppedItem = Instantiate(ItemList.itemListIngame[tempId], transform.position + transform.forward * 2, Quaternion.identity);
+            droppedItem.GetComponent<Rigidbody>().AddExplosionForce(100, transform.position + transform.forward - transform.up, 2);
+            droppedItem.GetComponent<Item>().ToInventory(false);
+            droppedItem.GetComponent<Item>().stackAmount = tempAmount;
+        }
     }
     void SelectItemInHotbar(int nummertje)
     {

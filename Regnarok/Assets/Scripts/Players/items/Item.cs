@@ -26,6 +26,7 @@ public class Item : MonoBehaviour
     }
     private void Start()
     {
+        mayBePickedUp = false;
         Invoke("Cooldown", 0.5f);
     }
     public void Cooldown()
@@ -53,6 +54,7 @@ public class Item : MonoBehaviour
     }
     public void SetUp(int numberOfItems, int slot, Inventory _inv)
     {
+        GetComponent<Image>().raycastTarget = true;
         ToInventory(true);
         stackAmount = numberOfItems;
         oldSlotNumber = slot;
@@ -62,6 +64,7 @@ public class Item : MonoBehaviour
             stackAmountText.gameObject.SetActive(true);
             stackAmountText.text = stackAmount.ToString();
         }
+        
     }
     public void BeginDrag()
     {
