@@ -27,8 +27,8 @@ public class EnviromentSpawner : MonoBehaviour
     void Start()
     {
         mesh.AddComponent<MeshCollider>();
-        Generate();
-        NavMeshBuilder.BuildNavMesh();
+       // Generate();
+       //NavMeshBuilder.BuildNavMesh();
     }
     public void Generate()
     {

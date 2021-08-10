@@ -23,13 +23,6 @@ public class MapGenerator : MonoBehaviour
     public bool autoUpdate;
     public bool useFallOffs;
     public TerrainType[] regions;
-    [Space(5)]
-    public GameObject tree;
-    public float minTreeSize;
-    public float maxTreeSize;
-    private Texture2D noiseImage;
-    public float forestSize;
-    public float treeDensity;
 
     private float baseDensity = 5.0f;
     private void Awake()
