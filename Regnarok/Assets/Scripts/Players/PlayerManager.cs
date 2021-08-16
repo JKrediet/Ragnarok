@@ -15,6 +15,6 @@ public class PlayerManager : MonoBehaviour
 
     public void SpawnPlayer()
     {
-        GameObject game = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "NIGGA"), Vector3.zero, Quaternion.identity);
+        GameObject game = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Character"), Vector3.zero, Quaternion.identity);
     }
 }
