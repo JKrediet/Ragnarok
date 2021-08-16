@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class Item : MonoBehaviour
 {
-    public int itemType; //0=default / 1= axe
+    public int itemType; //0=default / 1= tool / 2=equipment
     public int itemId;
     public int itemDamage;
     public bool isEquipment, stackAble;
