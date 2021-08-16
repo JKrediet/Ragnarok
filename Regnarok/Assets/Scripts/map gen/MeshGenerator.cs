@@ -44,7 +44,9 @@ public class MeshData
 	public int[] triangles;
 	public Vector2[] uvs;
 
+	int[] outOfMeshTriangles;
 	int triangleIndex;
+	int outOfMeshTriangleIndex;
 
 	public MeshData(int meshWidth, int meshHeight)
 	{
@@ -52,13 +54,18 @@ public class MeshData
 		uvs = new Vector2[meshWidth * meshHeight];
 		triangles = new int[(meshWidth - 1) * (meshHeight - 1) * 6];
 	}
-
-	public void AddTriangle(int a, int b, int c)
-	{
-		triangles[triangleIndex] = a;
-		triangles[triangleIndex + 1] = b;
-		triangles[triangleIndex + 2] = c;
-		triangleIndex += 3;
+	public void AddTriangle(int a, int b, int c) {
+		if (a < 0 || b < 0 || c < 0) {
+			outOfMeshTriangles [outOfMeshTriangleIndex] = a;
+			outOfMeshTriangles [outOfMeshTriangleIndex + 1] = b;
+			outOfMeshTriangles [outOfMeshTriangleIndex + 2] = c;
+			outOfMeshTriangleIndex += 3;
+		} else {
+			triangles [triangleIndex] = a;
+			triangles [triangleIndex + 1] = b;
+			triangles [triangleIndex + 2] = c;
+			triangleIndex += 3;
+		}
 	}
 
 	public Mesh CreateMesh()

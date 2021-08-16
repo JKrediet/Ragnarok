@@ -3,36 +3,52 @@ using UnityEngine;
 using UnityEditor.AI;
 public class EnviromentSpawner : MonoBehaviour
 {
+    public bool testing;
+    public bool testEnvSpawn;
     [Header("Prefabs")]
-    public GameObject firstObject;
-    public GameObject secondObject;
-    public GameObject thirdObject;
-    public GameObject fourthObject;
+    public GameObject trees;
+    public GameObject rocks;
+    public GameObject chest;
+    public GameObject totem;
     [Header("Settings")]
     public Transform firstPos;
     public Transform secondPos;
     [Space(5)]
-    public bool randomRotFirst;
-    public bool randomRotSecond;
-    public bool randomRotThird;
-    public bool randomRotFourth;
+    public bool randomRotTrees;
+    public bool randomRotRocks;
+    public bool randomRotchest;
+    public bool randomRotTotem;
     [Space(5)]
-    public int firstAmount;
-    public int secondAmount;
-    public int thirdAmount;
-    public int fourthAmount;
+    public int treeAmount;
+    public int rockAmount;
+    public int chestAmount;
+    public int totemAmount;
     public float spawnHeight = 20;
     [Space(2)]
+    public int sandIndex=0;
+    [Space(2)]
     public GameObject mesh;
+    public MapGenerator mapGen;
     void Start()
     {
         mesh.AddComponent<MeshCollider>();
-       // Generate();
-       //NavMeshBuilder.BuildNavMesh();
+        if (testing)
+        {
+
+        }
+        else if (testEnvSpawn)
+        {
+            Generate();
+        }
+        else
+        {
+            Generate();
+            NavMeshBuilder.BuildNavMesh();
+        }
     }
     public void Generate()
     {
-        for (int i = 0; i < firstAmount; i++)
+        for (int i = 0; i < treeAmount; i++)
         {
             if (Chance())
             {
@@ -41,29 +57,44 @@ public class EnviromentSpawner : MonoBehaviour
                 RaycastHit hitInfo;
                 if (Physics.Raycast(ray, out hitInfo))
                 {
-                    if (hitInfo.transform.tag== "Water"
-                        || hitInfo.transform.tag == "Rock"
-                        || hitInfo.transform.tag == "Tree"
-                        || hitInfo.transform.tag == "Chest"
-                        || hitInfo.transform.tag == "Totem")
+
+                    //checking collor
+                    Renderer renderer = hitInfo.collider.GetComponent<MeshRenderer>();
+                    Texture2D texture2D = renderer.material.mainTexture as Texture2D;
+                    if (texture2D != null)
                     {
+                        Vector2 pCoord = hitInfo.textureCoord;
+                        pCoord.x *= texture2D.width;
+                        pCoord.y *= texture2D.height;
+                        Vector2 tiling = renderer.material.mainTextureScale;
+                        Color color = texture2D.GetPixel(Mathf.FloorToInt(pCoord.x * tiling.x), Mathf.FloorToInt(pCoord.y * tiling.y));
+                    
+                    
+                        if (hitInfo.transform.tag== "Water"
+                            || hitInfo.transform.tag == "Rock"
+                            || hitInfo.transform.tag == "Tree"
+                            || hitInfo.transform.tag == "Chest"
+                            || hitInfo.transform.tag == "Totem"
+                            || color == mapGen.regions[sandIndex].colour)
+                        {
        
-                    }
+                        }
                     else
                     {
-                        if (randomRotFirst)
+                        if (randomRotTrees)
                         {
-                            Instantiate(firstObject, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform.parent);
+                            Instantiate(trees, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform.parent);
                         }
                         else
                         {
-                            Instantiate(firstObject, spawnPoint, Quaternion.identity, transform.parent);
+                            Instantiate(trees, spawnPoint, Quaternion.identity, transform.parent);
                         }
+                    }
                     }
                 }
             }
         }
-        for (int i = 0; i < secondAmount; i++)
+        for (int i = 0; i < rockAmount; i++)
         {
             if (Chance())
             {
@@ -82,19 +113,19 @@ public class EnviromentSpawner : MonoBehaviour
                     }
                     else
                     {
-                        if (randomRotSecond)
+                        if (randomRotRocks)
                         {
-                            Instantiate(secondObject, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform.parent);
+                            Instantiate(rocks, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform.parent);
                         }
                         else
                         {
-                            Instantiate(secondObject, spawnPoint, Quaternion.identity,transform.parent);
+                            Instantiate(rocks, spawnPoint, Quaternion.identity,transform.parent);
                         }
                     }
                 }
             }
         }
-        for (int i = 0; i < thirdAmount; i++)
+        for (int i = 0; i < chestAmount; i++)
         {
             if (Chance())
             {
@@ -113,19 +144,19 @@ public class EnviromentSpawner : MonoBehaviour
                     }
                     else
                     {
-                        if (randomRotThird)
+                        if (randomRotchest)
                         {
-                            Instantiate(thirdObject, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform.parent);
+                            Instantiate(chest, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform.parent);
                         }
                         else
                         {
-                            Instantiate(thirdObject, spawnPoint, Quaternion.Euler(0, 0, 0), transform.parent);
+                            Instantiate(chest, spawnPoint, Quaternion.Euler(0, 0, 0), transform.parent);
                         }
                     }
                 }
             }
         }
-        for (int i = 0; i < fourthAmount; i++)
+        for (int i = 0; i < totemAmount; i++)
         {
             if (Chance())
             {
@@ -144,13 +175,13 @@ public class EnviromentSpawner : MonoBehaviour
                     }
                     else
                     {
-                        if (randomRotFourth)
+                        if (randomRotTotem)
                         {
-                            Instantiate(fourthObject, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform.parent);
+                            Instantiate(totem, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform.parent);
                         }
                         else
                         {
-                            Instantiate(fourthObject, spawnPoint, Quaternion.Euler(0, 0, 0), transform.parent);
+                            Instantiate(totem, spawnPoint, Quaternion.Euler(0, 0, 0), transform.parent);
                         }
                     }
                 }
