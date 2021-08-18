@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EnviormentSpawnBehavour : MonoBehaviour
 {
+    public bool isGrass;
     public LayerMask spawnLayer;
     public float heightOffset = 1f;
     private int replace;
@@ -14,7 +15,7 @@ public class EnviormentSpawnBehavour : MonoBehaviour
     public void FindLand()
     {
         Ray ray = new Ray(transform.position, -transform.up);
-        RaycastHit hitInfo;
+        RaycastHit hitInfo; 
         if (Physics.Raycast(ray, out hitInfo))
         {
             if (hitInfo.transform != transform)
@@ -22,6 +23,10 @@ public class EnviormentSpawnBehavour : MonoBehaviour
                 if (hitInfo.point != transform.position)
                 {
                     transform.position = new Vector3(hitInfo.point.x, hitInfo.point.y - heightOffset, hitInfo.point.z);
+                    if (isGrass)
+                    {
+                        transform.rotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
+                    }
                 }
             }
         }
@@ -33,6 +38,10 @@ public class EnviormentSpawnBehavour : MonoBehaviour
                 if (hitInfo.transform != transform)
                 {
                     transform.position = new Vector3(hitInfo.point.x, hitInfo.point.y - heightOffset, hitInfo.point.z);
+                }
+                if (isGrass)
+                {
+                    transform.rotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
                 }
             }
         }

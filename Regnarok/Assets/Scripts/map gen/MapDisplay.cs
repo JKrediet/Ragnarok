@@ -7,7 +7,6 @@ public class MapDisplay : MonoBehaviour
     public Renderer textureRenderer;
     public MeshFilter meshFilther;
     public MeshRenderer meshRenderer;
-    public MeshRenderer grassRenderer;
     //private
     public void DrawTexture(Texture2D texture)
 	{
@@ -18,7 +17,6 @@ public class MapDisplay : MonoBehaviour
 	{
         meshFilther.sharedMesh = meshData.CreateMesh();
         meshRenderer.sharedMaterial.mainTexture = texture;
-        grassRenderer.sharedMaterial.mainTexture = texture;
 
     }
 }
