@@ -6,7 +6,7 @@ using Photon.Pun;
 
 public class Inventory : MonoBehaviour
 {
-    PhotonView pv;
+    [HideInInspector]public PhotonView pv;
     bool inventoryEnabled;
     public GameObject inventory;
 
@@ -48,6 +48,7 @@ public class Inventory : MonoBehaviour
         }
         else
         {
+            inventory.transform.parent.gameObject.SetActive(false);
             enabled = false;
         }
     }

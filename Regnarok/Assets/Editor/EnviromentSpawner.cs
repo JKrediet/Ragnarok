@@ -6,6 +6,7 @@ public class EnviromentSpawner : MonoBehaviour
     public bool testing;
     public bool testEnvSpawn;
     [Header("Prefabs")]
+    public GameObject grass;
     public GameObject trees;
     public GameObject rocks;
     public GameObject chest;
@@ -19,6 +20,7 @@ public class EnviromentSpawner : MonoBehaviour
     public bool randomRotchest;
     public bool randomRotTotem;
     [Space(5)]
+    public int grassAmount;
     public int treeAmount;
     public int rockAmount;
     public int chestAmount;
@@ -48,6 +50,42 @@ public class EnviromentSpawner : MonoBehaviour
     }
     public void Generate()
     {
+        for (int i = 0; i < grassAmount; i++)
+        {
+            if (Chance())
+            {
+                Vector3 spawnPoint = new Vector3(Random.Range(firstPos.position.x, secondPos.position.x), spawnHeight, Random.Range(firstPos.position.z, secondPos.position.z));
+                Ray ray = new Ray(spawnPoint, -transform.up);
+                RaycastHit hitInfo;
+                if (Physics.Raycast(ray, out hitInfo))
+                {
+
+                    //checking collor
+                    Renderer renderer = hitInfo.collider.GetComponent<MeshRenderer>();
+                    Texture2D texture2D = renderer.material.mainTexture as Texture2D;
+                    if (texture2D != null)
+                    {
+                        Vector2 pCoord = hitInfo.textureCoord;
+                        pCoord.x *= texture2D.width;
+                        pCoord.y *= texture2D.height;
+                        Vector2 tiling = renderer.material.mainTextureScale;
+                        Color color = texture2D.GetPixel(Mathf.FloorToInt(pCoord.x * tiling.x), Mathf.FloorToInt(pCoord.y * tiling.y));
+
+
+                        if (hitInfo.transform.tag == "Water"
+                            || color == mapGen.regions[sandIndex].colour)
+                        {
+
+                        }
+                        else
+                        {
+                          
+                            Instantiate(grass, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal) , transform.parent);
+                        }
+                    }
+                }
+            }
+        }
         for (int i = 0; i < treeAmount; i++)
         {
             if (Chance())

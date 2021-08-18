@@ -49,10 +49,15 @@ public class Item : MonoBehaviour
                 if (other.CompareTag("Player"))
                 {
                     other.GetComponent<Inventory>().AddItemFromOutsideOfInventory(itemId, stackAmount);
-                    PhotonNetwork.Destroy(gameObject);
+                    GetComponent<PhotonView>().RPC("DestroyWorldItem", RpcTarget.MasterClient);
                 }
             }
         }
+    }
+    [PunRPC]
+    public void DestroyWorldItem()
+    {
+        PhotonNetwork.Destroy(gameObject);
     }
     public void SetUp(int numberOfItems, int slot, Inventory _inv)
     {
