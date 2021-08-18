@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     CharacterController controller;
+    PhotonView pv;
 
     //attackStats
     [SerializeField] float totalDamage;
@@ -40,7 +41,8 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        if(GetComponent<Health>().PV.IsMine)
+        pv = GetComponent<PhotonView>();
+        if (pv.IsMine)
         {
             controller = GetComponent<CharacterController>();
             //cursor off
@@ -54,6 +56,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            Destroy(cam.gameObject);
             enabled = false;
         }
     }
@@ -108,7 +111,7 @@ public class PlayerController : MonoBehaviour
             }
         }
         staminaSlider.value = staminaValue;
-        movementDirection = (transform.forward * movementSpeed.z + transform.right * movementSpeed.x) * combinedSpeed * Time.deltaTime;
+        movementDirection = (transform.forward * movementSpeed.z + transform.right * movementSpeed.x) * combinedSpeed;
     }
     void Gravity()
     {
@@ -130,7 +133,7 @@ public class PlayerController : MonoBehaviour
     void ApplyMovement()
     {
         movementDirection.y = gravity;
-        controller.Move(movementDirection);
+        controller.Move(movementDirection * Time.deltaTime);
     }
     void Jump()
     {

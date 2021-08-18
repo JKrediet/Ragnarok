@@ -8,8 +8,10 @@ using TMPro;
 
 public class PlayerManager : MonoBehaviour
 {
+    PhotonView pv;
     private void Awake()
     {
+        pv = GetComponent<PhotonView>();
         SpawnPlayer();
     }
 

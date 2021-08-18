@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Realtime;
+using Photon.Pun;
 
 public class Inventory : MonoBehaviour
 {
+    PhotonView pv;
     bool inventoryEnabled;
     public GameObject inventory;
 
@@ -16,9 +19,6 @@ public class Inventory : MonoBehaviour
     public Transform mouseItemHolder, handHolder;
     public bool itemBeingDragged;
     public int itemReleaseRange;
-    private int itemLocationInUi;
-
-    private int draggedStackAmount;
     private int slotNumberDragged;
 
     //hotbar indecator
@@ -38,7 +38,20 @@ public class Inventory : MonoBehaviour
          KeyCode.Alpha6
      };
 
-private void Start()
+    private void Awake()
+    {
+        pv = GetComponent<PhotonView>();
+        inventory.SetActive(false);
+        if (pv.IsMine)
+        {
+            return;
+        }
+        else
+        {
+            enabled = false;
+        }
+    }
+    private void Start()
     {
         //lists
         allSlots = 25;
@@ -46,8 +59,6 @@ private void Start()
         allHotbarSlots = 6;
         slot = new GameObject[allSlots + allEquipmentSlots + allHotbarSlots];
         checkTheseNumbers = new List<int>();
-
-        inventory.SetActive(false);
 
         for (int i = 0; i < allHotbarSlots; i++)
         {
@@ -164,7 +175,6 @@ private void Start()
                 {
                     //exculde non-stable items
                     checkTheseNumbers[i] = -1;
-                    print(checkTheseNumbers[i]);
                 }
             }
             for (int i = 0; i < inventoryContent.Count; i++)

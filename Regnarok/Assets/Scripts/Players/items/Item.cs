@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using Photon.Pun;
+using Photon.Realtime;
 
 public class Item : MonoBehaviour
 {
@@ -22,7 +24,7 @@ public class Item : MonoBehaviour
 
     public void Awake()
     {
-        inv = FindObjectOfType<Inventory>();
+        //inv = FindObjectOfType<Inventory>();
     }
     private void Start()
     {
@@ -47,7 +49,7 @@ public class Item : MonoBehaviour
                 if (other.CompareTag("Player"))
                 {
                     other.GetComponent<Inventory>().AddItemFromOutsideOfInventory(itemId, stackAmount);
-                    Destroy(gameObject);
+                    PhotonNetwork.Destroy(gameObject);
                 }
             }
         }
