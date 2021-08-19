@@ -33,6 +33,7 @@ public class EnviromentSpawner : MonoBehaviour
     public MapGenerator mapGen;
     void Start()
     {
+        Random.seed = mapGen.seed;
         mesh.AddComponent<MeshCollider>();
         if (testing)
         {
