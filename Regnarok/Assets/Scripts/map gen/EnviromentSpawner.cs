@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-using UnityEditor.AI;
+//using UnityEditor.AI;
 public class EnviromentSpawner : MonoBehaviour
 {
     public bool testing;
@@ -46,7 +46,7 @@ public class EnviromentSpawner : MonoBehaviour
         else
         {
             Generate();
-            NavMeshBuilder.BuildNavMesh();
+            //NavMeshBuilder.BuildNavMesh();
         }
     }
     public void Generate()
