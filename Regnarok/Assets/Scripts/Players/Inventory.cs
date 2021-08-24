@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Realtime;
 using Photon.Pun;
+using System.IO;
 
 public class Inventory : MonoBehaviour
 {
@@ -312,7 +313,7 @@ public class Inventory : MonoBehaviour
             itemBeingDragged = false;
             UpdateInventory();
 
-            GameObject droppedItem = Instantiate(ItemList.itemListIngame[tempId], transform.position + transform.forward * 2, Quaternion.identity);
+            GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", $"Item" + tempId), transform.position + transform.forward * 2, Quaternion.identity);
             droppedItem.GetComponent<Rigidbody>().AddExplosionForce(100, transform.position + transform.forward - transform.up, 2);
             droppedItem.GetComponent<Item>().ToInventory(false);
             droppedItem.GetComponent<Item>().stackAmount = tempAmount;
