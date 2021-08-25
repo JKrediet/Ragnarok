@@ -7,7 +7,7 @@ using System.IO;
 
 public class Inventory : MonoBehaviour
 {
-    [HideInInspector]public PhotonView pv;
+    [HideInInspector] public PhotonView pv;
     bool inventoryEnabled;
     public GameObject inventory;
 
@@ -15,7 +15,7 @@ public class Inventory : MonoBehaviour
     public GameObject[] slot; 
 
     public GameObject slotHolder, equipmentSlotHolder, hotbarSlotsHolder;
-    public GameObject testItem, testItemWorld;
+    public GameObject emptyItem;
 
     public Transform mouseItemHolder, handHolder;
     public bool itemBeingDragged;
@@ -81,11 +81,8 @@ public class Inventory : MonoBehaviour
         //put empty items in inventory list
         for (int i = 0; i < 37; i++)
         {
-            inventoryContent.Add(Instantiate(testItem.GetComponent<Item>(), slot[i].transform));
+            inventoryContent.Add(Instantiate(emptyItem.GetComponent<Item>(), slot[i].transform));
         }
-
-        //test
-        AddItemFromOutsideOfInventory(2, 5);
     }
 
     void Update()
@@ -331,7 +328,7 @@ public class Inventory : MonoBehaviour
         {
             ShowItemInHand(slot[slotNumber].transform.GetChild(0).GetComponent<Item>().itemId);
             //hier check welk item in hand
-            GiveItemStats(slotNumber);
+            GiveItemStats(slot[slotNumber].transform.GetChild(0).GetComponent<Item>());
         }
         else
         {
@@ -353,8 +350,8 @@ public class Inventory : MonoBehaviour
         }
     }
     #endregion
-    void GiveItemStats(int nummertje)
+    void GiveItemStats(Item heldItem)
     {
-        //GetComponent<PlayerController>().GiveItemStats(hotbarSlots[nummertje].GetComponent<Slot>().item.GetComponent<Item>());
+        GetComponent<PlayerController>().GiveItemStats(heldItem);
     }
 }

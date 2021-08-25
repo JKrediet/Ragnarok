@@ -13,10 +13,12 @@ public class Tree : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        rb.isKinematic = true;
+        rb.useGravity = false;
     }
     private void Start()
     {
-        health += health * Random.Range(0.7f, 1.3f);
+        health *= Random.Range(0.7f, 1.3f);
         maxHealth = health;
     }
     public void HitByPlayer(float _damage, GameObject _hitBy, int itemType)
@@ -29,9 +31,10 @@ public class Tree : MonoBehaviour
                 lastPlayerThatHitTree = _hitBy;
                 if (health == 0)
                 {
+                    rb.isKinematic = false;
+                    rb.useGravity = true;
                     Debug.Log("Tree has been cut down!");
                     Vector3 fallDirection = new Vector3(transform.position.x - lastPlayerThatHitTree.transform.position.x, 0, transform.position.z - lastPlayerThatHitTree.transform.position.z);
-                    print(fallDirection);
                     rb.AddForce(fallDirection.normalized * fallPower);
                 }
             }
