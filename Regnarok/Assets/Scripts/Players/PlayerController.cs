@@ -4,6 +4,8 @@ using UnityEngine;
 using Photon.Pun;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.Experimental.VFX;
+using UnityEngine.VFX;
 
 public class PlayerController : MonoBehaviour
 {
@@ -38,6 +40,9 @@ public class PlayerController : MonoBehaviour
 
     //UI
     [SerializeField] Slider staminaSlider;
+
+    //visual graph test
+    public GameObject testGraph;
 
     private void Awake()
     {
@@ -157,9 +162,17 @@ public class PlayerController : MonoBehaviour
         //check hit things
         foreach(Collider hitObject in thingsHit)
         {
-            if(hitObject.CompareTag("Tree"))
+            if (hitObject.CompareTag("Tree"))
             {
+                print(hitObject.gameObject.name);
+                //test
+                //GameObject tempObject = Instantiate(testGraph, hitObject.ClosestPoint(attackPos.position), Quaternion.identity);
+                //Destroy(tempObject, 1);
+                //tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", hitObject.GetComponent<Renderer>().material.color);
+
                 hitObject.GetComponent<Tree>().HitByPlayer(heldItem.itemDamage, gameObject, heldItem.itemType);
+
+
             }
         }
     }
