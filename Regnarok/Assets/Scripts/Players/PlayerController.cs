@@ -164,15 +164,27 @@ public class PlayerController : MonoBehaviour
         {
             if (hitObject.CompareTag("Tree"))
             {
-                print(hitObject.gameObject.name);
-                //test
-                //GameObject tempObject = Instantiate(testGraph, hitObject.ClosestPoint(attackPos.position), Quaternion.identity);
-                //Destroy(tempObject, 1);
-                //tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", hitObject.GetComponent<Renderer>().material.color);
+                GameObject tempObject = Instantiate(testGraph, hitObject.ClosestPoint(attackPos.position), Quaternion.identity);
+                Destroy(tempObject, 1);
+                if(hitObject.GetComponent<Renderer>())
+                {
+                    tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", hitObject.GetComponent<Renderer>().material.color);
+                    print(hitObject.GetComponent<Renderer>().material.color);
+                }
+                else
+                {
+                    tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", hitObject.GetComponentInChildren<Renderer>().material.color);
+                    print(hitObject.GetComponentInChildren<Renderer>().material.color);
+                }
 
-                hitObject.GetComponent<Tree>().HitByPlayer(heldItem.itemDamage, gameObject, heldItem.itemType);
-
-
+                if(heldItem != null)
+                {
+                    hitObject.GetComponent<Tree>().HitByPlayer(heldItem.itemDamage, gameObject, heldItem.itemType);
+                }
+                else
+                {
+                    hitObject.GetComponent<Tree>().HitByPlayer(1, gameObject, 0);
+                }
             }
         }
     }

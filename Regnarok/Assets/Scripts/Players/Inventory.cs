@@ -286,6 +286,7 @@ public class Inventory : MonoBehaviour
             GameObject temp = Instantiate(ItemList.itemListUi[inventoryContent[i].itemId], slot[i].transform);
             temp.GetComponent<Item>().SetUp(inventoryContent[i].stackAmount, i, this);
             inventoryContent[i] = temp.GetComponent<Item>();
+            GiveItemStats(slot[hotbarLocation].transform.GetChild(0).GetComponent<Item>());
         }
     }
     public Transform BeginDrag()
