@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
+using System.IO;
 
 public class Tree : MonoBehaviour
 {
@@ -9,6 +12,8 @@ public class Tree : MonoBehaviour
 
     GameObject lastPlayerThatHitTree;
     Rigidbody rb;
+
+    [SerializeField] GameObject treeparticle;
 
     private void Awake()
     {
@@ -36,8 +41,24 @@ public class Tree : MonoBehaviour
                     Debug.Log("Tree has been cut down!");
                     Vector3 fallDirection = new Vector3(transform.position.x - lastPlayerThatHitTree.transform.position.x, 0, transform.position.z - lastPlayerThatHitTree.transform.position.z);
                     rb.AddForce(fallDirection.normalized * fallPower);
+
+                    //items
+                    Invoke("DropItems", 10);
                 }
             }
         }
+    }
+    void DropItems()
+    {
+        Instantiate(treeparticle, transform.position, Quaternion.identity);
+        GetComponent<PhotonView>().RPC("DestroyWorldItem", RpcTarget.MasterClient);
+    }
+    [PunRPC]
+    public void DestroyWorldItem()
+    {
+        PhotonNetwork.Destroy(gameObject);
+        GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", $"Item" + 3), transform.position + transform.forward * 2, Quaternion.identity);
+        droppedItem.GetComponent<Item>().ToInventory(false);
+        droppedItem.GetComponent<Item>().stackAmount = Random.Range(1, 5);
     }
 }
