@@ -259,7 +259,6 @@ public class Inventory : MonoBehaviour
                         }
                         else
                         {
-                            print(slotNumberDragged);
                             return;
                         }
                     }
@@ -272,8 +271,15 @@ public class Inventory : MonoBehaviour
 
                         if (inventoryContent[slotNumberDragged].stackAmount > 0 && inventoryContent[slotNumberDragged].itemId != tempId)
                         {
-                            inventoryContent[tempOld].itemId = inventoryContent[slotNumberDragged].itemId;
-                            inventoryContent[tempOld].stackAmount = inventoryContent[slotNumberDragged].stackAmount;
+                            if (tempOld > 0)
+                            {
+                                inventoryContent[tempOld].itemId = inventoryContent[slotNumberDragged].itemId;
+                                inventoryContent[tempOld].stackAmount = inventoryContent[slotNumberDragged].stackAmount;
+                            }
+                            else
+                            {
+                                AddItemToInventoryList(tempId, tempAmount, false);
+                            }
                         }
                         else if (inventoryContent[slotNumberDragged].itemId == tempId)
                         {
@@ -296,11 +302,15 @@ public class Inventory : MonoBehaviour
                         }
                         else
                         {
-                            inventoryContent[tempOld].itemId = 0;
-                            inventoryContent[tempOld].stackAmount = 0;
+                            if (tempOld > 0)
+                            {
+                                inventoryContent[tempOld].itemId = 0;
+                                inventoryContent[tempOld].stackAmount = 0;
+                            }
                         }
                         inventoryContent[slotNumberDragged].itemId = tempId;
                         inventoryContent[slotNumberDragged].stackAmount = tempAmount;
+                        
                         UpdateInventory();
                     }
                 }
@@ -333,7 +343,10 @@ public class Inventory : MonoBehaviour
         if (overflowing)
         {
             overflowing = false;
-            AddItemToInventoryList(overflowItemID, overflowAmount, false);
+            if(overflowAmount > 0)
+            {
+                AddItemToInventoryList(overflowItemID, overflowAmount, false);
+            }
         }
     }
     public Transform BeginDrag()
@@ -352,8 +365,11 @@ public class Inventory : MonoBehaviour
             int tempAmount = mouseItemHolder.GetChild(0).GetComponent<Item>().stackAmount;
             int tempOld = mouseItemHolder.GetChild(0).GetComponent<Item>().oldSlotNumber;
             Destroy(mouseItemHolder.GetChild(0).gameObject);
-            inventoryContent[tempOld].stackAmount = 0;
-            inventoryContent[tempOld].itemId = 0;
+            if (tempOld > 0)
+            {
+                inventoryContent[tempOld].stackAmount = 0;
+                inventoryContent[tempOld].itemId = 0;
+            }
 
             itemBeingDragged = false;
             UpdateInventory();

@@ -89,9 +89,38 @@ public class Item : MonoBehaviour
             if (!inv.itemBeingDragged)
             {
                 inv.itemBeingDragged = true;
-                //get mouse pos
-                transform.SetParent(inv.BeginDrag());
-                transform.position = Input.mousePosition;
+                //ctrl click move items to other inv
+                if (Input.GetButton("ControlClick"))
+                {
+                    //wip
+                    transform.SetParent(inv.BeginDrag());
+                    transform.position = Input.mousePosition;
+                }
+                //shift click for half stack
+                else if (Input.GetButton("Sprint"))
+                {
+                    if(stackAmount > 1)
+                    {
+                        GameObject temp = Instantiate(ItemList.itemListUi[itemId], inv.BeginDrag());
+                        stackAmount /= 2;
+                        temp.GetComponent<Item>().SetUp(stackAmount, -1, inv);
+                        SetUp(stackAmount, oldSlotNumber, inv);
+                        temp.transform.position = Input.mousePosition;
+                    }
+                    else
+                    {
+                        //get mouse pos
+                        transform.SetParent(inv.BeginDrag());
+                        transform.position = Input.mousePosition;
+                    }
+                }
+                //normal pickup
+                else
+                {
+                    //get mouse pos
+                    transform.SetParent(inv.BeginDrag());
+                    transform.position = Input.mousePosition;
+                }
             }
             else
             {
