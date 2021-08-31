@@ -15,7 +15,10 @@ public class JoinRoom : MonoBehaviour
     }
     public void JoinRoompie()
     {
-        PhotonNetwork.JoinRoom(roomName);
-        MenuManager.menuSwitch.ChangeMenu("Host");
+        if (roomName.Length > 3)
+        {
+            PhotonNetwork.JoinRoom(roomName);
+            MenuManager.menuSwitch.ChangeMenu("Host");
+        }
     }
 }

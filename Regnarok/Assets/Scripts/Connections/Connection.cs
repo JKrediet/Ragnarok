@@ -84,7 +84,10 @@ public class Connection : MonoBehaviourPunCallbacks
     #region names
     public void GiveNickname(TextMeshProUGUI _nickname)
     {
-        PhotonNetwork.NickName = _nickname.text;
+        if(_nickname.text.Length > 3)
+        {
+            PhotonNetwork.NickName = _nickname.text;
+        }
     }
     public void GiveRoomName(TextMeshProUGUI _roomName)
     {
