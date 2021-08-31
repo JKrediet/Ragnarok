@@ -174,7 +174,6 @@ public class PlayerController : MonoBehaviour
                 else
                 {
                     tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", hitObject.GetComponentInChildren<Renderer>().material.color);
-                    print(hitObject.GetComponentInChildren<Renderer>().material.color);
                 }
 
                 if(heldItem != null)

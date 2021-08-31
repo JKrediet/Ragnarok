@@ -18,6 +18,6 @@ public class Slot : MonoBehaviour
     public void GiveItemToSlot()
     {
         inv.itemBeingDragged = false;
-        inv.AddItemToInventoryList(-1, -1, true, -1);
+        inv.AddItemToInventoryList(-1, -1, true);
     }
 }

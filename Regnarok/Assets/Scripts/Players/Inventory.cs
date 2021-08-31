@@ -26,9 +26,12 @@ public class Inventory : MonoBehaviour
     public GameObject hotbarIndecator;
     int hotbarLocation;
 
-    //test
     List<int> checkTheseNumbers;
     public List<Item> inventoryContent;
+
+    //if itemstack overflows
+    int overflowAmount, overflowItemID;
+    bool overflowing;
 
     private KeyCode[] keyCodes = {
          KeyCode.Alpha1,
@@ -149,9 +152,9 @@ public class Inventory : MonoBehaviour
             itemAmount = 1;
         }
         slotNumberDragged = 0;
-        AddItemToInventoryList(itemId, itemAmount, false, -1);
+        AddItemToInventoryList(itemId, itemAmount, false);
     }
-    public void AddItemToInventoryList(int itemId, int itemAmount, bool isAlreadyInInventory, int oldSlot)
+    public void AddItemToInventoryList(int itemId, int itemAmount, bool isAlreadyInInventory)
     {
         //filter out all slots that have items in it
         if (!isAlreadyInInventory)
@@ -163,6 +166,10 @@ public class Inventory : MonoBehaviour
                 if (inventoryContent[i].stackAmount > 0 && inventoryContent[i].itemId != itemId)
                 {
                     //-1 == this slot has an item
+                    checkTheseNumbers[i] = -1;
+                }
+                if(inventoryContent[i].stackAmount == inventoryContent[i].maxStackAmount)
+                {
                     checkTheseNumbers[i] = -1;
                 }
                 if (i > 5 && i < 12)
@@ -182,7 +189,17 @@ public class Inventory : MonoBehaviour
                 {
                     if (inventoryContent[i].itemId == itemId)
                     {
-                        itemAmount += inventoryContent[i].stackAmount;
+                        if (itemAmount + inventoryContent[i].stackAmount <= inventoryContent[i].maxStackAmount)
+                        {
+                            overflowAmount = itemAmount + inventoryContent[i].stackAmount - inventoryContent[i].maxStackAmount;
+                            itemAmount = inventoryContent[i].maxStackAmount;
+                            overflowItemID = inventoryContent[i].itemId;
+                            overflowing = true;
+                        }
+                        else
+                        {
+                            itemAmount += inventoryContent[i].stackAmount;
+                        }
                     }
                     inventoryContent[i].itemId = itemId;
                     inventoryContent[i].stackAmount = itemAmount;
@@ -199,8 +216,9 @@ public class Inventory : MonoBehaviour
                 {
                     if (slotNumberDragged > 5 && slotNumberDragged < 12)
                     {
-                        if(mouseItemHolder.GetComponentInChildren<Item>().isEquipment)
+                        if (mouseItemHolder.GetComponentInChildren<Item>().isEquipment)
                         {
+                            //get item that is being held
                             int tempId = mouseItemHolder.GetChild(0).GetComponent<Item>().itemId;
                             int tempAmount = mouseItemHolder.GetChild(0).GetComponent<Item>().stackAmount;
                             int tempOld = mouseItemHolder.GetChild(0).GetComponent<Item>().oldSlotNumber;
@@ -215,7 +233,17 @@ public class Inventory : MonoBehaviour
                             {
                                 if (tempOld != slotNumberDragged)
                                 {
-                                    tempAmount += inventoryContent[slotNumberDragged].stackAmount;
+                                    if (tempAmount + inventoryContent[slotNumberDragged].stackAmount <= inventoryContent[slotNumberDragged].maxStackAmount)
+                                    {
+                                        tempAmount += inventoryContent[slotNumberDragged].stackAmount;
+                                    }
+                                    else
+                                    {
+                                        overflowAmount = tempAmount + inventoryContent[slotNumberDragged].stackAmount - inventoryContent[slotNumberDragged].maxStackAmount;
+                                        tempAmount = inventoryContent[slotNumberDragged].maxStackAmount;
+                                        overflowItemID = inventoryContent[slotNumberDragged].itemId;
+                                        overflowing = true;
+                                    }
                                 }
                                 inventoryContent[tempOld].itemId = 0;
                                 inventoryContent[tempOld].stackAmount = 0;
@@ -251,7 +279,17 @@ public class Inventory : MonoBehaviour
                         {
                             if (tempOld != slotNumberDragged)
                             {
-                                tempAmount += inventoryContent[slotNumberDragged].stackAmount;
+                                if (tempAmount + inventoryContent[slotNumberDragged].stackAmount <= inventoryContent[slotNumberDragged].maxStackAmount)
+                                {
+                                    tempAmount += inventoryContent[slotNumberDragged].stackAmount;
+                                }
+                                else
+                                {
+                                    overflowAmount = tempAmount + inventoryContent[slotNumberDragged].stackAmount - inventoryContent[slotNumberDragged].maxStackAmount;
+                                    tempAmount = inventoryContent[slotNumberDragged].maxStackAmount;
+                                    overflowItemID = inventoryContent[slotNumberDragged].itemId;
+                                    overflowing = true;
+                                }
                             }
                             inventoryContent[tempOld].itemId = 0;
                             inventoryContent[tempOld].stackAmount = 0;
@@ -286,7 +324,16 @@ public class Inventory : MonoBehaviour
             GameObject temp = Instantiate(ItemList.itemListUi[inventoryContent[i].itemId], slot[i].transform);
             temp.GetComponent<Item>().SetUp(inventoryContent[i].stackAmount, i, this);
             inventoryContent[i] = temp.GetComponent<Item>();
-            GiveItemStats(slot[hotbarLocation].transform.GetChild(0).GetComponent<Item>());
+            if (slot[hotbarLocation].transform.childCount > 0)
+            {
+                GiveItemStats(slot[hotbarLocation].transform.GetChild(0).GetComponent<Item>());
+            }
+        }
+        //adds overflow items to inventory for next slot
+        if (overflowing)
+        {
+            overflowing = false;
+            AddItemToInventoryList(overflowItemID, overflowAmount, false);
         }
     }
     public Transform BeginDrag()

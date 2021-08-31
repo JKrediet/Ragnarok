@@ -12,7 +12,7 @@ public class Item : MonoBehaviour
     public int itemId;
     public int itemDamage;
     public bool isEquipment, stackAble;
-    public int stackAmount;
+    public int stackAmount, maxStackAmount;
     public int oldSlotNumber;
     [HideInInspector] public Inventory inv;
 
@@ -96,7 +96,7 @@ public class Item : MonoBehaviour
             else
             {
                 inv.itemBeingDragged = false;
-                inv.AddItemToInventoryList(-1, -1, true, -1);
+                inv.AddItemToInventoryList(-1, -1, true);
             }
         }
         //end drag in inventory-script
