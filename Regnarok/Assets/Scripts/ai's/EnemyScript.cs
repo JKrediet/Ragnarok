@@ -6,6 +6,7 @@ public class EnemyScript : MonoBehaviour
 {
     public GameObject player;
     public Animator anim;
+    public float jumpSpeed;
     public float health;
     public float triggerRange;
     public float attackRange;
@@ -15,13 +16,19 @@ public class EnemyScript : MonoBehaviour
     private bool doDamage;
     NavMeshAgent agent;
     private GameScaler gs;
+    private Rigidbody rb;
     void Start()
     {
-        gs = FindObjectOfType<GameScaler>();
+        rb = GetComponent<Rigidbody>();
+        //gs = FindObjectOfType<GameScaler>();
         agent = GetComponent<NavMeshAgent>();
     }
     void Update()
     {
+		if (!agent.enabled)
+		{
+            return;
+		}
         float dist = Vector3.Distance(transform.position, player.transform.position);
 		if (dist <= triggerRange)
         {
@@ -41,15 +48,32 @@ public class EnemyScript : MonoBehaviour
 				if (!doDamage)
 				{
                     agent.destination = player.transform.position;
-				}
+                    ResetAnim();
+                    anim.SetBool("IsWalking",true);
+
+                }
 			}
 		}
-
 		if (health <= 0)
 		{
             StartCoroutine("Death");
         }
     }
+    public void SpawnForce()
+	{
+        rb.AddForce(Vector3.up * jumpSpeed*3);
+    }
+    public void StopSpawnForce()
+    {
+        anim.applyRootMotion = false;
+        agent.enabled = true;
+        Invoke("TurnOffGravity", 0.5f);
+    }
+    public void TurnOffGravity()
+	{
+        rb.useGravity = false;
+        rb.isKinematic = true;
+	}
     public IEnumerator DoDamage()
 	{
         doDamage = true;
@@ -62,6 +86,10 @@ public class EnemyScript : MonoBehaviour
         anim.SetBool("isDying", true);
         yield return new WaitForSeconds(deathAnimDuration);
         Destroy(gameObject);
+	}
+    public void ResetAnim()
+	{
+        anim.SetBool("IsWalking", false);
 	}
     public void GiveReward()
 	{
