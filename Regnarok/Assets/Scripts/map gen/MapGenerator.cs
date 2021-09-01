@@ -5,6 +5,8 @@ using UnityEngine;
 public class MapGenerator : MonoBehaviour
 {
     // public
+    [Header("gradient")]
+    public Gradient gradient;
     public enum DrawMode { NoiseMap, ColourMap, Mesh, FalloffMap };
     public DrawMode drawMode;
     const int chuckSize = 241;
@@ -22,19 +24,25 @@ public class MapGenerator : MonoBehaviour
     public Vector2 offset;
     public bool autoUpdate;
     public bool useFallOffs;
+    public GameObject terrainObject;
+    public MeshCollider meshCol;
     public TerrainType[] regions;
-
-    private float baseDensity = 5.0f;
+    private Color[] colors;
+    private float minTerrainheight;
+    private float maxTerrainheight;
+    private Mesh terrainMesh;
     private void Awake()
     {
         fallOffMap = FalloffGenerator.GenerateFalloffMap(chuckSize);
     }
     private void Start()
     {
+        terrainMesh = terrainObject.GetComponent<MeshFilter>().mesh;
         GenerateMap();
     }
     public void GenerateMap()
     {
+        
         float[,] noisemap = Noise.GenerateNoiseMap(chuckSize, chuckSize, seed, noiseScale, ocataves, presitance, lacunarity, offset);
 
         Color[] collorMap = new Color[chuckSize * chuckSize];
@@ -65,11 +73,11 @@ public class MapGenerator : MonoBehaviour
         MapDisplay display = FindObjectOfType<MapDisplay>();
         if (drawMode == DrawMode.NoiseMap)
         {
-            display.DrawTexture(TextureGenerator.TextureFromHeightMap(noisemap));
+           display.DrawTexture(TextureGenerator.TextureFromHeightMap(noisemap));
         }
         else if (drawMode == DrawMode.ColourMap)
         {
-            display.DrawTexture(TextureGenerator.TextureFromColourMap(collorMap, chuckSize, chuckSize));
+           display.DrawTexture(TextureGenerator.TextureFromColourMap(collorMap, chuckSize, chuckSize));
         }
         else if (drawMode == DrawMode.Mesh)
         {
@@ -79,6 +87,15 @@ public class MapGenerator : MonoBehaviour
         {
             display.DrawTexture(TextureGenerator.TextureFromHeightMap(FalloffGenerator.GenerateFalloffMap(chuckSize)));
         }
+
+        //set
+		//for (int i = 0; i < terrainMesh.vertices.Length; i++)
+		//{
+  //          SetMinMaxHeights(terrainMesh.vertices[i].y);
+  //      }
+        //collor
+
+        //ColorMap();
     }
     private void OnValidate()
     {
@@ -90,6 +107,38 @@ public class MapGenerator : MonoBehaviour
         {
             ocataves = 0;
         }
+    }
+    private void SetMinMaxHeights(float noiseHeight)
+    {
+        // Set min and max height of map for color gradient
+        if (noiseHeight > maxTerrainheight)
+            maxTerrainheight = noiseHeight;
+        if (noiseHeight < minTerrainheight)
+            minTerrainheight = noiseHeight;
+    }
+    private void ColorMap()
+    {
+        colors = new Color[terrainMesh.vertices.Length];
+        for (int i = 0, z = 0; z < terrainMesh.vertices.Length; z++)
+        {
+
+            float height = Mathf.InverseLerp(minTerrainheight, maxTerrainheight, terrainMesh.vertices[i].y);
+            colors[i] = gradient.Evaluate(height);
+            i++;
+        }
+        print(colors.Length);
+        print(terrainMesh.colors.Length);
+        print(terrainMesh.vertices.Length);
+        Mesh hold = terrainMesh;
+        terrainMesh.Clear();
+        terrainMesh.vertices = hold.vertices;
+        terrainMesh.triangles = hold.triangles;
+        terrainMesh.colors = new Color[terrainMesh.vertices.Length];
+        terrainMesh.colors = colors;
+        //colors.CopyTo(terrainMesh.colors, 0);
+        //terrainMesh.colors[0] += colors[0];
+        terrainMesh.RecalculateNormals();
+        meshCol.sharedMesh = terrainMesh;
     }
 }
 
