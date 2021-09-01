@@ -5,28 +5,11 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.IO;
 
-public class Tree : MonoBehaviour
+public class Tree : HitableObject
 {
-    [SerializeField] float health, fallPower;
-    float maxHealth;
-
-    GameObject lastPlayerThatHitTree;
-    Rigidbody rb;
-
-    [SerializeField] GameObject treeparticle;
-
-    private void Awake()
-    {
-        rb = GetComponent<Rigidbody>();
-        rb.isKinematic = true;
-        rb.useGravity = false;
-    }
-    private void Start()
-    {
-        health *= Random.Range(0.7f, 1.3f);
-        maxHealth = health;
-    }
-    public void HitByPlayer(float _damage, GameObject _hitBy, int itemType)
+    [SerializeField] float fallPower;
+    [SerializeField] protected GameObject treeparticle;
+    public override void HitByPlayer(float _damage, GameObject _hitBy, int itemType)
     {
         if (itemType == 1)
         {
@@ -48,17 +31,9 @@ public class Tree : MonoBehaviour
             }
         }
     }
-    void DropItems()
+    protected override void DropItems()
     {
         Instantiate(treeparticle, transform.position, Quaternion.identity);
-        GetComponent<PhotonView>().RPC("DestroyWorldItem", RpcTarget.MasterClient);
-    }
-    [PunRPC]
-    public void DestroyWorldItem()
-    {
-        PhotonNetwork.Destroy(gameObject);
-        GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", $"Item" + 3), transform.position + transform.forward * 2, Quaternion.identity);
-        droppedItem.GetComponent<Item>().ToInventory(false);
-        droppedItem.GetComponent<Item>().stackAmount = Random.Range(1, 5);
+        base.DropItems();
     }
 }

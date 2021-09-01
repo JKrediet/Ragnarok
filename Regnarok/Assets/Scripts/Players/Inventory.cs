@@ -31,7 +31,6 @@ public class Inventory : MonoBehaviour
 
     //if itemstack overflows
     int overflowAmount, overflowItemID;
-    bool overflowing;
 
     private KeyCode[] keyCodes = {
          KeyCode.Alpha1,
@@ -191,14 +190,13 @@ public class Inventory : MonoBehaviour
                     {
                         if (itemAmount + inventoryContent[i].stackAmount <= inventoryContent[i].maxStackAmount)
                         {
-                            overflowAmount = itemAmount + inventoryContent[i].stackAmount - inventoryContent[i].maxStackAmount;
-                            itemAmount = inventoryContent[i].maxStackAmount;
-                            overflowItemID = inventoryContent[i].itemId;
-                            overflowing = true;
+                            itemAmount += inventoryContent[i].stackAmount;
                         }
                         else
                         {
-                            itemAmount += inventoryContent[i].stackAmount;
+                            overflowAmount = itemAmount + inventoryContent[i].stackAmount - inventoryContent[i].maxStackAmount;
+                            itemAmount = inventoryContent[i].maxStackAmount;
+                            overflowItemID = inventoryContent[i].itemId;
                         }
                     }
                     inventoryContent[i].itemId = itemId;
@@ -242,7 +240,6 @@ public class Inventory : MonoBehaviour
                                         overflowAmount = tempAmount + inventoryContent[slotNumberDragged].stackAmount - inventoryContent[slotNumberDragged].maxStackAmount;
                                         tempAmount = inventoryContent[slotNumberDragged].maxStackAmount;
                                         overflowItemID = inventoryContent[slotNumberDragged].itemId;
-                                        overflowing = true;
                                     }
                                 }
                                 inventoryContent[tempOld].itemId = 0;
@@ -271,7 +268,7 @@ public class Inventory : MonoBehaviour
 
                         if (inventoryContent[slotNumberDragged].stackAmount > 0 && inventoryContent[slotNumberDragged].itemId != tempId)
                         {
-                            if (tempOld > 0)
+                            if (tempOld >= 0)
                             {
                                 inventoryContent[tempOld].itemId = inventoryContent[slotNumberDragged].itemId;
                                 inventoryContent[tempOld].stackAmount = inventoryContent[slotNumberDragged].stackAmount;
@@ -288,21 +285,20 @@ public class Inventory : MonoBehaviour
                                 if (tempAmount + inventoryContent[slotNumberDragged].stackAmount <= inventoryContent[slotNumberDragged].maxStackAmount)
                                 {
                                     tempAmount += inventoryContent[slotNumberDragged].stackAmount;
+                                    inventoryContent[tempOld].itemId = 0;
+                                    inventoryContent[tempOld].stackAmount = 0;
                                 }
                                 else
                                 {
                                     overflowAmount = tempAmount + inventoryContent[slotNumberDragged].stackAmount - inventoryContent[slotNumberDragged].maxStackAmount;
                                     tempAmount = inventoryContent[slotNumberDragged].maxStackAmount;
                                     overflowItemID = inventoryContent[slotNumberDragged].itemId;
-                                    overflowing = true;
                                 }
                             }
-                            inventoryContent[tempOld].itemId = 0;
-                            inventoryContent[tempOld].stackAmount = 0;
                         }
                         else
                         {
-                            if (tempOld > 0)
+                            if (tempOld >= 0)
                             {
                                 inventoryContent[tempOld].itemId = 0;
                                 inventoryContent[tempOld].stackAmount = 0;
@@ -331,22 +327,23 @@ public class Inventory : MonoBehaviour
             {
                 Destroy(item.gameObject);
             }
-            GameObject temp = Instantiate(ItemList.itemListUi[inventoryContent[i].itemId], slot[i].transform);
-            temp.GetComponent<Item>().SetUp(inventoryContent[i].stackAmount, i, this);
-            inventoryContent[i] = temp.GetComponent<Item>();
+            if (inventoryContent[i].stackAmount > 0)
+            {
+                GameObject temp = Instantiate(ItemList.itemListUi[inventoryContent[i].itemId], slot[i].transform);
+                temp.GetComponent<Item>().SetUp(inventoryContent[i].stackAmount, i, this);
+                inventoryContent[i] = temp.GetComponent<Item>();
+            }
             if (slot[hotbarLocation].transform.childCount > 0)
             {
                 GiveItemStats(slot[hotbarLocation].transform.GetChild(0).GetComponent<Item>());
             }
         }
         //adds overflow items to inventory for next slot
-        if (overflowing)
+        if (overflowAmount > 0)
         {
-            overflowing = false;
-            if(overflowAmount > 0)
-            {
-                AddItemToInventoryList(overflowItemID, overflowAmount, false);
-            }
+            int tempAmount = overflowAmount;
+            overflowAmount = 0;
+            AddItemToInventoryList(overflowItemID, overflowAmount, false);
         }
     }
     public Transform BeginDrag()

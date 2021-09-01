@@ -162,14 +162,13 @@ public class PlayerController : MonoBehaviour
         //check hit things
         foreach(Collider hitObject in thingsHit)
         {
-            if (hitObject.CompareTag("Tree"))
+            if (hitObject.GetComponent<HitableObject>())
             {
                 GameObject tempObject = Instantiate(testGraph, hitObject.ClosestPoint(attackPos.position), Quaternion.identity);
                 Destroy(tempObject, 1);
                 if(hitObject.GetComponent<Renderer>())
                 {
                     tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", hitObject.GetComponent<Renderer>().material.color);
-                    print(hitObject.GetComponent<Renderer>().material.color);
                 }
                 else
                 {
@@ -178,11 +177,11 @@ public class PlayerController : MonoBehaviour
 
                 if(heldItem != null)
                 {
-                    hitObject.GetComponent<Tree>().HitByPlayer(heldItem.itemDamage, gameObject, heldItem.itemType);
+                    hitObject.GetComponent<HitableObject>().HitByPlayer(heldItem.itemDamage, gameObject, heldItem.itemType);
                 }
                 else
                 {
-                    hitObject.GetComponent<Tree>().HitByPlayer(1, gameObject, 0);
+                    hitObject.GetComponent<HitableObject>().HitByPlayer(1, gameObject, 0);
                 }
             }
         }
