@@ -10,37 +10,37 @@ public class MapGenerator : MonoBehaviour
     [Range(0, 6)]
     public int editorPrevieuwLOD;
     public int ocataves;
-    public int seed;
+    public int mapSeed;
     [Range(0, 1)]
     public float presitance;
     public float meshHeightMultiplier;
     public float lacunarity;
     public float noiseScale;
     public float[,] fallOffMap;
+    public float loadAmount;
     public AnimationCurve meshHeightCurve;
     public Vector2 offset;
     public bool autoUpdate;
     public bool useFallOffs;
     public GameObject terrainObject;
     public MeshCollider meshCol;
-    public TerrainType[] regions;
+    public EnviromentSpawner envSpawn;
     private Color[] colors;
     private float minTerrainheight;
     private float maxTerrainheight;
     private Mesh terrainMesh;
-    private void Awake()
-    {
-        fallOffMap = FalloffGenerator.GenerateFalloffMap(chuckSize);
-    }
-    private void Start()
-    {
-        terrainMesh = terrainObject.GetComponent<MeshFilter>().mesh;
+    
+    public void StartGenerating(int seed)
+	{
+        mapSeed = seed;
+        loadAmount = 0;
         GenerateMap();
     }
     public void GenerateMap()
     {
-        
-        float[,] noisemap = Noise.GenerateNoiseMap(chuckSize, chuckSize, seed, noiseScale, ocataves, presitance, lacunarity, offset);
+        terrainMesh = terrainObject.GetComponent<MeshFilter>().mesh;
+        fallOffMap = FalloffGenerator.GenerateFalloffMap(chuckSize);
+        float[,] noisemap = Noise.GenerateNoiseMap(chuckSize, chuckSize, mapSeed, noiseScale, ocataves, presitance, lacunarity, offset);
 
         Color[] collorMap = new Color[chuckSize * chuckSize];
         for (int y = 0; y < chuckSize; y++)
@@ -55,18 +55,11 @@ public class MapGenerator : MonoBehaviour
                     }
                     noisemap[x, y] = Mathf.Clamp01(noisemap[x, y] - fallOffMap[x, y]);
                 }
-                float currentHeight = noisemap[x, y];
-                for (int i = 0; i < regions.Length; i++)
-                {
-                    if (currentHeight <= regions[i].baseStartHeight)
-                    {
-                        collorMap[y * chuckSize + x] = regions[i].colour;
-                        break;
-                    }
-                }
             }
         }
-		ColorMap();
+        AddLoadAmount();
+
+        ColorMap();
     }
     private void OnValidate()
     {
@@ -92,6 +85,7 @@ public class MapGenerator : MonoBehaviour
 		Mesh mesh = terrainObject.GetComponent<MeshFilter>().mesh;
         Vector3[] vertices = mesh.vertices;
         Color[] colors = new Color[vertices.Length];
+        AddLoadAmount();
         for (int i = 0; i < terrainMesh.vertices.Length; i++)
         {
             SetMinMaxHeights(terrainMesh.vertices[i].y);
@@ -99,12 +93,11 @@ public class MapGenerator : MonoBehaviour
             colors[i] = gradient.Evaluate(height);
         }
         mesh.colors = colors;
+        AddLoadAmount();
+        envSpawn.Generate();
     }
-}
-[System.Serializable]
-public struct TerrainType {
-public string name;
-public float baseStartHeight;
-public float baseBlends;
-public Color colour;
+    public void AddLoadAmount()
+	{
+        loadAmount += 20;
+    }
 }

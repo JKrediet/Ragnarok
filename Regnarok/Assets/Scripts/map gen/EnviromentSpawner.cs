@@ -1,10 +1,10 @@
 using System.Collections;
 using UnityEngine;
-//using UnityEditor.AI;
 public class EnviromentSpawner : MonoBehaviour
 {
     public bool testing;
     public bool testEnvSpawn;
+    public bool canBakeNav;
     public Objects[] spawnItems;
     [Header("Height Values")]
     public float maxSandHeight;
@@ -19,21 +19,8 @@ public class EnviromentSpawner : MonoBehaviour
     private Vector3 spawnPoint;
     void Start()
     {
-        Random.seed = mapGen.seed;
+        Random.seed = mapGen.mapSeed;
         mesh.AddComponent<MeshCollider>();
-        if (testing)
-        {
-
-        }
-        else if (testEnvSpawn)
-        {
-            Generate();
-        }
-        else
-        {
-            Generate();
-            //NavMeshBuilder.BuildNavMesh();
-        }
     }
     public void Generate()
     {
@@ -133,6 +120,15 @@ public class EnviromentSpawner : MonoBehaviour
                     }
                 }
             }
+		}
+        mapGen.AddLoadAmount();
+    }
+    public void BuildNavMesh()
+    {
+		if (canBakeNav)
+        { 
+           // NavMeshBuilder.BuildNavMesh();
+            mapGen.AddLoadAmount();
 		}
     }
     public bool Chance()
