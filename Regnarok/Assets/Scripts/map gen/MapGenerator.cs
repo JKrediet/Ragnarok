@@ -5,10 +5,7 @@ using UnityEngine;
 public class MapGenerator : MonoBehaviour
 {
     // public
-    [Header("gradient")]
     public Gradient gradient;
-    public enum DrawMode { NoiseMap, ColourMap, Mesh, FalloffMap };
-    public DrawMode drawMode;
     const int chuckSize = 241;
     [Range(0, 6)]
     public int editorPrevieuwLOD;
@@ -69,33 +66,7 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
-
-        MapDisplay display = FindObjectOfType<MapDisplay>();
-        if (drawMode == DrawMode.NoiseMap)
-        {
-           display.DrawTexture(TextureGenerator.TextureFromHeightMap(noisemap));
-        }
-        else if (drawMode == DrawMode.ColourMap)
-        {
-           display.DrawTexture(TextureGenerator.TextureFromColourMap(collorMap, chuckSize, chuckSize));
-        }
-        else if (drawMode == DrawMode.Mesh)
-        {
-            display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noisemap, meshHeightMultiplier, meshHeightCurve, editorPrevieuwLOD), TextureGenerator.TextureFromColourMap(collorMap, chuckSize, chuckSize));
-        }
-        else if (drawMode == DrawMode.FalloffMap)
-        {
-            display.DrawTexture(TextureGenerator.TextureFromHeightMap(FalloffGenerator.GenerateFalloffMap(chuckSize)));
-        }
-
-        //set
-		//for (int i = 0; i < terrainMesh.vertices.Length; i++)
-		//{
-  //          SetMinMaxHeights(terrainMesh.vertices[i].y);
-  //      }
-        //collor
-
-        //ColorMap();
+		ColorMap();
     }
     private void OnValidate()
     {
@@ -118,30 +89,18 @@ public class MapGenerator : MonoBehaviour
     }
     private void ColorMap()
     {
-        colors = new Color[terrainMesh.vertices.Length];
-        for (int i = 0, z = 0; z < terrainMesh.vertices.Length; z++)
+		Mesh mesh = terrainObject.GetComponent<MeshFilter>().mesh;
+        Vector3[] vertices = mesh.vertices;
+        Color[] colors = new Color[vertices.Length];
+        for (int i = 0; i < terrainMesh.vertices.Length; i++)
         {
-
+            SetMinMaxHeights(terrainMesh.vertices[i].y);
             float height = Mathf.InverseLerp(minTerrainheight, maxTerrainheight, terrainMesh.vertices[i].y);
             colors[i] = gradient.Evaluate(height);
-            i++;
         }
-        print(colors.Length);
-        print(terrainMesh.colors.Length);
-        print(terrainMesh.vertices.Length);
-        Mesh hold = terrainMesh;
-        terrainMesh.Clear();
-        terrainMesh.vertices = hold.vertices;
-        terrainMesh.triangles = hold.triangles;
-        terrainMesh.colors = new Color[terrainMesh.vertices.Length];
-        terrainMesh.colors = colors;
-        //colors.CopyTo(terrainMesh.colors, 0);
-        //terrainMesh.colors[0] += colors[0];
-        terrainMesh.RecalculateNormals();
-        meshCol.sharedMesh = terrainMesh;
+        mesh.colors = colors;
     }
 }
-
 [System.Serializable]
 public struct TerrainType {
 public string name;

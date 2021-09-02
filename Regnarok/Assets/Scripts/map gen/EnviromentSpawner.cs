@@ -6,13 +6,13 @@ public class EnviromentSpawner : MonoBehaviour
     public bool testing;
     public bool testEnvSpawn;
     public Objects[] spawnItems;
+    [Header("Height Values")]
+    public float maxSandHeight;
     [Header("Settings")]
     public Transform firstPos;
     public Transform secondPos;
     public Transform firstPosInner;
     public Transform secondPosInner;
-    [Space(2)]
-    public int sandIndex=0;
     [Space(2)]
     public GameObject mesh;
     public MapGenerator mapGen;
@@ -41,101 +41,36 @@ public class EnviromentSpawner : MonoBehaviour
 		{
 			for (int i_ = 0; i_ < spawnItems[i].amountToSpawn; i_++)
 			{
-                if (Chance())
+                if (spawnItems[i].spawnItem)
                 {
-					if (spawnItems[i].innerCircle)
-					{
-                        spawnPoint = new Vector3(Random.Range(firstPosInner.position.x, secondPosInner.position.x), spawnItems[i].startHeight, Random.Range(firstPosInner.position.z, secondPosInner.position.z));
-                    }
-                    else
-					{
-                        spawnPoint = new Vector3(Random.Range(firstPos.position.x, secondPos.position.x), spawnItems[i].startHeight, Random.Range(firstPos.position.z, secondPos.position.z));
-					}
-                    Ray ray = new Ray(spawnPoint, -transform.up);
-                    RaycastHit hitInfo;
-                    if (Physics.Raycast(ray, out hitInfo))
+                    if (Chance())
                     {
-
-                        //checking collor
-                        
-
-                        if (hitInfo.transform.tag == "Water"
-                        || hitInfo.transform.tag == "Rock"
-                        || hitInfo.transform.tag == "Tree"
-                        || hitInfo.transform.tag == "Chest"
-                        || hitInfo.transform.tag == "Totem")
+                        if (spawnItems[i].innerCircle)
                         {
-
+                            spawnPoint = new Vector3(Random.Range(firstPosInner.position.x, secondPosInner.position.x), spawnItems[i].startHeight, Random.Range(firstPosInner.position.z, secondPosInner.position.z));
                         }
                         else
                         {
-                            if (spawnItems[i].canSpawnOnSand)
-                            {
-                                if (spawnItems[i].randomRot)
-                                {
-                                    Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform);
-                                }
-                                else
-                                {
-                                    if (spawnItems[i].rotateWithMesh)
-                                    {
-                                        Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), transform);
-                                    }
-                                    else
-                                    {
-                                        Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, transform);
-                                    }
-                                }
-                            }
-                            else if (spawnItems[i].onlySpawnOnSand)
-                            {
-                                Renderer renderer = hitInfo.collider.GetComponent<MeshRenderer>();
-                                Texture2D texture2D = renderer.material.mainTexture as Texture2D;
-                                if (texture2D != null)
-                                {
-                                    Vector2 pCoord = hitInfo.textureCoord;
-                                    pCoord.x *= texture2D.width;
-                                    pCoord.y *= texture2D.height;
-                                    Vector2 tiling = renderer.material.mainTextureScale;
-                                    Color color = texture2D.GetPixel(Mathf.FloorToInt(pCoord.x * tiling.x), Mathf.FloorToInt(pCoord.y * tiling.y));
+                            spawnPoint = new Vector3(Random.Range(firstPos.position.x, secondPos.position.x), spawnItems[i].startHeight, Random.Range(firstPos.position.z, secondPos.position.z));
+                        }
+                        Ray ray = new Ray(spawnPoint, -transform.up);
+                        RaycastHit hitInfo;
+                        if (Physics.Raycast(ray, out hitInfo))
+                        {
 
-                                    if (color == mapGen.regions[sandIndex].colour)
-                                    {
-                                        if (spawnItems[i].randomRot)
-                                        {
-                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform);
-                                        }
-                                        else
-                                        {
-                                            if (spawnItems[i].rotateWithMesh)
-                                            {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), transform);
-                                            }
-                                            else
-                                            {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, transform);
-                                            }
-                                        }
-                                    }
-                                }
+                            if (hitInfo.transform.tag == "Water"
+                            || hitInfo.transform.tag == "Rock"
+                            || hitInfo.transform.tag == "Tree"
+                            || hitInfo.transform.tag == "Chest"
+                            || hitInfo.transform.tag == "Totem")
+                            {
+
                             }
                             else
                             {
-                                Renderer renderer = hitInfo.collider.GetComponent<MeshRenderer>();
-                                Texture2D texture2D = renderer.material.mainTexture as Texture2D;
-                                if (texture2D != null)
+                                if (spawnItems[i].canSpawnOnSand)
                                 {
-                                    Vector2 pCoord = hitInfo.textureCoord;
-                                    pCoord.x *= texture2D.width;
-                                    pCoord.y *= texture2D.height;
-                                    Vector2 tiling = renderer.material.mainTextureScale;
-                                    Color color = texture2D.GetPixel(Mathf.FloorToInt(pCoord.x * tiling.x), Mathf.FloorToInt(pCoord.y * tiling.y));
-
-                                    if (color == mapGen.regions[sandIndex].colour)
-                                    {
-
-                                    }
-                                    else
+                                    if (hitInfo.point.y <= maxSandHeight)
                                     {
                                         if (spawnItems[i].randomRot)
                                         {
@@ -154,8 +89,47 @@ public class EnviromentSpawner : MonoBehaviour
                                         }
                                     }
                                 }
+                                else if (spawnItems[i].onlySpawnOnSand)
+                                {
+                                    if (hitInfo.point.y <= maxSandHeight)
+                                    {
+                                        if (spawnItems[i].randomRot)
+                                        {
+                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform);
+                                        }
+                                        else
+                                        {
+                                            if (spawnItems[i].rotateWithMesh)
+                                            {
+                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), transform);
+                                            }
+                                            else
+                                            {
+                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, transform);
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (spawnItems[i].randomRot)
+                                    {
+                                        Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform);
+                                    }
+                                    else
+                                    {
+                                        if (spawnItems[i].rotateWithMesh)
+                                        {
+                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), transform);
+                                        }
+                                        else
+                                        {
+                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, transform);
+                                        }
+                                    }
+                                }
                             }
-                         }   
+                        }
                     }
                 }
             }
@@ -175,6 +149,7 @@ public class EnviromentSpawner : MonoBehaviour
     [System.Serializable]
     public struct Objects
     {
+        public bool spawnItem;
         public GameObject toSpawn;
         public float startHeight;
         public int amountToSpawn;
