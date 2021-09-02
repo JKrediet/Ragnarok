@@ -44,6 +44,8 @@ public class PlayerController : MonoBehaviour
     //visual graph test
     public GameObject testGraph;
 
+    public bool mayAttack;
+
     private void Awake()
     {
         pv = GetComponent<PhotonView>();
@@ -64,6 +66,7 @@ public class PlayerController : MonoBehaviour
             Destroy(cam.gameObject);
             enabled = false;
         }
+        mayAttack = true;
     }
 
     private void Update()
@@ -79,7 +82,11 @@ public class PlayerController : MonoBehaviour
         {
             if(!InventoryIsOpen)
             {
-                Attack();
+                if(mayAttack)
+                {
+                    mayAttack = false;
+                    Attack();
+                }
             }
         }
         if (Input.GetButtonDown("Jump"))
@@ -106,10 +113,26 @@ public class PlayerController : MonoBehaviour
             {
                 staminaValue = Mathf.Clamp(staminaValue -= staminaLossPerSec * Time.deltaTime, 0, maxStamina);
                 combinedSpeed = sprintSpeed;
+                if (movementSpeed.magnitude > 0 || movementSpeed.magnitude < 0)
+                {
+                    Anim_sprint();
+                }
+                else
+                {
+                    Anim_idle();
+                }
             }
         }
         else
         {
+            if (movementSpeed.magnitude > 0 || movementSpeed.magnitude < 0)
+            {
+                Anim_movement();
+            }
+            else
+            {
+                Anim_idle();
+            }
             if (staminaValue < maxStamina)
             {
                 staminaValue = Mathf.Clamp(staminaValue += staminaGainedPerSec * Time.deltaTime, 0, maxStamina);
@@ -157,6 +180,7 @@ public class PlayerController : MonoBehaviour
     }
     void Attack()
     {
+        Anim_attack();
         Collider[] thingsHit = Physics.OverlapSphere(attackPos.position, attackRadius);
 
         //check hit things
@@ -175,6 +199,7 @@ public class PlayerController : MonoBehaviour
                     tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", hitObject.GetComponentInChildren<Renderer>().material.color);
                 }
 
+                //damage
                 if(heldItem != null)
                 {
                     hitObject.GetComponent<HitableObject>().HitByPlayer(heldItem.itemDamage, gameObject, heldItem.itemType);
@@ -193,5 +218,21 @@ public class PlayerController : MonoBehaviour
     public void GiveItemStats(Item _itemType)
     {
         heldItem = _itemType;
+    }
+    void Anim_movement()
+    {
+
+    }
+    void Anim_sprint()
+    {
+
+    }
+    void Anim_idle()
+    {
+
+    }
+    void Anim_attack()
+    {
+        //mayAttack must be set to true again at end of attack animation
     }
 }
