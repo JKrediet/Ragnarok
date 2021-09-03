@@ -185,6 +185,7 @@ public class PlayerController : MonoBehaviour
         {
             if (hitObject.GetComponent<HitableObject>())
             {
+                print(hitObject);
                 GameObject tempObject = Instantiate(testGraph, hitObject.ClosestPoint(attackPos.position), Quaternion.identity);
                 Destroy(tempObject, 1);
                 if(hitObject.GetComponent<Renderer>())
@@ -231,5 +232,6 @@ public class PlayerController : MonoBehaviour
     void Anim_attack()
     {
         //mayAttack must be set to true again at end of attack animation
+        mayAttack = true;
     }
 }
