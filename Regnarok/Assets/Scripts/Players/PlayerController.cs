@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
     //0= nothin, 1=axe
 
     //movement
-    [SerializeField] float speed, sprintSpeed, weight, jumpForce;
+    [SerializeField] float speed, sprintSpeed, weight, jumpForce, combinedSpeed;
     //stamina base
     [SerializeField] float baseStaminaLossPerSec, baseStaminaGainedPerSec, maxStamina;
     //stats to use
@@ -33,6 +33,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float mouseSensitivity, pitchDown, pitchUp;
     float cameraPitch;
     bool InventoryIsOpen;
+
+    //third person
+    bool isThirdPerson;
+    [SerializeField] float pitchDownThird, pitchUpThird, turnSmoothTime = 0.1f, turnSmoothVelocity;
+    [SerializeField] float distance, turnSpeed, minDistance, maxDistance;
+    [SerializeField] Transform camOriginpos;
 
     //attacks
     [SerializeField] Transform attackPos;
@@ -69,6 +75,7 @@ public class PlayerController : MonoBehaviour
             enabled = false;
         }
         mayAttack = true;
+        camOriginpos.position = cam.transform.position;
     }
 
     private void Update()
@@ -108,9 +115,9 @@ public class PlayerController : MonoBehaviour
     {
         movementSpeed = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
         movementSpeed.Normalize();
-        float combinedSpeed = speed;
-        if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
+        if (movementSpeed.magnitude != 0)
         {
+            combinedSpeed = speed;
             if (Input.GetButton("Sprint"))
             {
                 if (staminaValue > 0)
@@ -136,7 +143,11 @@ public class PlayerController : MonoBehaviour
             staminaValue = Mathf.Clamp(staminaValue += staminaGainedPerSec * Time.deltaTime, 0, maxStamina);
         }
         staminaSlider.value = staminaValue;
-        movementDirection = (transform.forward * movementSpeed.z + transform.right * movementSpeed.x) * combinedSpeed;
+        if (!isThirdPerson)
+        {
+            movementDirection = (transform.forward * movementSpeed.z + transform.right * movementSpeed.x) * combinedSpeed;
+            //else is done in rotation
+        }
     }
     void Gravity()
     {
@@ -166,14 +177,37 @@ public class PlayerController : MonoBehaviour
     }
     void Rotation()
     {
-        Vector2 mouseDelta = new Vector2 (Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-        //player
-        transform.Rotate(Vector3.up, mouseDelta.x * mouseSensitivity);
+        //distance = Mathf.Clamp(distance -= Input.mouseScrollDelta.y, minDistance, maxDistance);
+        cam.transform.position = camOriginpos.position - new Vector3(0, 0, distance);
+        isThirdPerson = distance < 0.5f ? false : true;
+        Vector2 mouseDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        if (!isThirdPerson)
+        {
+            //player
+            transform.Rotate(Vector3.up, mouseDelta.x * mouseSensitivity);
 
-        //camera
-        cameraPitch -= mouseDelta.y * mouseSensitivity;
-        cameraPitch = Mathf.Clamp(cameraPitch, -pitchDown, pitchUp);
-        cam.transform.localEulerAngles = Vector3.right * cameraPitch;
+            //camera
+            cameraPitch -= mouseDelta.y * mouseSensitivity;
+            cameraPitch = Mathf.Clamp(cameraPitch, -pitchDown, pitchUp);
+            cam.transform.localEulerAngles = Vector3.right * cameraPitch;
+        }
+        else
+        {
+            //player direction
+            float targetDirection = Mathf.Atan2(movementDirection.x, movementDirection.z) * Mathf.Rad2Deg + cam.transform.eulerAngles.y;
+            float angle = Mathf.SmoothDampAngle(transform.rotation.y, targetDirection, ref turnSmoothVelocity, turnSmoothTime);
+            transform.rotation = Quaternion.Euler(0, angle, 0);
+            if(movementDirection.magnitude > 0)
+            {
+                movementDirection = Quaternion.Euler(0, angle, 0) * Vector3.forward * combinedSpeed + movementSpeed;
+                movementDirection.Normalize();
+            }
+
+            //camera moet 3rd worden
+            cameraPitch -= mouseDelta.y * mouseSensitivity;
+            cameraPitch = Mathf.Clamp(cameraPitch, -pitchDown, pitchUp);
+            cam.transform.localEulerAngles = Vector3.right * cameraPitch;
+        }
     }
     void Attack()
     {
@@ -185,7 +219,6 @@ public class PlayerController : MonoBehaviour
         {
             if (hitObject.GetComponent<HitableObject>())
             {
-                print(hitObject);
                 GameObject tempObject = Instantiate(testGraph, hitObject.ClosestPoint(attackPos.position), Quaternion.identity);
                 Destroy(tempObject, 1);
                 if(hitObject.GetComponent<Renderer>())
