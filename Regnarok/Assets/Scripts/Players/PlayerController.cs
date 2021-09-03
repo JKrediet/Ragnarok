@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
     //camera
     [SerializeField] LayerMask playerAimMask;
     [SerializeField] Camera cam;
-    [SerializeField] float mouseSensitivity;
+    [SerializeField] float mouseSensitivity, pitchDown, pitchUp;
     float cameraPitch;
     bool InventoryIsOpen;
 
@@ -45,6 +45,8 @@ public class PlayerController : MonoBehaviour
     public GameObject testGraph;
 
     public bool mayAttack;
+
+    public Animator animController;
 
     private void Awake()
     {
@@ -107,36 +109,31 @@ public class PlayerController : MonoBehaviour
         movementSpeed = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
         movementSpeed.Normalize();
         float combinedSpeed = speed;
-        if(Input.GetButton("Sprint"))
+        if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
         {
-            if (staminaValue > 0)
+            if (Input.GetButton("Sprint"))
             {
-                staminaValue = Mathf.Clamp(staminaValue -= staminaLossPerSec * Time.deltaTime, 0, maxStamina);
-                combinedSpeed = sprintSpeed;
-                if (movementSpeed.magnitude > 0 || movementSpeed.magnitude < 0)
+                if (staminaValue > 0)
                 {
+                    staminaValue = Mathf.Clamp(staminaValue -= staminaLossPerSec * Time.deltaTime, 0, maxStamina);
+                    combinedSpeed = sprintSpeed;
                     Anim_sprint();
                 }
                 else
                 {
-                    Anim_idle();
+                    Anim_movement();
                 }
+            }
+            else
+            {
+                Anim_movement();
+                staminaValue = Mathf.Clamp(staminaValue += staminaGainedPerSec * Time.deltaTime, 0, maxStamina);
             }
         }
         else
         {
-            if (movementSpeed.magnitude > 0 || movementSpeed.magnitude < 0)
-            {
-                Anim_movement();
-            }
-            else
-            {
-                Anim_idle();
-            }
-            if (staminaValue < maxStamina)
-            {
-                staminaValue = Mathf.Clamp(staminaValue += staminaGainedPerSec * Time.deltaTime, 0, maxStamina);
-            }
+            Anim_idle();
+            staminaValue = Mathf.Clamp(staminaValue += staminaGainedPerSec * Time.deltaTime, 0, maxStamina);
         }
         staminaSlider.value = staminaValue;
         movementDirection = (transform.forward * movementSpeed.z + transform.right * movementSpeed.x) * combinedSpeed;
@@ -175,7 +172,7 @@ public class PlayerController : MonoBehaviour
 
         //camera
         cameraPitch -= mouseDelta.y * mouseSensitivity;
-        cameraPitch = Mathf.Clamp(cameraPitch, -70, 70);
+        cameraPitch = Mathf.Clamp(cameraPitch, -pitchDown, pitchUp);
         cam.transform.localEulerAngles = Vector3.right * cameraPitch;
     }
     void Attack()
@@ -219,17 +216,17 @@ public class PlayerController : MonoBehaviour
     {
         heldItem = _itemType;
     }
+    void Anim_idle()
+    {
+        animController.SetInteger("State", 0);
+    }
     void Anim_movement()
     {
-
+        animController.SetInteger("State", 1);
     }
     void Anim_sprint()
     {
-
-    }
-    void Anim_idle()
-    {
-
+        animController.SetInteger("State", 2);
     }
     void Anim_attack()
     {
