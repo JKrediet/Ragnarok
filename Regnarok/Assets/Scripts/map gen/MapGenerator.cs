@@ -57,6 +57,8 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
+        MapDisplay display = FindObjectOfType<MapDisplay>();
+        display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noisemap, meshHeightMultiplier, meshHeightCurve, editorPrevieuwLOD), TextureGenerator.TextureFromColourMap(collorMap, chuckSize, chuckSize));
         AddLoadAmount();
 
         ColorMap();
@@ -94,6 +96,10 @@ public class MapGenerator : MonoBehaviour
         }
         mesh.colors = colors;
         AddLoadAmount();
+        Invoke("StartEnvSpawner", 1);
+    }
+    public void StartEnvSpawner()
+	{
         envSpawn.Generate();
     }
     public void AddLoadAmount()

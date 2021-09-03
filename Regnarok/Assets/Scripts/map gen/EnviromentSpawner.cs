@@ -20,11 +20,11 @@ public class EnviromentSpawner : MonoBehaviour
     void Start()
     {
         Random.seed = mapGen.mapSeed;
-        mesh.AddComponent<MeshCollider>();
     }
     public void Generate()
     {
-		for (int i = 0; i < spawnItems.Length; i++)
+        mesh.AddComponent<MeshCollider>();
+        for (int i = 0; i < spawnItems.Length; i++)
 		{
 			for (int i_ = 0; i_ < spawnItems[i].amountToSpawn; i_++)
 			{
