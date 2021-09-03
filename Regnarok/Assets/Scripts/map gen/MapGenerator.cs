@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class MapGenerator : MonoBehaviour
 {
     // public
@@ -62,6 +61,7 @@ public class MapGenerator : MonoBehaviour
         AddLoadAmount();
 
         ColorMap();
+        //Invoke("StartEnvSpawner", 1);
     }
     private void OnValidate()
     {
@@ -87,11 +87,14 @@ public class MapGenerator : MonoBehaviour
 		Mesh mesh = terrainObject.GetComponent<MeshFilter>().mesh;
         Vector3[] vertices = mesh.vertices;
         Color[] colors = new Color[vertices.Length];
+        print(vertices);
+        print(colors.Length);
+        print(vertices.Length);
         AddLoadAmount();
-        for (int i = 0; i < terrainMesh.vertices.Length; i++)
+        for (int i = 0; i < vertices.Length; i++)
         {
-            SetMinMaxHeights(terrainMesh.vertices[i].y);
-            float height = Mathf.InverseLerp(minTerrainheight, maxTerrainheight, terrainMesh.vertices[i].y);
+            SetMinMaxHeights(vertices[i].y);
+            float height = Mathf.InverseLerp(minTerrainheight, maxTerrainheight, vertices[i].y);
             colors[i] = gradient.Evaluate(height);
         }
         mesh.colors = colors;

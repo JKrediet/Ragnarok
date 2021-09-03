@@ -8,6 +8,7 @@ public class EnviromentSpawner : MonoBehaviour
     public Objects[] spawnItems;
     [Header("Height Values")]
     public float maxSandHeight;
+    public float minMountenHeight;
     [Header("Settings")]
     public Transform firstPos;
     public Transform secondPos;
@@ -97,6 +98,29 @@ public class EnviromentSpawner : MonoBehaviour
                                         }
                                     }
                                 }
+                                else if (spawnItems[i].onlySpawnOnMountenTop)
+								{
+                                    print("1");
+                                    if (hitInfo.point.y >= minMountenHeight)
+                                    {
+                                        print("2");
+                                        if (spawnItems[i].randomRot)
+                                        {
+                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform);
+                                        }
+                                        else
+                                        {
+                                            if (spawnItems[i].rotateWithMesh)
+                                            {
+                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), transform);
+                                            }
+                                            else
+                                            {
+                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, transform);
+                                            }
+                                        }   
+                                    }
+                                }
                                 else
                                 {
                                     if (spawnItems[i].randomRot)
@@ -154,5 +178,6 @@ public class EnviromentSpawner : MonoBehaviour
         public bool rotateWithMesh;
         public bool innerCircle;
         public bool onlySpawnOnSand;
+        public bool onlySpawnOnMountenTop;
     }
 }
