@@ -21,6 +21,7 @@ public class MapGenerator : MonoBehaviour
     public Vector2 offset;
     public bool autoUpdate;
     public bool useFallOffs;
+    public bool generateEnviroment;
     public GameObject terrainObject;
     public MeshCollider meshCol;
     public EnviromentSpawner envSpawn;
@@ -60,8 +61,7 @@ public class MapGenerator : MonoBehaviour
         display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noisemap, meshHeightMultiplier, meshHeightCurve, editorPrevieuwLOD), TextureGenerator.TextureFromColourMap(collorMap, chuckSize, chuckSize));
         AddLoadAmount();
 
-        ColorMap();
-        //Invoke("StartEnvSpawner", 1);
+        Invoke("ColorMap", 1);
     }
     private void OnValidate()
     {
@@ -103,7 +103,10 @@ public class MapGenerator : MonoBehaviour
     }
     public void StartEnvSpawner()
 	{
-        envSpawn.Generate();
+		if (generateEnviroment)
+		{
+            envSpawn.Generate();
+		}
     }
     public void AddLoadAmount()
 	{

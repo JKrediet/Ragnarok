@@ -5,7 +5,6 @@ using UnityEngine;
 public class EnviormentSpawnBehavour : MonoBehaviour
 {
     public bool isGrass;
-    public LayerMask spawnLayer;
     public float heightOffset = 1f;
     private int replace;
     void Start()
