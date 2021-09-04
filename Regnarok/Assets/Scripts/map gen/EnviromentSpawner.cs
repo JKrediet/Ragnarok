@@ -100,7 +100,6 @@ public class EnviromentSpawner : MonoBehaviour
                                 }
                                 else if (spawnItems[i].onlySpawnOnMountenTop)
 								{
-                                    print("1");
                                     if (hitInfo.point.y >= minMountenHeight)
                                     {
                                         print("2");

@@ -22,6 +22,7 @@ public class MapGenerator : MonoBehaviour
     public bool autoUpdate;
     public bool useFallOffs;
     public bool generateEnviroment;
+    public bool flatShading;
     public GameObject terrainObject;
     public MeshCollider meshCol;
     public EnviromentSpawner envSpawn;
@@ -29,6 +30,7 @@ public class MapGenerator : MonoBehaviour
     private float minTerrainheight;
     private float maxTerrainheight;
     private Mesh terrainMesh;
+    private bool generatedEnv;
     
     public void StartGenerating(int seed)
 	{
@@ -58,7 +60,7 @@ public class MapGenerator : MonoBehaviour
             }
         }
         MapDisplay display = FindObjectOfType<MapDisplay>();
-        display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noisemap, meshHeightMultiplier, meshHeightCurve, editorPrevieuwLOD), TextureGenerator.TextureFromColourMap(collorMap, chuckSize, chuckSize));
+        display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noisemap, meshHeightMultiplier, meshHeightCurve, editorPrevieuwLOD, flatShading,GetComponent<MapGenerator>()), TextureGenerator.TextureFromColourMap(collorMap, chuckSize, chuckSize));
         AddLoadAmount();
 
         Invoke("ColorMap", 1);
@@ -82,14 +84,11 @@ public class MapGenerator : MonoBehaviour
         if (noiseHeight < minTerrainheight)
             minTerrainheight = noiseHeight;
     }
-    private void ColorMap()
+    public void ColorMap()
     {
 		Mesh mesh = terrainObject.GetComponent<MeshFilter>().mesh;
         Vector3[] vertices = mesh.vertices;
         Color[] colors = new Color[vertices.Length];
-        print(vertices);
-        print(colors.Length);
-        print(vertices.Length);
         AddLoadAmount();
         for (int i = 0; i < vertices.Length; i++)
         {
@@ -99,7 +98,12 @@ public class MapGenerator : MonoBehaviour
         }
         mesh.colors = colors;
         AddLoadAmount();
-        Invoke("StartEnvSpawner", 1);
+		if (!generatedEnv)
+		{
+            Invoke("StartEnvSpawner", 1);
+            generatedEnv = true;
+
+        }
     }
     public void StartEnvSpawner()
 	{
