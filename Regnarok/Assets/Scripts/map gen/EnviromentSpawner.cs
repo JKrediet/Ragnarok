@@ -102,7 +102,6 @@ public class EnviromentSpawner : MonoBehaviour
 								{
                                     if (hitInfo.point.y >= minMountenHeight)
                                     {
-                                        print("2");
                                         if (spawnItems[i].randomRot)
                                         {
                                             Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform);

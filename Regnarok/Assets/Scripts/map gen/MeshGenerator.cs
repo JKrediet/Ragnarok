@@ -60,6 +60,7 @@ public class MeshData
 		vertices = new Vector3[meshWidth * meshHeight];
 		uvs = new Vector2[meshWidth * meshHeight];
 		triangles = new int[(meshWidth - 1) * (meshHeight - 1) * 6];
+		borderTriangles = new int[24 * meshWidth];
 	}
 	public void AddTriangle(int a, int b, int c) {
 		if (a < 0 || b < 0 || c < 0) {
@@ -91,8 +92,7 @@ public class MeshData
 			vertexNormals[vertexIndexB] += triangleNormal;
 			vertexNormals[vertexIndexC] += triangleNormal;
 		}
-
-		int borderTriangleCount = borderTriangles.Length / 3;
+		int borderTriangleCount = borderTriangles.Length/3;
 		for (int i = 0; i < borderTriangleCount; i++)
 		{
 			int normalTriangleIndex = i * 3;
