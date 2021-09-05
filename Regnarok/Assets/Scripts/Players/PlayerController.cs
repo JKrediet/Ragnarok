@@ -23,9 +23,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float baseStaminaLossPerSec, baseStaminaGainedPerSec, maxStamina;
     //stats to use
     float gravity = -1, staminaValue, staminaLossPerSec, staminaGainedPerSec;
-    //nonsense(still being used tho);
+
     bool groundCheck = false;
     Vector3 movementSpeed, movementDirection;
+    ChestInventory lastChest;
 
     //camera
     [SerializeField] LayerMask playerAimMask;
@@ -53,6 +54,8 @@ public class PlayerController : MonoBehaviour
     public bool mayAttack;
 
     public Animator animController;
+
+    public LayerMask chestLayer;
 
     private void Awake()
     {
@@ -85,6 +88,7 @@ public class PlayerController : MonoBehaviour
         if (!InventoryIsOpen)
         {
             Rotation();
+            CheckForInfo();
         }
             //andere onzin
         if (Input.GetButtonDown("Fire1"))
@@ -250,6 +254,35 @@ public class PlayerController : MonoBehaviour
     {
         heldItem = _itemType;
     }
+    void CheckForInfo()
+    {
+        if(lastChest == null)
+        {
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                RaycastHit _hit;
+                if (Physics.Raycast(cam.transform.position, cam.transform.forward, out _hit, 5, chestLayer))
+                {
+                    if (_hit.transform.GetComponent<ChestInventory>())
+                    {
+                        lastChest = _hit.transform.GetComponent<ChestInventory>();
+                        lastChest.OpenChest(GetComponent<Inventory>());
+                        lastChest.mouseItemHolder = GetComponent<Inventory>().mouseItemHolder;
+                    }
+                }
+            }
+        }
+        else
+        {
+            float distance = Vector3.Distance(transform.position, lastChest.transform.position);
+            if (distance > 6)
+            {
+                lastChest.transform.GetComponent<ChestInventory>().CloseChest();
+                lastChest = null;
+            }
+        }
+    }
+    #region anim
     void Anim_idle()
     {
         animController.SetInteger("State", 0);
@@ -267,4 +300,5 @@ public class PlayerController : MonoBehaviour
         //mayAttack must be set to true again at end of attack animation
         mayAttack = true;
     }
+    #endregion
 }

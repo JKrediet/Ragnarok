@@ -10,14 +10,30 @@ public class Slot : MonoBehaviour
     public int slotType = 0;
 
     [SerializeField] Inventory inv;
+    [SerializeField] ChestInventory chestInv;
 
     public void GiveSlotnumber()
     {
-        inv.GiveMouseLocationForInventory(slotNumber);
+        if(inv != null)
+        {
+            inv.GiveMouseLocationForInventory(slotNumber);
+        }
+        else
+        {
+            chestInv.GiveMouseLocationForInventory(slotNumber);
+        }
     }
     public void GiveItemToSlot()
     {
-        inv.itemBeingDragged = false;
-        inv.AddItemToInventoryList(-1, -1, true);
+        if (inv != null)
+        {
+            inv.itemBeingDragged = false;
+            inv.AddItemToInventoryList(-1, -1, true);
+        }
+        else
+        {
+            chestInv.itemBeingDragged = false;
+            chestInv.AddItemToInventoryList(-1, -1, true);
+        }
     }
 }

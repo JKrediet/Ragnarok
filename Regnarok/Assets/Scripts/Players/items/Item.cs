@@ -15,6 +15,7 @@ public class Item : MonoBehaviour
     public int stackAmount, maxStackAmount;
     public int oldSlotNumber;
     [HideInInspector] public Inventory inv;
+    [HideInInspector] public ChestInventory chestInv;
 
     private bool isInInventory, mayBePickedUp;
 
@@ -68,13 +69,20 @@ public class Item : MonoBehaviour
     {
         PhotonNetwork.Destroy(gameObject);
     }
-    public void SetUp(int numberOfItems, int slot, Inventory _inv)
+    public void SetUp(int numberOfItems, int slot, Inventory _inv, ChestInventory _chestInv)
     {
         GetComponent<Image>().raycastTarget = true;
         ToInventory(true);
         stackAmount = numberOfItems;
         oldSlotNumber = slot;
-        inv = _inv;
+        if(_inv != default)
+        {
+            inv = _inv;
+        }
+        else
+        {
+            chestInv = _chestInv;
+        }
         if (stackAmountText != null)
         {
             stackAmountText.gameObject.SetActive(true);
@@ -82,7 +90,7 @@ public class Item : MonoBehaviour
         }
         
     }
-    public void BeginDrag()
+    public void BeginDrag(bool emptySlot)
     {
         if (isInInventory)
         {
@@ -93,7 +101,7 @@ public class Item : MonoBehaviour
                 if (Input.GetButton("ControlClick"))
                 {
                     //wip
-                    transform.SetParent(inv.BeginDrag());
+                    transform.SetParent(inv.BeginDrag(this));
                     transform.position = Input.mousePosition;
                 }
                 //shift click for half stack
@@ -101,16 +109,16 @@ public class Item : MonoBehaviour
                 {
                     if(stackAmount > 1)
                     {
-                        GameObject temp = Instantiate(ItemList.itemListUi[itemId], inv.BeginDrag());
+                        GameObject temp = Instantiate(ItemList.itemListUi[itemId], inv.BeginDrag(this));
                         stackAmount /= 2;
-                        temp.GetComponent<Item>().SetUp(stackAmount, -1, inv);
-                        SetUp(stackAmount, oldSlotNumber, inv);
+                        temp.GetComponent<Item>().SetUp(stackAmount, -1, inv, chestInv);
+                        SetUp(stackAmount, oldSlotNumber, inv, chestInv);
                         temp.transform.position = Input.mousePosition;
                     }
                     else
                     {
                         //get mouse pos
-                        transform.SetParent(inv.BeginDrag());
+                        transform.SetParent(inv.BeginDrag(this));
                         transform.position = Input.mousePosition;
                     }
                 }
@@ -118,8 +126,14 @@ public class Item : MonoBehaviour
                 else
                 {
                     //get mouse pos
-                    transform.SetParent(inv.BeginDrag());
+                    transform.SetParent(inv.BeginDrag(this));
                     transform.position = Input.mousePosition;
+
+                    //empty old slot
+                    if(!emptySlot)
+                    {
+                        inv.AddEmptyItem(oldSlotNumber);
+                    }
                 }
             }
             else
@@ -130,15 +144,33 @@ public class Item : MonoBehaviour
         }
         //end drag in inventory-script
     }
+    public void SwapItem()
+    {
+        transform.SetParent(inv.BeginDrag(this));
+        transform.position = Input.mousePosition;
+    }
     private void Update()
     {
         if(isInInventory)
         {
-            if (inv.itemBeingDragged)
+            if(inv)
             {
-                if (GetComponent<Image>())
+                if (inv.itemBeingDragged)
                 {
-                    GetComponent<Image>().raycastTarget = !inv.itemBeingDragged;
+                    if (GetComponent<Image>())
+                    {
+                        GetComponent<Image>().raycastTarget = !inv.itemBeingDragged;
+                    }
+                }
+            }
+            else
+            {
+                if (chestInv.itemBeingDragged)
+                {
+                    if (GetComponent<Image>())
+                    {
+                        GetComponent<Image>().raycastTarget = !chestInv.itemBeingDragged;
+                    }
                 }
             }
         }

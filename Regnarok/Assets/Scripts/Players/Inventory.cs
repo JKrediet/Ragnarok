@@ -15,22 +15,26 @@ public class Inventory : MonoBehaviour
     public GameObject[] slot; 
 
     public GameObject slotHolder, equipmentSlotHolder, hotbarSlotsHolder;
-    public GameObject emptyItem;
+    public Item emptyItem;
 
     public Transform mouseItemHolder, handHolder;
     public bool itemBeingDragged;
     public int itemReleaseRange;
     private int slotNumberDragged;
 
+    public Item draggedItem;
+
     //hotbar indecator
     public GameObject hotbarIndecator;
     int hotbarLocation;
 
-    List<int> checkTheseNumbers;
+    public List<int> checkTheseNumbers;
     public List<Item> inventoryContent;
 
     //if itemstack overflows
     int overflowAmount, overflowItemID;
+
+    ChestInventory lastChest;
 
     private KeyCode[] keyCodes = {
          KeyCode.Alpha1,
@@ -83,7 +87,10 @@ public class Inventory : MonoBehaviour
         //put empty items in inventory list
         for (int i = 0; i < 37; i++)
         {
-            inventoryContent.Add(Instantiate(emptyItem.GetComponent<Item>(), slot[i].transform));
+            GameObject yes = Instantiate(ItemList.itemListUi[0], slot[i].transform);
+            yes.GetComponent<Item>().SetUp(1, i, this, default);
+            inventoryContent.Add(default);
+            inventoryContent[i] = yes.GetComponent<Item>();
         }
     }
 
@@ -144,6 +151,27 @@ public class Inventory : MonoBehaviour
             Cursor.visible = inventoryEnabled;
         }
     }
+    public void ToggleInventoryFromChest(ChestInventory chest)
+    {
+        lastChest = chest;
+        inventoryEnabled = !inventoryEnabled;
+        inventory.SetActive(inventoryEnabled);
+        GetComponent<PlayerController>().LockCamera();
+        if (!inventoryEnabled)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            if (mouseItemHolder.childCount > 0)
+            {
+                DropItem();
+            }
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Confined;
+        }
+        Cursor.visible = inventoryEnabled;
+        chest.chestPanel.SetActive(chest);
+    }
     public void AddItemFromOutsideOfInventory(int itemId, int itemAmount)
     {
         if(itemAmount == 0)
@@ -167,7 +195,7 @@ public class Inventory : MonoBehaviour
                     //-1 == this slot has an item
                     checkTheseNumbers[i] = -1;
                 }
-                if(inventoryContent[i].stackAmount == inventoryContent[i].maxStackAmount)
+                if(inventoryContent[i].stackAmount == inventoryContent[i].maxStackAmount && inventoryContent[i].stackAmount > 0)
                 {
                     checkTheseNumbers[i] = -1;
                 }
@@ -180,6 +208,11 @@ public class Inventory : MonoBehaviour
                 {
                     //exculde non-stable items
                     checkTheseNumbers[i] = -1;
+                }
+                if(inventoryContent[i].itemId == 0)
+                {
+                    //root out empty items
+                    checkTheseNumbers[i] = i;
                 }
             }
             for (int i = 0; i < inventoryContent.Count; i++)
@@ -208,6 +241,7 @@ public class Inventory : MonoBehaviour
         }
         else
         {
+            bool swap = false;
             if (slotNumberDragged > -1)
             {
                 if (mouseItemHolder.childCount > 0)
@@ -261,58 +295,62 @@ public class Inventory : MonoBehaviour
                     }
                     else
                     {
-                        int tempId = mouseItemHolder.GetChild(0).GetComponent<Item>().itemId;
-                        int tempAmount = mouseItemHolder.GetChild(0).GetComponent<Item>().stackAmount;
-                        int tempOld = mouseItemHolder.GetChild(0).GetComponent<Item>().oldSlotNumber;
-                        Destroy(mouseItemHolder.GetChild(0).gameObject);
-
-                        if (inventoryContent[slotNumberDragged].stackAmount > 0 && inventoryContent[slotNumberDragged].itemId != tempId)
+                        if (inventoryContent[slotNumberDragged].stackAmount > 0 && inventoryContent[slotNumberDragged].itemId != draggedItem.itemId && inventoryContent[slotNumberDragged].itemId != 0)
                         {
-                            if (tempOld >= 0)
+                            if (draggedItem.oldSlotNumber >= 0)
                             {
-                                inventoryContent[tempOld].itemId = inventoryContent[slotNumberDragged].itemId;
-                                inventoryContent[tempOld].stackAmount = inventoryContent[slotNumberDragged].stackAmount;
+                                swap = true;
                             }
                             else
                             {
-                                AddItemToInventoryList(tempId, tempAmount, false);
+                                AddItemToInventoryList(draggedItem.itemId, draggedItem.stackAmount, false);
                             }
                         }
-                        else if (inventoryContent[slotNumberDragged].itemId == tempId)
+                        else if (inventoryContent[slotNumberDragged].itemId == draggedItem.itemId)
                         {
-                            if (tempOld != slotNumberDragged)
+                            if (draggedItem.oldSlotNumber != slotNumberDragged)
                             {
-                                if (tempAmount + inventoryContent[slotNumberDragged].stackAmount <= inventoryContent[slotNumberDragged].maxStackAmount)
+                                if (draggedItem.stackAmount + inventoryContent[slotNumberDragged].stackAmount <= inventoryContent[slotNumberDragged].maxStackAmount)
                                 {
-                                    tempAmount += inventoryContent[slotNumberDragged].stackAmount;
-                                    inventoryContent[tempOld].itemId = 0;
-                                    inventoryContent[tempOld].stackAmount = 0;
+                                    draggedItem.stackAmount += inventoryContent[slotNumberDragged].stackAmount;
+                                    inventoryContent[draggedItem.oldSlotNumber].itemId = 0;
+                                    inventoryContent[draggedItem.oldSlotNumber].stackAmount = 0;
                                 }
                                 else
                                 {
-                                    overflowAmount = tempAmount + inventoryContent[slotNumberDragged].stackAmount - inventoryContent[slotNumberDragged].maxStackAmount;
-                                    tempAmount = inventoryContent[slotNumberDragged].maxStackAmount;
+                                    overflowAmount = draggedItem.stackAmount + inventoryContent[slotNumberDragged].stackAmount - inventoryContent[slotNumberDragged].maxStackAmount;
+                                    draggedItem.stackAmount = inventoryContent[slotNumberDragged].maxStackAmount;
                                     overflowItemID = inventoryContent[slotNumberDragged].itemId;
                                 }
                             }
                         }
                         else
                         {
-                            if (tempOld >= 0)
+                            if (draggedItem.oldSlotNumber > -1)
                             {
-                                inventoryContent[tempOld].itemId = 0;
-                                inventoryContent[tempOld].stackAmount = 0;
+                                inventoryContent[draggedItem.oldSlotNumber].itemId = 0;
+                                inventoryContent[draggedItem.oldSlotNumber].stackAmount = 0;
                             }
                         }
-                        inventoryContent[slotNumberDragged].itemId = tempId;
-                        inventoryContent[slotNumberDragged].stackAmount = tempAmount;
-                        
+
+                        int id = inventoryContent[slotNumberDragged].itemId;
+                        int amount = inventoryContent[slotNumberDragged].stackAmount;
+                        inventoryContent[slotNumberDragged] = draggedItem;
+                        Destroy(mouseItemHolder.GetChild(0).gameObject);
+                        if (swap == true)
+                        {
+                            GameObject temp = Instantiate(ItemList.itemListUi[id], mouseItemHolder);
+                            temp.GetComponent<Item>().SetUp(amount, -1, this, default);
+                            itemBeingDragged = true;
+                        }
+
                         UpdateInventory();
                     }
                 }
             }
         }
     }
+    //adds items to inventory according to lists
     public void UpdateInventory()
     {
         for (int i = 0; i < inventoryContent.Count; i++)
@@ -329,9 +367,13 @@ public class Inventory : MonoBehaviour
             }
             if (inventoryContent[i].stackAmount > 0)
             {
-                GameObject temp = Instantiate(ItemList.itemListUi[inventoryContent[i].itemId], slot[i].transform);
-                temp.GetComponent<Item>().SetUp(inventoryContent[i].stackAmount, i, this);
-                inventoryContent[i] = temp.GetComponent<Item>();
+                //filter out emptyItems
+                if(inventoryContent[i].itemId != 0)
+                {
+                    GameObject temp = Instantiate(ItemList.itemListUi[inventoryContent[i].itemId], slot[i].transform);
+                    temp.GetComponent<Item>().SetUp(inventoryContent[i].stackAmount, i, this, default);
+                    inventoryContent[i] = temp.GetComponent<Item>();
+                }
             }
             if (slot[hotbarLocation].transform.childCount > 0)
             {
@@ -346,8 +388,13 @@ public class Inventory : MonoBehaviour
             AddItemToInventoryList(overflowItemID, overflowAmount, false);
         }
     }
-    public Transform BeginDrag()
+    public void AddEmptyItem(int slotNumber)
     {
+        inventoryContent[slotNumber] = emptyItem.GetComponent<Item>();
+    }
+    public Transform BeginDrag(Item dragThis)
+    {
+        draggedItem = dragThis;
         return mouseItemHolder;
     }
     public void GiveMouseLocationForInventory(int slotNumber)
@@ -358,9 +405,9 @@ public class Inventory : MonoBehaviour
     {
         if (mouseItemHolder.childCount > 0)
         {
-            int tempId = mouseItemHolder.GetChild(0).GetComponent<Item>().itemId;
-            int tempAmount = mouseItemHolder.GetChild(0).GetComponent<Item>().stackAmount;
-            int tempOld = mouseItemHolder.GetChild(0).GetComponent<Item>().oldSlotNumber;
+            int tempId = draggedItem.itemId;
+            int tempAmount = draggedItem.stackAmount;
+            int tempOld = draggedItem.oldSlotNumber;
             Destroy(mouseItemHolder.GetChild(0).gameObject);
             if (tempOld > 0)
             {
