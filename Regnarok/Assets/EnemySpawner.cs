@@ -6,9 +6,11 @@ using Photon.Pun;
 public class EnemySpawner : MonoBehaviour
 {
 	public float maxrangeFromPlayer=15;
+	public float toCloseDis=5;
+	public float startRaycastHeight;
 	public int enemiesForPlayer;
 	public int playerAmount;
-	public float toCloseDis=5;
+	public LayerMask groundLayer;
 	private GameObject[] players;
 	private void Start()
 	{
@@ -30,6 +32,7 @@ public class EnemySpawner : MonoBehaviour
 			for (int i_i = 0; i_i < playerAmount; i_i++)
 			{
 				Vector3 spawnPos = GetSpawnPos(i_i);
+
 				float dis = Vector3.Distance(spawnPos, players[i_i].transform.position);
 				if(CheckDistance(dis))
 				{
@@ -57,7 +60,7 @@ public class EnemySpawner : MonoBehaviour
 			return false;
 		}
 	}
-	public Vector3 GetSpawnPos(int index)
+	public Vector3 GetSpawnPos(int index)///ff fixen
 	{
 		Vector3 spawnPos = players[index].transform.position;
 		if (Chance())
@@ -69,6 +72,18 @@ public class EnemySpawner : MonoBehaviour
 		{
 			spawnPos.x -= Random.Range(toCloseDis, maxrangeFromPlayer);
 			spawnPos.z -= Random.Range(toCloseDis, maxrangeFromPlayer);
+		}
+
+		Ray ray = new Ray(spawnPos, -transform.up);
+		RaycastHit hitInfo;
+		if (Physics.Raycast(ray, out hitInfo, groundLayer))
+		{
+			spawnPos = hitInfo.transform.position;
+			return spawnPos;
+		}
+		else
+		{
+			GetSpawnPos(index);
 		}
 		return spawnPos;
 	}
