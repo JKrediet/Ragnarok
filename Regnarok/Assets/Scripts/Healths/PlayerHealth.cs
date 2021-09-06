@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class PlayerHealth : Health
 {
     public Slider HealthSlider;
-
+    public float    health;
     private void Start()
     {
         if (PV.IsMine)

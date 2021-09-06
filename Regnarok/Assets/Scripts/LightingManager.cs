@@ -11,9 +11,14 @@ public class LightingManager : MonoBehaviour
     public float devideDay;
     public float devideNight;
     public bool isNight;
+    private GameManager gm;
 
 
-    private void Update()
+	private void Start()
+	{
+        gm = GetComponent<GameManager>();
+    }
+	private void Update()
     {
         if (Preset == null)
             return;
@@ -26,6 +31,10 @@ public class LightingManager : MonoBehaviour
 				if (!isNight)
 				{
                     isNight = true;
+					if (!gm.isDoingNight)
+					{
+                        gm.StartCoroutine("IsNight");
+					}
                 }
 			}
 			else
@@ -44,8 +53,6 @@ public class LightingManager : MonoBehaviour
             UpdateLighting(TimeOfDay / 24f);
         }
     }
-
-
     private void UpdateLighting(float timePercent)
     {
         //Set ambient and fog
