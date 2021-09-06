@@ -128,18 +128,13 @@ public class Item : MonoBehaviour
                     //get mouse pos
                     transform.SetParent(inv.BeginDrag(this));
                     transform.position = Input.mousePosition;
-
-                    //empty old slot
-                    if(!emptySlot)
-                    {
-                        inv.AddEmptyItem(oldSlotNumber);
-                    }
+                    inv.AddEmptyItem(oldSlotNumber);
                 }
             }
             else
             {
                 inv.itemBeingDragged = false;
-                inv.AddItemToInventoryList(-1, -1, true);
+                inv.AddItemToInventoryList(-1, -1, true, oldSlotNumber);
             }
         }
         //end drag in inventory-script
@@ -155,12 +150,9 @@ public class Item : MonoBehaviour
         {
             if(inv)
             {
-                if (inv.itemBeingDragged)
+                if (GetComponent<Image>())
                 {
-                    if (GetComponent<Image>())
-                    {
-                        GetComponent<Image>().raycastTarget = !inv.itemBeingDragged;
-                    }
+                    GetComponent<Image>().raycastTarget = !inv.itemBeingDragged;
                 }
             }
             else

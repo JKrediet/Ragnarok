@@ -28,7 +28,7 @@ public class Slot : MonoBehaviour
         if (inv != null)
         {
             inv.itemBeingDragged = false;
-            inv.AddItemToInventoryList(-1, -1, true);
+            inv.AddItemToInventoryList(-1, -1, true, slotNumber);
         }
         else
         {
