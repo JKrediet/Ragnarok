@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Realtime;
 using Photon.Pun;
 using System.IO;
+using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class Inventory : MonoBehaviour
     public GameObject[] slot; 
 
     public GameObject slotHolder, equipmentSlotHolder, hotbarSlotsHolder;
-    public Item emptyItem;
+    public GameObject emptyItem;
 
     public Transform mouseItemHolder, handHolder;
     public bool itemBeingDragged;
@@ -29,7 +30,7 @@ public class Inventory : MonoBehaviour
     int hotbarLocation;
 
     public List<int> checkTheseNumbers;
-    public List<Item> inventoryContent;
+    public List<GameObject> inventoryContent;
 
     //if itemstack overflows
     int overflowAmount, overflowItemID;
@@ -87,10 +88,10 @@ public class Inventory : MonoBehaviour
         //put empty items in inventory list
         for (int i = 0; i < 37; i++)
         {
-            GameObject yes = Instantiate(ItemList.itemListUi[0], slot[i].transform);
-            yes.GetComponent<Item>().SetUp(1, i, this, default);
+            //GameObject yes = Instantiate(ItemList.itemListUi[0], slot[i].transform);
+            //yes.GetComponent<Item>().SetUp(1, i, this, default);
             inventoryContent.Add(default);
-            inventoryContent[i] = yes.GetComponent<Item>();
+            //inventoryContent[i] = yes;
         }
     }
 
@@ -179,172 +180,101 @@ public class Inventory : MonoBehaviour
             itemAmount = 1;
         }
         slotNumberDragged = 0;
-        AddItemToInventoryList(itemId, itemAmount, false);
+        AddItemToInventoryList(itemId, itemAmount, false, -1);
     }
-    public void AddItemToInventoryList(int itemId, int itemAmount, bool isAlreadyInInventory)
+    public void AddItemToInventoryList(int itemId, int itemAmount, bool isAlreadyInInventory, int oldSlot)
     {
-        //filter out all slots that have items in it
         if (!isAlreadyInInventory)
         {
-            checkTheseNumbers.Clear();
+            int useThisSlot = -1;
             for (int i = 0; i < inventoryContent.Count; i++)
             {
-                checkTheseNumbers.Add(i);
-                if (inventoryContent[i].stackAmount > 0 && inventoryContent[i].itemId != itemId)
+                if(useThisSlot > -1)
                 {
-                    //-1 == this slot has an item
-                    checkTheseNumbers[i] = -1;
+                    continue;
                 }
-                if(inventoryContent[i].stackAmount == inventoryContent[i].maxStackAmount && inventoryContent[i].stackAmount > 0)
+                if(inventoryContent[i] != null)
                 {
-                    checkTheseNumbers[i] = -1;
-                }
-                if (i > 5 && i < 12)
-                {
-                    //exclude equipment slots
-                    checkTheseNumbers[i] = -1;
-                }
-                if(inventoryContent[i].stackAble == false)
-                {
-                    //exculde non-stable items
-                    checkTheseNumbers[i] = -1;
-                }
-                if(inventoryContent[i].itemId == 0)
-                {
-                    //root out empty items
-                    checkTheseNumbers[i] = i;
-                }
-            }
-            for (int i = 0; i < inventoryContent.Count; i++)
-            {
-                if (checkTheseNumbers[i] == i)
-                {
-                    if (inventoryContent[i].itemId == itemId)
+                    Item item = inventoryContent[i].GetComponent<Item>();
+                    if (item.itemId == itemId)
                     {
-                        if (itemAmount + inventoryContent[i].stackAmount <= inventoryContent[i].maxStackAmount)
+                        if(item.stackAmount + itemAmount <= item.maxStackAmount)
                         {
-                            itemAmount += inventoryContent[i].stackAmount;
-                        }
-                        else
-                        {
-                            overflowAmount = itemAmount + inventoryContent[i].stackAmount - inventoryContent[i].maxStackAmount;
-                            itemAmount = inventoryContent[i].maxStackAmount;
-                            overflowItemID = inventoryContent[i].itemId;
-                        }
-                    }
-                    inventoryContent[i].itemId = itemId;
-                    inventoryContent[i].stackAmount = itemAmount;
-                    UpdateInventory();
-                    return;
-                }
-            }
-        }
-        else
-        {
-            bool swap = false;
-            if (slotNumberDragged > -1)
-            {
-                if (mouseItemHolder.childCount > 0)
-                {
-                    if (slotNumberDragged > 5 && slotNumberDragged < 12)
-                    {
-                        if (mouseItemHolder.GetComponentInChildren<Item>().isEquipment)
-                        {
-                            //get item that is being held
-                            int tempId = mouseItemHolder.GetChild(0).GetComponent<Item>().itemId;
-                            int tempAmount = mouseItemHolder.GetChild(0).GetComponent<Item>().stackAmount;
-                            int tempOld = mouseItemHolder.GetChild(0).GetComponent<Item>().oldSlotNumber;
-                            Destroy(mouseItemHolder.GetChild(0).gameObject);
-
-                            if (inventoryContent[slotNumberDragged].stackAmount > 0 && inventoryContent[slotNumberDragged].itemId != tempId)
-                            {
-                                inventoryContent[tempOld].itemId = inventoryContent[slotNumberDragged].itemId;
-                                inventoryContent[tempOld].stackAmount = inventoryContent[slotNumberDragged].stackAmount;
-                            }
-                            else if (inventoryContent[slotNumberDragged].itemId == tempId)
-                            {
-                                if (tempOld != slotNumberDragged)
-                                {
-                                    if (tempAmount + inventoryContent[slotNumberDragged].stackAmount <= inventoryContent[slotNumberDragged].maxStackAmount)
-                                    {
-                                        tempAmount += inventoryContent[slotNumberDragged].stackAmount;
-                                    }
-                                    else
-                                    {
-                                        overflowAmount = tempAmount + inventoryContent[slotNumberDragged].stackAmount - inventoryContent[slotNumberDragged].maxStackAmount;
-                                        tempAmount = inventoryContent[slotNumberDragged].maxStackAmount;
-                                        overflowItemID = inventoryContent[slotNumberDragged].itemId;
-                                    }
-                                }
-                                inventoryContent[tempOld].itemId = 0;
-                                inventoryContent[tempOld].stackAmount = 0;
-                            }
-                            else
-                            {
-                                inventoryContent[tempOld].itemId = 0;
-                                inventoryContent[tempOld].stackAmount = 0;
-                            }
-                            inventoryContent[slotNumberDragged].itemId = tempId;
-                            inventoryContent[slotNumberDragged].stackAmount = tempAmount;
-                            UpdateInventory();
-                        }
-                        else
-                        {
+                            int useThis = item.stackAmount += itemAmount;
+                            item.SetUp(useThis, i, this, default);
                             return;
+                        }
+                        else
+                        {
+                            continue;
                         }
                     }
                     else
                     {
-                        if (inventoryContent[slotNumberDragged].stackAmount > 0 && inventoryContent[slotNumberDragged].itemId != draggedItem.itemId && inventoryContent[slotNumberDragged].itemId != 0)
+                        continue;
+                    }
+                }
+                else if (inventoryContent[i] == null)
+                {
+                    useThisSlot = i;
+                }
+            }
+            if(useThisSlot > -1)
+            {
+                GameObject temp = Instantiate(ItemList.itemListUi[itemId], slot[useThisSlot].transform);
+                temp.GetComponent<Item>().SetUp(itemAmount, useThisSlot, this, default);
+                inventoryContent[useThisSlot] = temp;
+                return;
+            }
+        }
+        else
+        {
+            if (draggedItem != null)
+            {
+                if (inventoryContent[slotNumberDragged] == null)
+                {
+                    inventoryContent[slotNumberDragged] = draggedItem.gameObject;
+                    draggedItem.transform.SetParent(slot[slotNumberDragged].transform);
+                    draggedItem.transform.position = slot[slotNumberDragged].transform.position;
+                    draggedItem.GetComponent<Item>().SetUp(draggedItem.stackAmount, slotNumberDragged, this, default);
+                    itemBeingDragged = false;
+                    draggedItem = null;
+                }
+                else if(inventoryContent[slotNumberDragged] != null)
+                {
+                    Item item = inventoryContent[slotNumberDragged].GetComponent<Item>();
+                    if (item.itemId == draggedItem.itemId)
+                    {
+                        if (item.stackAmount + draggedItem.stackAmount <= item.maxStackAmount)
                         {
-                            if (draggedItem.oldSlotNumber >= 0)
-                            {
-                                swap = true;
-                            }
-                            else
-                            {
-                                AddItemToInventoryList(draggedItem.itemId, draggedItem.stackAmount, false);
-                            }
-                        }
-                        else if (inventoryContent[slotNumberDragged].itemId == draggedItem.itemId)
-                        {
-                            if (draggedItem.oldSlotNumber != slotNumberDragged)
-                            {
-                                if (draggedItem.stackAmount + inventoryContent[slotNumberDragged].stackAmount <= inventoryContent[slotNumberDragged].maxStackAmount)
-                                {
-                                    draggedItem.stackAmount += inventoryContent[slotNumberDragged].stackAmount;
-                                    inventoryContent[draggedItem.oldSlotNumber].itemId = 0;
-                                    inventoryContent[draggedItem.oldSlotNumber].stackAmount = 0;
-                                }
-                                else
-                                {
-                                    overflowAmount = draggedItem.stackAmount + inventoryContent[slotNumberDragged].stackAmount - inventoryContent[slotNumberDragged].maxStackAmount;
-                                    draggedItem.stackAmount = inventoryContent[slotNumberDragged].maxStackAmount;
-                                    overflowItemID = inventoryContent[slotNumberDragged].itemId;
-                                }
-                            }
+                            print(0);
+                            int useThis = item.stackAmount += draggedItem.stackAmount;
+                            item.SetUp(useThis, slotNumberDragged, this, default);
+                            Destroy(draggedItem.gameObject);
+                            itemBeingDragged = false;
                         }
                         else
                         {
-                            if (draggedItem.oldSlotNumber > -1)
-                            {
-                                inventoryContent[draggedItem.oldSlotNumber].itemId = 0;
-                                inventoryContent[draggedItem.oldSlotNumber].stackAmount = 0;
-                            }
+                            print(1);
+                            int useThis = item.stackAmount + draggedItem.stackAmount - item.maxStackAmount;
+                            item.SetUp(item.maxStackAmount, slotNumberDragged, this, default);
+                            draggedItem.stackAmount = useThis;
                         }
+                    }
+                    else
+                    {
+                        //store slotitem
+                        GameObject SwappedItem = inventoryContent[slotNumberDragged];
+                        GameObject oldDraggedItem = draggedItem.gameObject;
 
-                        int id = inventoryContent[slotNumberDragged].itemId;
-                        int amount = inventoryContent[slotNumberDragged].stackAmount;
-                        inventoryContent[slotNumberDragged] = draggedItem;
-                        Destroy(mouseItemHolder.GetChild(0).gameObject);
-                        if (swap == true)
-                        {
-                            GameObject temp = Instantiate(ItemList.itemListUi[id], mouseItemHolder);
-                            temp.GetComponent<Item>().SetUp(amount, -1, this, default);
-                            itemBeingDragged = true;
-                        }
+                        draggedItem.transform.SetParent(slot[slotNumberDragged].transform);
+                        draggedItem.transform.position = slot[slotNumberDragged].transform.position;
+                        draggedItem.GetComponent<Item>().SetUp(draggedItem.stackAmount, slotNumberDragged, this, default);
 
-                        UpdateInventory();
+                        itemBeingDragged = true;
+                        draggedItem = null;
+                        SwappedItem.GetComponent<Item>().SwapItem();
+                        inventoryContent[slotNumberDragged] = oldDraggedItem;
                     }
                 }
             }
@@ -355,29 +285,37 @@ public class Inventory : MonoBehaviour
     {
         for (int i = 0; i < inventoryContent.Count; i++)
         {
-            //check if item exists
-            if(inventoryContent[i].itemId >= ItemList.itemListUi.Count)
+            if (inventoryContent[i] != null)
             {
-                inventoryContent[i].itemId = 1;
-            }
-
-            foreach (Transform item in slot[i].transform)
-            {
-                Destroy(item.gameObject);
-            }
-            if (inventoryContent[i].stackAmount > 0)
-            {
-                //filter out emptyItems
-                if(inventoryContent[i].itemId != 0)
+                Item itemInInventory = inventoryContent[i].GetComponent<Item>();
+                //check if item exists
+                if (itemInInventory.itemId >= ItemList.itemListUi.Count)
                 {
-                    GameObject temp = Instantiate(ItemList.itemListUi[inventoryContent[i].itemId], slot[i].transform);
-                    temp.GetComponent<Item>().SetUp(inventoryContent[i].stackAmount, i, this, default);
-                    inventoryContent[i] = temp.GetComponent<Item>();
+                    itemInInventory.itemId = 1;
+                }
+
+                foreach (Transform item in slot[i].transform)
+                {
+                    Destroy(item.gameObject);
+                }
+                if (itemInInventory.stackAmount > 0)
+                {
+                    //filter out emptyItems
+                    if (itemInInventory.itemId != 0)
+                    {
+                        GameObject temp = Instantiate(ItemList.itemListUi[itemInInventory.itemId], slot[i].transform);
+                        temp.GetComponent<Item>().SetUp(itemInInventory.stackAmount, i, this, default);
+                        inventoryContent[i] = temp;
+                    }
+                }
+                if (slot[hotbarLocation].transform.childCount > 0)
+                {
+                    GiveItemStats(slot[hotbarLocation].transform.GetChild(0).GetComponent<Item>());
                 }
             }
-            if (slot[hotbarLocation].transform.childCount > 0)
+            else
             {
-                GiveItemStats(slot[hotbarLocation].transform.GetChild(0).GetComponent<Item>());
+                inventoryContent[i] = null;
             }
         }
         //adds overflow items to inventory for next slot
@@ -385,12 +323,12 @@ public class Inventory : MonoBehaviour
         {
             int tempAmount = overflowAmount;
             overflowAmount = 0;
-            AddItemToInventoryList(overflowItemID, overflowAmount, false);
+            AddItemToInventoryList(overflowItemID, overflowAmount, false, -1);
         }
     }
     public void AddEmptyItem(int slotNumber)
     {
-        inventoryContent[slotNumber] = emptyItem.GetComponent<Item>();
+        inventoryContent[slotNumber] = null;
     }
     public Transform BeginDrag(Item dragThis)
     {
@@ -411,12 +349,12 @@ public class Inventory : MonoBehaviour
             Destroy(mouseItemHolder.GetChild(0).gameObject);
             if (tempOld > 0)
             {
-                inventoryContent[tempOld].stackAmount = 0;
-                inventoryContent[tempOld].itemId = 0;
+                //inventoryContent[tempOld].stackAmount = 0;
+                //inventoryContent[tempOld].itemId = 0;
             }
 
             itemBeingDragged = false;
-            UpdateInventory();
+            //UpdateInventory();
 
             GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", $"Item" + tempId), transform.position + transform.forward * 2, Quaternion.identity);
             droppedItem.GetComponent<Rigidbody>().AddExplosionForce(100, transform.position + transform.forward - transform.up, 2);
