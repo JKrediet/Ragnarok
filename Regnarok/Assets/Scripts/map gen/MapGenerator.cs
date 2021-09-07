@@ -61,7 +61,6 @@ public class MapGenerator : MonoBehaviour
         }
         MapDisplay display = FindObjectOfType<MapDisplay>();
         display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noisemap, meshHeightMultiplier, meshHeightCurve, editorPrevieuwLOD, flatShading,GetComponent<MapGenerator>()), TextureGenerator.TextureFromColourMap(collorMap, chuckSize, chuckSize));
-        AddLoadAmount();
 
         Invoke("ColorMap", 1);
     }
@@ -89,7 +88,6 @@ public class MapGenerator : MonoBehaviour
 		Mesh mesh = terrainObject.GetComponent<MeshFilter>().mesh;
         Vector3[] vertices = mesh.vertices;
         Color[] colors = new Color[vertices.Length];
-        AddLoadAmount();
         for (int i = 0; i < vertices.Length; i++)
         {
             SetMinMaxHeights(vertices[i].y);
@@ -97,7 +95,6 @@ public class MapGenerator : MonoBehaviour
             colors[i] = gradient.Evaluate(height);
         }
         mesh.colors = colors;
-        AddLoadAmount();
 		if (!generatedEnv)
 		{
             Invoke("StartEnvSpawner", 1);
@@ -111,9 +108,5 @@ public class MapGenerator : MonoBehaviour
 		{
             envSpawn.Generate();
 		}
-    }
-    public void AddLoadAmount()
-	{
-        loadAmount += 20;
     }
 }

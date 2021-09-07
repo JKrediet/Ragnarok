@@ -58,7 +58,7 @@ public class EnviromentSpawner : MonoBehaviour
                             {
                                 if (spawnItems[i].canSpawnOnSand)
                                 {
-                                    if (hitInfo.point.y <= maxSandHeight)
+                                    if (hitInfo.point.y <= minMountenHeight)
                                     {
                                         if (spawnItems[i].randomRot)
                                         {
@@ -99,7 +99,7 @@ public class EnviromentSpawner : MonoBehaviour
                                     }
                                 }
                                 else if (spawnItems[i].onlySpawnOnMountenTop)
-								{
+                                {
                                     if (hitInfo.point.y >= minMountenHeight)
                                     {
                                         if (spawnItems[i].randomRot)
@@ -116,24 +116,27 @@ public class EnviromentSpawner : MonoBehaviour
                                             {
                                                 Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, transform);
                                             }
-                                        }   
+                                        }
                                     }
                                 }
                                 else
                                 {
-                                    if (spawnItems[i].randomRot)
+                                    if (hitInfo.point.y >= maxSandHeight && hitInfo.point.y <= minMountenHeight)
                                     {
-                                        Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform);
-                                    }
-                                    else
-                                    {
-                                        if (spawnItems[i].rotateWithMesh)
+                                        if (spawnItems[i].randomRot)
                                         {
-                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), transform);
+                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform);
                                         }
                                         else
                                         {
-                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, transform);
+                                            if (spawnItems[i].rotateWithMesh)
+                                            {
+                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), transform);
+                                            }
+                                            else
+                                            {
+                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, transform);
+                                            }
                                         }
                                     }
                                 }
@@ -143,14 +146,12 @@ public class EnviromentSpawner : MonoBehaviour
                 }
             }
 		}
-        mapGen.AddLoadAmount();
     }
     public void BuildNavMesh()
     {
 		if (canBakeNav)
         { 
            // NavMeshBuilder.BuildNavMesh();
-            mapGen.AddLoadAmount();
 		}
     }
     public bool Chance()
