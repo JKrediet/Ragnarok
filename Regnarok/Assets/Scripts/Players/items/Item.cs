@@ -148,22 +148,9 @@ public class Item : MonoBehaviour
     {
         if(isInInventory)
         {
-            if(inv)
+            if (GetComponent<Image>())
             {
-                if (GetComponent<Image>())
-                {
-                    GetComponent<Image>().raycastTarget = !inv.itemBeingDragged;
-                }
-            }
-            else
-            {
-                if (chestInv.itemBeingDragged)
-                {
-                    if (GetComponent<Image>())
-                    {
-                        GetComponent<Image>().raycastTarget = !chestInv.itemBeingDragged;
-                    }
-                }
+                GetComponent<Image>().raycastTarget = !inv.itemBeingDragged;
             }
         }
     }

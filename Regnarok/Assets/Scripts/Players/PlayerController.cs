@@ -249,6 +249,13 @@ public class PlayerController : MonoBehaviour
     public void LockCamera()
     {
         InventoryIsOpen = !InventoryIsOpen;
+        if (!InventoryIsOpen)
+        {
+            if (lastChest)
+            {
+                lastChest = null;
+            }
+        }
     }
     public void GiveItemStats(Item _itemType)
     {
@@ -267,7 +274,7 @@ public class PlayerController : MonoBehaviour
                     {
                         lastChest = _hit.transform.GetComponent<ChestInventory>();
                         lastChest.OpenChest(GetComponent<Inventory>());
-                        lastChest.mouseItemHolder = GetComponent<Inventory>().mouseItemHolder;
+                        //lastChest.mouseItemHolder = GetComponent<Inventory>().mouseItemHolder;
                     }
                 }
             }
@@ -277,7 +284,7 @@ public class PlayerController : MonoBehaviour
             float distance = Vector3.Distance(transform.position, lastChest.transform.position);
             if (distance > 6)
             {
-                lastChest.transform.GetComponent<ChestInventory>().CloseChest();
+                lastChest.gameObject.SetActive(false);
                 lastChest = null;
             }
         }

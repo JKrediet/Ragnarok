@@ -11,6 +11,7 @@ public class Inventory : MonoBehaviour
     [HideInInspector] public PhotonView pv;
     bool inventoryEnabled;
     public GameObject inventory;
+    public GameObject background;
 
     private int allSlots, allEquipmentSlots, allHotbarSlots;
     public GameObject[] slot; 
@@ -50,6 +51,7 @@ public class Inventory : MonoBehaviour
     {
         pv = GetComponent<PhotonView>();
         inventory.SetActive(false);
+        background.SetActive(false);
         if (pv.IsMine)
         {
             return;
@@ -57,6 +59,7 @@ public class Inventory : MonoBehaviour
         else
         {
             inventory.transform.parent.gameObject.SetActive(false);
+            background.SetActive(false);
             enabled = false;
         }
     }
@@ -136,8 +139,14 @@ public class Inventory : MonoBehaviour
         {
             inventoryEnabled = !inventoryEnabled;
             inventory.SetActive(inventoryEnabled);
+            background.SetActive(inventoryEnabled);
             GetComponent<PlayerController>().LockCamera();
-            if(!inventoryEnabled)
+            if(lastChest)
+            {
+                lastChest.chestPanel.SetActive(inventoryEnabled);
+            }
+            lastChest = null;
+            if (!inventoryEnabled)
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 if (mouseItemHolder.childCount > 0)
@@ -157,6 +166,7 @@ public class Inventory : MonoBehaviour
         lastChest = chest;
         inventoryEnabled = !inventoryEnabled;
         inventory.SetActive(inventoryEnabled);
+        background.SetActive(inventoryEnabled);
         GetComponent<PlayerController>().LockCamera();
         if (!inventoryEnabled)
         {
@@ -171,7 +181,7 @@ public class Inventory : MonoBehaviour
             Cursor.lockState = CursorLockMode.Confined;
         }
         Cursor.visible = inventoryEnabled;
-        chest.chestPanel.SetActive(chest);
+        chest.chestPanel.SetActive(inventoryEnabled);
     }
     public void AddItemFromOutsideOfInventory(int itemId, int itemAmount)
     {
@@ -247,7 +257,6 @@ public class Inventory : MonoBehaviour
                     {
                         if (item.stackAmount + draggedItem.stackAmount <= item.maxStackAmount)
                         {
-                            print(0);
                             int useThis = item.stackAmount += draggedItem.stackAmount;
                             item.SetUp(useThis, slotNumberDragged, this, default);
                             Destroy(draggedItem.gameObject);
@@ -255,10 +264,11 @@ public class Inventory : MonoBehaviour
                         }
                         else
                         {
-                            print(1);
                             int useThis = item.stackAmount + draggedItem.stackAmount - item.maxStackAmount;
                             item.SetUp(item.maxStackAmount, slotNumberDragged, this, default);
-                            draggedItem.stackAmount = useThis;
+                            draggedItem.SetUp(useThis, -1, this, default);
+                            itemBeingDragged = true;
+                            return;
                         }
                     }
                     else
@@ -280,55 +290,12 @@ public class Inventory : MonoBehaviour
             }
         }
     }
-    //adds items to inventory according to lists
-    public void UpdateInventory()
-    {
-        for (int i = 0; i < inventoryContent.Count; i++)
-        {
-            if (inventoryContent[i] != null)
-            {
-                Item itemInInventory = inventoryContent[i].GetComponent<Item>();
-                //check if item exists
-                if (itemInInventory.itemId >= ItemList.itemListUi.Count)
-                {
-                    itemInInventory.itemId = 1;
-                }
-
-                foreach (Transform item in slot[i].transform)
-                {
-                    Destroy(item.gameObject);
-                }
-                if (itemInInventory.stackAmount > 0)
-                {
-                    //filter out emptyItems
-                    if (itemInInventory.itemId != 0)
-                    {
-                        GameObject temp = Instantiate(ItemList.itemListUi[itemInInventory.itemId], slot[i].transform);
-                        temp.GetComponent<Item>().SetUp(itemInInventory.stackAmount, i, this, default);
-                        inventoryContent[i] = temp;
-                    }
-                }
-                if (slot[hotbarLocation].transform.childCount > 0)
-                {
-                    GiveItemStats(slot[hotbarLocation].transform.GetChild(0).GetComponent<Item>());
-                }
-            }
-            else
-            {
-                inventoryContent[i] = null;
-            }
-        }
-        //adds overflow items to inventory for next slot
-        if (overflowAmount > 0)
-        {
-            int tempAmount = overflowAmount;
-            overflowAmount = 0;
-            AddItemToInventoryList(overflowItemID, overflowAmount, false, -1);
-        }
-    }
     public void AddEmptyItem(int slotNumber)
     {
-        inventoryContent[slotNumber] = null;
+        if(slotNumber > -1)
+        {
+            inventoryContent[slotNumber] = null;
+        }
     }
     public Transform BeginDrag(Item dragThis)
     {

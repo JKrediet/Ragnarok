@@ -32,8 +32,7 @@ public class Slot : MonoBehaviour
         }
         else
         {
-            chestInv.itemBeingDragged = false;
-            chestInv.AddItemToInventoryList(-1, -1, true);
+            chestInv.AddItemToInventoryList(-1, -1, true, slotNumber);
         }
     }
 }
