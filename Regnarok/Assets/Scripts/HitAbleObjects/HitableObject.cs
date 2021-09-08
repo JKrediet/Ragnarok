@@ -49,7 +49,7 @@ public class HitableObject : MonoBehaviour
     {
         PhotonNetwork.Destroy(gameObject);
         GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", $"Item" + itemId), transform.position + transform.forward * 2, Quaternion.identity);
-        droppedItem.GetComponent<Item>().ToInventory(false);
-        droppedItem.GetComponent<Item>().stackAmount = Random.Range((int)minDrop, (int)maxDrop);
+        //droppedItem.GetComponent<Item>().ToInventory(false);
+        //droppedItem.GetComponent<Item>().stackAmount = Random.Range((int)minDrop, (int)maxDrop);
     }
 }

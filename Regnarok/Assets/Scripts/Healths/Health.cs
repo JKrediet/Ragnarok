@@ -13,6 +13,7 @@ public class Health : MonoBehaviour
 
     public PhotonView PV;
 
+
     protected virtual void Awake()
     {
         if(GetComponent<PhotonView>())
