@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public float scalingIncreaseAmount;
     public int days;
     [Header("Player Spawn")]
+    public GameObject playerObject;
     public LayerMask groundLayer;
     public float spawnRadius;
     public float spawnHeight;
@@ -46,7 +47,8 @@ public class GameManager : MonoBehaviour
             RaycastHit hitInfo;
             if (Physics.Raycast(ray, out hitInfo, groundLayer))
             {
-                PhotonNetwork.Instantiate("PlayerPrefab", hitInfo.transform.position, Quaternion.identity);
+                Instantiate(playerObject, hitInfo.transform.position, Quaternion.identity);
+               // PhotonNetwork.Instantiate("PlayerPrefab", hitInfo.transform.position, Quaternion.identity);
             }
         }
 	}

@@ -11,6 +11,7 @@ public class EnemySpawner : MonoBehaviour
 	public int enemiesForPlayer;
 	public int playerAmount;
 	public LayerMask groundLayer;
+	public GameObject testEnemie;
 	private GameObject[] players;
 	private void Start()
 	{
@@ -21,7 +22,7 @@ public class EnemySpawner : MonoBehaviour
 		playerAmount = 0;
 		for (int i = 0; i < players.Length; i++)
 		{
-			if (players[i].GetComponent<Health>())///moet hier nogg ff de float health kunnne getten jorn!
+			if (players[i].GetComponent<MeshRenderer>())///moet hier nogg ff de float health kunnne getten jorn!
 			{
 				playerAmount++;
 			}
@@ -44,7 +45,8 @@ public class EnemySpawner : MonoBehaviour
 				}
 				else
 				{
-					PhotonNetwork.Instantiate("string omin te spawnen", spawnPos, Quaternion.identity);
+					Instantiate(testEnemie,spawnPos, Quaternion.identity);
+					//PhotonNetwork.Instantiate("string omin te spawnen", spawnPos, Quaternion.identity);
 				}
 			}
 		}
