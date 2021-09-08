@@ -28,14 +28,8 @@ public class Inventory : MonoBehaviour
          KeyCode.Alpha6
      };
 
-    public event Action<Item> OnItemRightClickedEvent;
-
     private void Awake()
     {
-        for (int i = 0; i < itemSlots.Length; i++)
-        {
-            itemSlots[i].OnRightClickEvent += OnItemRightClickedEvent;
-        }
         pv = GetComponent<PhotonView>();
         inventoryPanel.SetActive(false);
         if (pv.IsMine)
@@ -56,18 +50,19 @@ public class Inventory : MonoBehaviour
             itemSlots = itemsParent.GetComponentsInChildren<ItemSlot>();
         }
         RefreshUI();
+
     }
     private void Update() //<----------------------------- update
     {
         OpenInventory();
         ScrollHotbar();
     }
-    private void RefreshUI()
+    public void RefreshUI()
     {
         int i = 0;
         for (; i < items.Count && i < itemSlots.Length; i++)
         {
-            itemSlots[i].item = items[i];
+            items[i] = itemSlots[i].item;
         }
         for (; i < itemSlots.Length; i++)
         {
@@ -77,27 +72,40 @@ public class Inventory : MonoBehaviour
 
     public bool AddItem(Item item)
     {
-        if(IsFull())
+        for (int i = 0; i < itemSlots.Length; i++)
         {
-            return false;
+            if(itemSlots[i].item == null)
+            {
+                itemSlots[i].item = item;
+                RefreshUI();
+                return true;
+            }
         }
-
-        items.Add(item);
-        RefreshUI();
-        return true;
+        return false;
     }
     public bool RemoveItem(Item item)
     {
-        if(items.Remove(item))
+        for (int i = 0; i < itemSlots.Length; i++)
         {
-            RefreshUI();
-            return true;
+            if (itemSlots[i].item == item)
+            {
+                itemSlots[i].item = null;
+                RefreshUI();
+                return true;
+            }
         }
         return false;
     }
     public bool IsFull()
     {
-        return items.Count >= itemSlots.Length;
+        for (int i = 0; i < itemSlots.Length; i++)
+        {
+            if (itemSlots[i].item == null)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     //old stuff

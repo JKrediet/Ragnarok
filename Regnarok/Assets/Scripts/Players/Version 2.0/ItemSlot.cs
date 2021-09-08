@@ -3,11 +3,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class ItemSlot : MonoBehaviour, IPointerClickHandler
+public class ItemSlot : MonoBehaviour
 {
     [SerializeField] Image image;
+    public int slotID;
 
-    public event Action<Item> OnRightClickEvent;
+    private Color normalColor = Color.white;
+    private Color disabledColor = new Color(1, 1, 1, 0);
 
     private Item _item;
     public Item item
@@ -18,23 +20,12 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
 
             if(_item == null)
             {
-                image.enabled = false;
+                image.color = disabledColor;
             }
             else
             {
                 image.sprite = _item.icon;
-                image.enabled = true;
-            }
-        }
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if(eventData != null && eventData.button == PointerEventData.InputButton.Right)
-        {
-            if(item != null && OnRightClickEvent != null)
-            {
-                OnRightClickEvent(item);
+                image.color = normalColor;
             }
         }
     }
@@ -45,5 +36,10 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
         {
             image = GetComponent<Image>();
         }
+    }
+
+    public virtual bool CanRecieveItem(Item item)
+    {
+        return true;
     }
 }
