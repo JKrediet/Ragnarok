@@ -11,12 +11,14 @@ public class Item : ScriptableObject
 {
     public string itemName;
     public Sprite icon;
-    public int itemAmount;
+    [Range(1, 100)]
+    public int itemAmount, maxStack;
 
-    public virtual void SetUpNewItem(string _itemName, int _itemAmount, Sprite _icon, EquipmentType _type)
+    public virtual void SetUpNewItem(string _itemName, int _itemAmount, Sprite _icon, EquipmentType _type, int _maxStack)
     {
         itemName = _itemName;
         itemAmount = _itemAmount;
         icon = _icon;
+        maxStack = _maxStack;
     }
 }

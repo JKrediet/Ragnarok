@@ -2,23 +2,35 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class ItemSlot : MonoBehaviour
 {
     [SerializeField] Image image;
     public int slotID;
+    public Inventory inv;
+    public Chest chestInv;
+
+    public TextMeshProUGUI stackAmountText;
 
     private Color normalColor = Color.white;
     private Color disabledColor = new Color(1, 1, 1, 0);
 
     private Item _item;
+    private void Start()
+    {
+        if (GetComponentInChildren<TextMeshProUGUI>())
+        {
+            stackAmountText = GetComponentInChildren<TextMeshProUGUI>();
+        }
+    }
     public Item item
     {
         get { return _item; }
         set {
             _item = value;
 
-            if(_item == null)
+            if (_item == null)
             {
                 image.color = disabledColor;
             }
@@ -28,18 +40,5 @@ public class ItemSlot : MonoBehaviour
                 image.color = normalColor;
             }
         }
-    }
-
-    protected virtual void OnValidate()
-    {
-        if(image == null)
-        {
-            image = GetComponent<Image>();
-        }
-    }
-
-    public virtual bool CanRecieveItem(Item item)
-    {
-        return true;
     }
 }

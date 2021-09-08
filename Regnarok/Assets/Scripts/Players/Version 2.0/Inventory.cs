@@ -10,8 +10,8 @@ using System;
 public class Inventory : MonoBehaviour
 {
     [SerializeField] List<Item> items;
-    [SerializeField] Transform itemsParent;
-    [SerializeField] ItemSlot[] itemSlots;
+    [SerializeField] Transform itemsParent, hotbarParent;
+    [SerializeField] ItemSlot[] itemSlots, hotBarSlots;
     [Space]
     [SerializeField] GameObject inventoryPanel;
     [SerializeField] int allHotbarSlots = 6;
@@ -42,10 +42,23 @@ public class Inventory : MonoBehaviour
             enabled = false;
         }
     }
+    private void Start()
+    {
+        for (int i = 0; i < itemSlots.Length; i++)
+        {
+            itemSlots[i].slotID = i;
+            itemSlots[i].inv = this;
+        }
+        for (int i = 0; i < hotBarSlots.Length; i++)
+        {
+            hotBarSlots[i].slotID = i + 25;
+            hotBarSlots[i].inv = this;
+        }
+    }
 
     private void OnValidate()
     {
-        if(itemsParent != null)
+        if (itemsParent != null)
         {
             itemSlots = itemsParent.GetComponentsInChildren<ItemSlot>();
         }
@@ -63,26 +76,85 @@ public class Inventory : MonoBehaviour
         for (; i < items.Count && i < itemSlots.Length; i++)
         {
             items[i] = itemSlots[i].item;
-        }
-        for (; i < itemSlots.Length; i++)
-        {
-            itemSlots[i].item = null;
-        }
-    }
-
-    public bool AddItem(Item item)
-    {
-        for (int i = 0; i < itemSlots.Length; i++)
-        {
-            if(itemSlots[i].item == null)
+            if (itemSlots[i].item != null)
             {
-                itemSlots[i].item = item;
-                RefreshUI();
-                return true;
+                if (itemSlots[i].item.itemAmount > 1)
+                {
+                    itemSlots[i].stackAmountText.text = itemSlots[i].item.itemAmount.ToString();
+                }
+            }
+            else
+            {
+                itemSlots[i].stackAmountText.text = "";
             }
         }
-        return false;
+        for (; i < items.Count && i < hotBarSlots.Length; i++)
+        {
+            if (hotBarSlots[i].item != null)
+            {
+                if (hotBarSlots[i].item.itemAmount > 1)
+                {
+                    hotBarSlots[i].stackAmountText.text = hotBarSlots[i].item.itemAmount.ToString();
+                }
+            }
+            else
+            {
+                hotBarSlots[i].stackAmountText.text = "";
+            }
+        }
     }
+    //for world items
+    public void AddItem(Item item)
+    {
+        if (!IsFull())
+        {
+            for (int i = 0; i < itemSlots.Length; i++)
+            {
+                //empty slot
+                if (itemSlots[i].item == null)
+                {
+                    itemSlots[i].item = item;
+                    //add item to list of inv
+                    RefreshUI();
+                    return;
+                }
+                //slot with item in it
+                else if (itemSlots[i].item != null)
+                {
+                    //same item
+                    if (itemSlots[i].item.itemName == item.itemName)
+                    {
+                        //less than max stack size
+                        if (itemSlots[i].item.itemAmount + item.itemAmount <= itemSlots[i].item.maxStack)
+                        {
+                            itemSlots[i].item.itemAmount += item.itemAmount;
+                            //add item to list of inv
+                            RefreshUI();
+                            return;
+                        }
+                        //more than stack size
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    //different item
+                    else
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    Debug.LogError("I need more pockets!");
+                    //add item to list of inv
+                    RefreshUI();
+                    return;
+                }
+            }
+        }
+    }
+    //delete items only from list
     public bool RemoveItem(Item item)
     {
         for (int i = 0; i < itemSlots.Length; i++)

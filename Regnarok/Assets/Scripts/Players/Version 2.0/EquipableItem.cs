@@ -16,6 +16,7 @@ public enum EquipmentType
 [CreateAssetMenu]
 public class EquipableItem : Item
 {
+    [Space]
     public int damageBonus;
     public int armorBonus;
     public int speedBonus;
@@ -28,9 +29,9 @@ public class EquipableItem : Item
     [Space]
     public EquipmentType equipment;
 
-    public override void SetUpNewItem(string _itemName, int _itemAmount, Sprite _icon, EquipmentType _type)
+    public override void SetUpNewItem(string _itemName, int _itemAmount, Sprite _icon, EquipmentType _type, int _maxStack)
     {
-        base.SetUpNewItem(_itemName, _itemAmount, _icon, _type);
+        base.SetUpNewItem(_itemName, _itemAmount, _icon, _type, _maxStack);
         equipment = _type;
     }
 }

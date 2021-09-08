@@ -9,7 +9,7 @@ public class WorldItem : MonoBehaviour
 {
     public string itemName;
     public Sprite itemImage;
-    public int itemAmount;
+    public int itemAmount, maxStack;
 
     public bool mayBePickedUp;
 
@@ -30,7 +30,7 @@ public class WorldItem : MonoBehaviour
         {
             if (other.CompareTag("Player"))
             {
-                other.GetComponent<CharacterStats>().CreateItem(itemName, itemAmount, itemImage, equipment);
+                other.GetComponent<CharacterStats>().CreateItem(itemName, itemAmount, itemImage, equipment, maxStack);
                 if (GetComponent<PhotonView>().Owner != PhotonNetwork.MasterClient)
                 {
                     GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.MasterClient);
