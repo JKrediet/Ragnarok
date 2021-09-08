@@ -7,42 +7,56 @@ public class CharacterStats : MonoBehaviour
 {
     [SerializeField] Inventory inventory;
     [SerializeField] EquipmentPanel EquipmentPanel;
+    [SerializeField] ItemSlot draggableItem;
 
-    private void Awake()
-    {
-        inventory.OnItemRightClickedEvent += EquipFromInventory;
-    }
+    bool itemIsBeingDragged;
 
-    private void EquipFromInventory(Item item)
+    //color
+    private Color normalColor = Color.white;
+    private Color disabledColor = new Color(1, 1, 1, 0);
+
+    private void Update()
     {
-        if(item is EquipableItem)
+        if(itemIsBeingDragged)
         {
-            Equip((EquipableItem)item);
+            draggableItem.transform.position = Input.mousePosition;
         }
     }
-    public void Equip(EquipableItem item)
+    public void MoveItem(ItemSlot itemslot)
     {
-        if(inventory.RemoveItem(item))
+        if (itemIsBeingDragged)
         {
-            EquipableItem previousItem;
-            if(EquipmentPanel.AddItem(item, out previousItem))
+            if (itemslot.item == null)
             {
-                if(previousItem != null)
-                {
-                    inventory.AddItem(previousItem);
-                }
+                itemslot.item = draggableItem.item;
+                draggableItem.item = null;
+                draggableItem.gameObject.GetComponent<Image>().color = disabledColor;
+
+                //toggle
+                itemIsBeingDragged = !itemIsBeingDragged;
+            }
+            else if (itemslot.item != null)
+            {
+                Item swappedItem = itemslot.item;
+                itemslot.item = draggableItem.item;
+                draggableItem.item = swappedItem;
+
+                //do not toggle here! it will break
             }
             else
             {
-                inventory.AddItem(item);
+                Debug.LogError("yeah... something broke...");
             }
         }
-    }
-    void Unequip(EquipableItem item)
-    {
-        if(!inventory.IsFull() && EquipmentPanel.RemoveItem(item))
+        else
         {
-            inventory.AddItem(item);
+            draggableItem.item = itemslot.item;
+            itemslot.item = null;
+            draggableItem.gameObject.GetComponent<Image>().color = normalColor;
+            draggableItem.gameObject.GetComponent<Image>().sprite = draggableItem.item.icon;
+
+            //toggle
+            itemIsBeingDragged = !itemIsBeingDragged;
         }
     }
     public void CreateItem(string name, int amount, Sprite image, EquipmentType type)
