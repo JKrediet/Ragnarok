@@ -26,7 +26,8 @@ public class PlayerController : MonoBehaviour
 
     bool groundCheck = false;
     Vector3 movementSpeed, movementDirection;
-    ChestInventory lastChest;
+    //ChestInventory lastChest;
+    //CraftStation craftStation;
 
     //camera
     [SerializeField] LayerMask playerAimMask;
@@ -237,7 +238,7 @@ public class PlayerController : MonoBehaviour
                 //damage
                 if(heldItem != null)
                 {
-                    hitObject.GetComponent<HitableObject>().HitByPlayer(heldItem.itemDamage, gameObject, heldItem.itemType);
+                    //hitObject.GetComponent<HitableObject>().HitByPlayer(heldItem.itemDamage, gameObject, heldItem.itemType);
                 }
                 else
                 {
@@ -251,10 +252,10 @@ public class PlayerController : MonoBehaviour
         InventoryIsOpen = !InventoryIsOpen;
         if (!InventoryIsOpen)
         {
-            if (lastChest)
-            {
-                lastChest = null;
-            }
+            //if (lastChest)
+            //{
+            //    lastChest = null;
+            //}
         }
     }
     public void GiveItemStats(Item _itemType)
@@ -263,31 +264,36 @@ public class PlayerController : MonoBehaviour
     }
     void CheckForInfo()
     {
-        if(lastChest == null)
-        {
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                RaycastHit _hit;
-                if (Physics.Raycast(cam.transform.position, cam.transform.forward, out _hit, 5, chestLayer))
-                {
-                    if (_hit.transform.GetComponent<ChestInventory>())
-                    {
-                        lastChest = _hit.transform.GetComponent<ChestInventory>();
-                        lastChest.OpenChest(GetComponent<Inventory>());
-                        //lastChest.mouseItemHolder = GetComponent<Inventory>().mouseItemHolder;
-                    }
-                }
-            }
-        }
-        else
-        {
-            float distance = Vector3.Distance(transform.position, lastChest.transform.position);
-            if (distance > 6)
-            {
-                lastChest.gameObject.SetActive(false);
-                lastChest = null;
-            }
-        }
+        //if(lastChest == null)
+        //{
+        //    if (Input.GetKeyDown(KeyCode.E))
+        //    {
+        //        RaycastHit _hit;
+        //        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out _hit, 5, chestLayer))
+        //        {
+        //            if (_hit.transform.GetComponent<ChestInventory>())
+        //            {
+        //                lastChest = _hit.transform.GetComponent<ChestInventory>();
+        //                lastChest.OpenChest(GetComponent<Inventory>());
+        //                //lastChest.mouseItemHolder = GetComponent<Inventory>().mouseItemHolder;
+        //            }
+        //            if(_hit.transform.GetComponent<ChestInventory>())
+        //            {
+        //                craftStation = _hit.transform.GetComponent<CraftStation>();
+        //                craftStation.OpenCraftStation(GetComponent<Inventory>());
+        //            }
+        //        }
+        //    }
+        //}
+        //else
+        //{
+        //    float distance = Vector3.Distance(transform.position, lastChest.transform.position);
+        //    if (distance > 6)
+        //    {
+        //        lastChest.gameObject.SetActive(false);
+        //        lastChest = null;
+        //    }
+        //}
     }
     #region anim
     void Anim_idle()
