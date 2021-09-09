@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour
 	}
     public void SpawnPlayers()
 	{
+        print(1);
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
 		{
             Vector3 spawnpos = new Vector3(Random.Range(spawnRadius, -spawnRadius), spawnHeight, Random.Range(-spawnRadius, spawnRadius));
