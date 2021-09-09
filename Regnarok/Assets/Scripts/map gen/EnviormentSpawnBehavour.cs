@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class EnviormentSpawnBehavour : MonoBehaviour
 {
+    public bool secondCheck;
     public bool isGrass;
     public float heightOffset = 1f;
-    private int replace;
     void Start()
     {
         FindLand();
@@ -44,9 +44,8 @@ public class EnviormentSpawnBehavour : MonoBehaviour
                 }
             }
         }
-        if (replace <= 3)
+        if (secondCheck)
         {
-            replace++;
             Invoke("FindLand", 0.15f);
         }
     }

@@ -28,10 +28,12 @@ public class EnviromentSpawner : MonoBehaviour
     }
     public void Generate()
     {
-		if (pv.Owner==PhotonNetwork.MasterClient)
+        print("spawn");
+        if (pv.Owner==PhotonNetwork.MasterClient)
 		{
-            return;
+         //   return;
 		}
+        print("4243");
         mesh.AddComponent<MeshCollider>();
         for (int i = 0; i < spawnItems.Length; i++)
 		{
@@ -159,7 +161,7 @@ public class EnviromentSpawner : MonoBehaviour
     }
     public void SpawnEnvironment(GameObject SpawnObject,Vector3 spawnPoint,Quaternion rotation,string ObjectName)
 	{
-        //PhotonNetwork.Instantiate(ObjectName, spawnPoint, rotation);
+        //PhotonNetwork.Instantiate(ObjectName, spawnPoint, rotation
         Instantiate(SpawnObject, spawnPoint, rotation, transform);
     }
     public void BuildNavMesh()
