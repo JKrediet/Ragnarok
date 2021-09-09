@@ -41,7 +41,6 @@ public class MapGenerator : MonoBehaviour
     public void GenerateMap()
     {
         Random.InitState(mapSeed);//seed
-        print(mapSeed);
         terrainMesh = terrainObject.GetComponent<MeshFilter>().mesh;
         fallOffMap = FalloffGenerator.GenerateFalloffMap(chuckSize);
         float[,] noisemap = Noise.GenerateNoiseMap(chuckSize, chuckSize, mapSeed, noiseScale, ocataves, presitance, lacunarity, offset);

@@ -82,7 +82,6 @@ public class Connection : MonoBehaviourPunCallbacks
     public void RecieveSeed(Text _seed)
     {
         seed = int.Parse(_seed.text);
-        print(seed);
     }
     public void StartGame()
     {

@@ -17,11 +17,6 @@ public class PlayerHealth : Health
             HealthSlider.maxValue = maxHealth;
             HealthSlider.value = health;
         }
-        else
-        {
-            //remove all obejcts that are not mine!
-            Destroy(HealthSlider.gameObject);
-        }
     }
     public override void Health_Damage(float damageValue)
     {
