@@ -7,6 +7,8 @@ public class EnviormentSpawnBehavour : MonoBehaviour
     public bool secondCheck;
     public bool isGrass;
     public float heightOffset = 1f;
+    public float turnOffRb=1f;
+    public bool usesRbFall;
     void Start()
     {
         FindLand();
@@ -47,6 +49,18 @@ public class EnviormentSpawnBehavour : MonoBehaviour
         if (secondCheck)
         {
             Invoke("FindLand", 0.15f);
+            secondCheck = false;
         }
+		if (usesRbFall)
+		{
+            GetComponent<Rigidbody>().isKinematic = false;
+            GetComponent<Rigidbody>().useGravity = true;
+            Invoke("TurnOffRB",turnOffRb);
+        }
+    }
+    public void TurnOffRB()
+	{
+        GetComponent<Rigidbody>().isKinematic = true;
+        GetComponent<Rigidbody>().useGravity = false;
     }
 }
