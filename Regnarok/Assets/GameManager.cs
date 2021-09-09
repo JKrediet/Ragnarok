@@ -47,11 +47,11 @@ public class GameManager : MonoBehaviour
             RaycastHit hitInfo;
             if (Physics.Raycast(ray, out hitInfo, groundLayer))
             {
-                if (playerManager.pv.Owner == PhotonNetwork.PlayerList[i])
-                {
-                    if(hitInfo.transform.position.y < 10)
-                    playerManager.SpawnPlayer(hitInfo.transform.position + new Vector3(0,100,0));
-                }
+                
+            }
+            if (playerManager.pv.Owner == PhotonNetwork.PlayerList[i])
+            {
+                playerManager.SpawnPlayer(hitInfo.transform.position + new Vector3(2 * i, 100, 0));
             }
         }
 	}
