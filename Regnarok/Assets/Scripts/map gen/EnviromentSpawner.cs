@@ -1,5 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 public class EnviromentSpawner : MonoBehaviour
 {
     public bool testing;
@@ -18,12 +20,18 @@ public class EnviromentSpawner : MonoBehaviour
     public GameObject mesh;
     public MapGenerator mapGen;
     private Vector3 spawnPoint;
+    private PhotonView pv;
     void Start()
     {
+        pv = GetComponent<PhotonView>();    
         Random.seed = mapGen.mapSeed;
     }
     public void Generate()
     {
+		if (pv.Owner==PhotonNetwork.MasterClient)
+		{
+            return;
+		}
         mesh.AddComponent<MeshCollider>();
         for (int i = 0; i < spawnItems.Length; i++)
 		{
@@ -62,17 +70,17 @@ public class EnviromentSpawner : MonoBehaviour
                                     {
                                         if (spawnItems[i].randomRot)
                                         {
-                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform);
+                                            SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), spawnItems[i].PrefabName);
                                         }
                                         else
                                         {
                                             if (spawnItems[i].rotateWithMesh)
                                             {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), transform);
+                                                SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), spawnItems[i].PrefabName);
                                             }
                                             else
                                             {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, transform);
+                                                SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, spawnItems[i].PrefabName);
                                             }
                                         }
                                     }
@@ -83,17 +91,17 @@ public class EnviromentSpawner : MonoBehaviour
                                     {
                                         if (spawnItems[i].randomRot)
                                         {
-                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform);
+                                            SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), spawnItems[i].PrefabName);
                                         }
                                         else
                                         {
                                             if (spawnItems[i].rotateWithMesh)
                                             {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), transform);
+                                                SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), spawnItems[i].PrefabName);
                                             }
                                             else
                                             {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, transform);
+                                                SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, spawnItems[i].PrefabName);
                                             }
                                         }
                                     }
@@ -104,17 +112,17 @@ public class EnviromentSpawner : MonoBehaviour
                                     {
                                         if (spawnItems[i].randomRot)
                                         {
-                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform);
+                                            SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), spawnItems[i].PrefabName);
                                         }
                                         else
                                         {
                                             if (spawnItems[i].rotateWithMesh)
                                             {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), transform);
+                                                SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), spawnItems[i].PrefabName);
                                             }
                                             else
                                             {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, transform);
+                                                SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, spawnItems[i].PrefabName);
                                             }
                                         }
                                     }
@@ -125,17 +133,17 @@ public class EnviromentSpawner : MonoBehaviour
                                     {
                                         if (spawnItems[i].randomRot)
                                         {
-                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform);
+                                            SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), spawnItems[i].PrefabName);
                                         }
                                         else
                                         {
                                             if (spawnItems[i].rotateWithMesh)
                                             {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), transform);
+                                                SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), spawnItems[i].PrefabName);
                                             }
                                             else
-                                            {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, transform);
+                                            { 
+                                                SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, spawnItems[i].PrefabName);
                                             }
                                         }
                                     }
@@ -148,6 +156,11 @@ public class EnviromentSpawner : MonoBehaviour
 		}
 
         Invoke("BuildNavMesh", 0.5f);
+    }
+    public void SpawnEnvironment(GameObject SpawnObject,Vector3 spawnPoint,Quaternion rotation,string ObjectName)
+	{
+        //PhotonNetwork.Instantiate(ObjectName, spawnPoint, rotation);
+        Instantiate(SpawnObject, spawnPoint, rotation, transform);
     }
     public void BuildNavMesh()
     {
@@ -175,6 +188,7 @@ public class EnviromentSpawner : MonoBehaviour
     [System.Serializable]
     public struct Objects
     {
+        public string PrefabName;
         public bool spawnItem;
         public GameObject toSpawn;
         public float startHeight;
