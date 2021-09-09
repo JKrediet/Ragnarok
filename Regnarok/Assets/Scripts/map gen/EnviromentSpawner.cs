@@ -146,6 +146,8 @@ public class EnviromentSpawner : MonoBehaviour
                 }
             }
 		}
+
+        Invoke("BuildNavMesh", 0.5f);
     }
     public void BuildNavMesh()
     {
@@ -153,7 +155,12 @@ public class EnviromentSpawner : MonoBehaviour
         { 
            // NavMeshBuilder.BuildNavMesh();
 		}
+        Invoke("SpawnPlayers", 1);
     }
+    public void SpawnPlayers()
+	{
+        GetComponent<GameManager>().SpawnPlayers();
+	}
     public bool Chance()
     {
         if (Random.Range(0.00f,5.00f) <= 4.00f)
