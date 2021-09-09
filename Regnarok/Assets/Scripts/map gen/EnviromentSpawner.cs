@@ -159,7 +159,7 @@ public class EnviromentSpawner : MonoBehaviour
     }
     public void SpawnPlayers()
 	{
-        GetComponent<GameManager>().SpawnPlayers();
+        FindObjectOfType<GameManager>().SpawnPlayers();
 	}
     public bool Chance()
     {

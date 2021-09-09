@@ -17,10 +17,10 @@ public class GameManager : MonoBehaviour
     public float spawnRadius;
     public float spawnHeight;
     private EnemySpawner es;
+    public PlayerManager playerManager;
 	private void Start()
 	{
         es = GetComponent<EnemySpawner>();
-        SpawnPlayers();
     }
 	public IEnumerator IsNight()
 	{
@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
 	}
     public void SpawnPlayers()
 	{
-		for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
 		{
             Vector3 spawnpos = new Vector3(Random.Range(spawnRadius, -spawnRadius), spawnHeight, Random.Range(-spawnRadius, spawnRadius));
 
@@ -47,8 +47,11 @@ public class GameManager : MonoBehaviour
             RaycastHit hitInfo;
             if (Physics.Raycast(ray, out hitInfo, groundLayer))
             {
-                Instantiate(playerObject, hitInfo.transform.position, Quaternion.identity);
-               // PhotonNetwork.Instantiate("PlayerPrefab", hitInfo.transform.position, Quaternion.identity);
+                if(playerManager.pv.Owner == PhotonNetwork.PlayerList[i])
+                {
+                    print(1);
+                    playerManager.SpawnPlayer(hitInfo.transform.position);
+                }
             }
         }
 	}

@@ -8,15 +8,14 @@ using TMPro;
 
 public class PlayerManager : MonoBehaviour
 {
-    PhotonView pv;
+    public PhotonView pv;
     private void Awake()
     {
         pv = GetComponent<PhotonView>();
-        SpawnPlayer();
     }
 
-    public void SpawnPlayer()
+    public void SpawnPlayer(Vector3 position)
     {
-        GameObject game = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Character"), Vector3.zero, Quaternion.identity);
+        GameObject game = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Character"), position, Quaternion.identity);
     }
 }
