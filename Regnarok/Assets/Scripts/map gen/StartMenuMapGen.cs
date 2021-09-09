@@ -9,7 +9,6 @@ public class StartMenuMapGen : MonoBehaviour
 	private void Start()
 	{
 		seed = PlayerPrefs.GetInt("Seed");
-		seed = Random.Range(0000, 99999);
 		mg.StartGenerating(seed);
 	}
 }

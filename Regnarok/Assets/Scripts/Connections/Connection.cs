@@ -15,7 +15,9 @@ public class Connection : MonoBehaviourPunCallbacks
 
     string roomName;
     [SerializeField] TextMeshProUGUI roomNameUI;
+    TextMeshProUGUI seedText;
     [SerializeField] GameObject startButton;
+    [SerializeField] int seed;
     #region base join
     private void Awake()
     {
@@ -77,7 +79,30 @@ public class Connection : MonoBehaviourPunCallbacks
             tempRoomObject.GetComponent<JoinRoom>().GiveName();
         }
     }
+    public void RecieveSeed(TextMeshProUGUI _seed)
+    {
+        int meh;
+        if(int.TryParse(_seed.text, out meh))
+        {
+            seed = meh;
+        }
+    }
     public void StartGame()
+    {
+        GetComponent<PhotonView>().RPC("SincSeed", RpcTarget.All, seed);
+        Invoke("StartLevel", 5);
+    }
+    [PunRPC]
+    void SincSeed(int _seed)
+    {
+        if(_seed == 0)
+        {
+            _seed = Random.Range(0, 99999);
+        }
+        PlayerPrefs.SetInt("Seed", _seed);
+        //after seed sinced
+    }
+    void StartLevel()
     {
         PhotonNetwork.LoadLevel(1);
     }

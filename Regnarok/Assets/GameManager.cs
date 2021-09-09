@@ -38,7 +38,6 @@ public class GameManager : MonoBehaviour
 	}
     public void SpawnPlayers()
 	{
-        print(1);
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
 		{
             Vector3 spawnpos = new Vector3(Random.Range(spawnRadius, -spawnRadius), spawnHeight, Random.Range(-spawnRadius, spawnRadius));
@@ -48,10 +47,10 @@ public class GameManager : MonoBehaviour
             RaycastHit hitInfo;
             if (Physics.Raycast(ray, out hitInfo, groundLayer))
             {
-                if(playerManager.pv.Owner == PhotonNetwork.PlayerList[i])
+                if (playerManager.pv.Owner == PhotonNetwork.PlayerList[i])
                 {
-                    print(1);
-                    playerManager.SpawnPlayer(hitInfo.transform.position);
+                    if(hitInfo.transform.position.y < 10)
+                    playerManager.SpawnPlayer(hitInfo.transform.position + new Vector3(0,30,0));
                 }
             }
         }
