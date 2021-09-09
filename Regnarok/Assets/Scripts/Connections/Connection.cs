@@ -79,13 +79,10 @@ public class Connection : MonoBehaviourPunCallbacks
             tempRoomObject.GetComponent<JoinRoom>().GiveName();
         }
     }
-    public void RecieveSeed(TextMeshProUGUI _seed)
+    public void RecieveSeed(Text _seed)
     {
-        int meh;
-        if(int.TryParse(_seed.text, out meh))
-        {
-            seed = meh;
-        }
+        seed = int.Parse(_seed.text);
+        print(seed);
     }
     public void StartGame()
     {
@@ -97,10 +94,10 @@ public class Connection : MonoBehaviourPunCallbacks
     {
         if(_seed == 0)
         {
-            _seed = Random.Range(0, 99999);
+            //_seed = Random.Range(0, 99999);
         }
-        PlayerPrefs.SetInt("Seed", _seed);
         //after seed sinced
+        PlayerPrefs.SetInt("Seed", _seed);
     }
     void StartLevel()
     {

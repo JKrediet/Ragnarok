@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
                 if (playerManager.pv.Owner == PhotonNetwork.PlayerList[i])
                 {
                     if(hitInfo.transform.position.y < 10)
-                    playerManager.SpawnPlayer(hitInfo.transform.position + new Vector3(0,30,0));
+                    playerManager.SpawnPlayer(hitInfo.transform.position + new Vector3(0,100,0));
                 }
             }
         }
