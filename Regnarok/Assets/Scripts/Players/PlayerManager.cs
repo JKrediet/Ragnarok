@@ -17,5 +17,6 @@ public class PlayerManager : MonoBehaviour
     public void SpawnPlayer(Vector3 position)
     {
         GameObject game = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Character"), position, Quaternion.identity);
+        game.SetActive(true);
     }
 }
