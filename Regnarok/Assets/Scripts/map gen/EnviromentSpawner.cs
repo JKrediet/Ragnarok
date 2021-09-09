@@ -28,124 +28,121 @@ public class EnviromentSpawner : MonoBehaviour
     }
     public void Generate()
     {
-        print("spawn");
-        if (pv.Owner==PhotonNetwork.MasterClient)
-		{
-         //   return;
-		}
-        print("4243");
-        mesh.AddComponent<MeshCollider>();
-        for (int i = 0; i < spawnItems.Length; i++)
-		{
-			for (int i_ = 0; i_ < spawnItems[i].amountToSpawn; i_++)
-			{
-                if (spawnItems[i].spawnItem)
+        if (pv.Owner == PhotonNetwork.MasterClient)
+        {
+            mesh.AddComponent<MeshCollider>();
+            for (int i = 0; i < spawnItems.Length; i++)
+            {
+                for (int i_ = 0; i_ < spawnItems[i].amountToSpawn; i_++)
                 {
-                    if (Chance())
+                    if (spawnItems[i].spawnItem)
                     {
-                        if (spawnItems[i].innerCircle)
+                        if (Chance())
                         {
-                            spawnPoint = new Vector3(Random.Range(firstPosInner.position.x, secondPosInner.position.x), spawnItems[i].startHeight, Random.Range(firstPosInner.position.z, secondPosInner.position.z));
-                        }
-                        else
-                        {
-                            spawnPoint = new Vector3(Random.Range(firstPos.position.x, secondPos.position.x), spawnItems[i].startHeight, Random.Range(firstPos.position.z, secondPos.position.z));
-                        }
-                        Ray ray = new Ray(spawnPoint, -transform.up);
-                        RaycastHit hitInfo;
-                        if (Physics.Raycast(ray, out hitInfo))
-                        {
-
-                            if (hitInfo.transform.tag == "Water"
-                            || hitInfo.transform.tag == "Rock"
-                            || hitInfo.transform.tag == "Tree"
-                            || hitInfo.transform.tag == "Chest"
-                            || hitInfo.transform.tag == "Totem")
+                            if (spawnItems[i].innerCircle)
                             {
-
+                                spawnPoint = new Vector3(Random.Range(firstPosInner.position.x, secondPosInner.position.x), spawnItems[i].startHeight, Random.Range(firstPosInner.position.z, secondPosInner.position.z));
                             }
                             else
                             {
-                                if (spawnItems[i].canSpawnOnSand)
+                                spawnPoint = new Vector3(Random.Range(firstPos.position.x, secondPos.position.x), spawnItems[i].startHeight, Random.Range(firstPos.position.z, secondPos.position.z));
+                            }
+                            Ray ray = new Ray(spawnPoint, -transform.up);
+                            RaycastHit hitInfo;
+                            if (Physics.Raycast(ray, out hitInfo))
+                            {
+
+                                if (hitInfo.transform.tag == "Water"
+                                || hitInfo.transform.tag == "Rock"
+                                || hitInfo.transform.tag == "Tree"
+                                || hitInfo.transform.tag == "Chest"
+                                || hitInfo.transform.tag == "Totem")
                                 {
-                                    if (hitInfo.point.y <= minMountenHeight)
-                                    {
-                                        if (spawnItems[i].randomRot)
-                                        {
-                                            SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), spawnItems[i].PrefabName);
-                                        }
-                                        else
-                                        {
-                                            if (spawnItems[i].rotateWithMesh)
-                                            {
-                                                SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), spawnItems[i].PrefabName);
-                                            }
-                                            else
-                                            {
-                                                SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, spawnItems[i].PrefabName);
-                                            }
-                                        }
-                                    }
-                                }
-                                else if (spawnItems[i].onlySpawnOnSand)
-                                {
-                                    if (hitInfo.point.y <= maxSandHeight)
-                                    {
-                                        if (spawnItems[i].randomRot)
-                                        {
-                                            SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), spawnItems[i].PrefabName);
-                                        }
-                                        else
-                                        {
-                                            if (spawnItems[i].rotateWithMesh)
-                                            {
-                                                SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), spawnItems[i].PrefabName);
-                                            }
-                                            else
-                                            {
-                                                SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, spawnItems[i].PrefabName);
-                                            }
-                                        }
-                                    }
-                                }
-                                else if (spawnItems[i].onlySpawnOnMountenTop)
-                                {
-                                    if (hitInfo.point.y >= minMountenHeight)
-                                    {
-                                        if (spawnItems[i].randomRot)
-                                        {
-                                            SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), spawnItems[i].PrefabName);
-                                        }
-                                        else
-                                        {
-                                            if (spawnItems[i].rotateWithMesh)
-                                            {
-                                                SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), spawnItems[i].PrefabName);
-                                            }
-                                            else
-                                            {
-                                                SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, spawnItems[i].PrefabName);
-                                            }
-                                        }
-                                    }
+
                                 }
                                 else
                                 {
-                                    if (hitInfo.point.y >= maxSandHeight && hitInfo.point.y <= minMountenHeight)
+                                    if (spawnItems[i].canSpawnOnSand)
                                     {
-                                        if (spawnItems[i].randomRot)
+                                        if (hitInfo.point.y <= minMountenHeight)
                                         {
-                                            SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), spawnItems[i].PrefabName);
-                                        }
-                                        else
-                                        {
-                                            if (spawnItems[i].rotateWithMesh)
+                                            if (spawnItems[i].randomRot)
                                             {
-                                                SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), spawnItems[i].PrefabName);
+                                                SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), spawnItems[i].PrefabName);
                                             }
                                             else
-                                            { 
-                                                SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, spawnItems[i].PrefabName);
+                                            {
+                                                if (spawnItems[i].rotateWithMesh)
+                                                {
+                                                    SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), spawnItems[i].PrefabName);
+                                                }
+                                                else
+                                                {
+                                                    SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, spawnItems[i].PrefabName);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (spawnItems[i].onlySpawnOnSand)
+                                    {
+                                        if (hitInfo.point.y <= maxSandHeight)
+                                        {
+                                            if (spawnItems[i].randomRot)
+                                            {
+                                                SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), spawnItems[i].PrefabName);
+                                            }
+                                            else
+                                            {
+                                                if (spawnItems[i].rotateWithMesh)
+                                                {
+                                                    SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), spawnItems[i].PrefabName);
+                                                }
+                                                else
+                                                {
+                                                    SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, spawnItems[i].PrefabName);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (spawnItems[i].onlySpawnOnMountenTop)
+                                    {
+                                        if (hitInfo.point.y >= minMountenHeight)
+                                        {
+                                            if (spawnItems[i].randomRot)
+                                            {
+                                                SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), spawnItems[i].PrefabName);
+                                            }
+                                            else
+                                            {
+                                                if (spawnItems[i].rotateWithMesh)
+                                                {
+                                                    SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), spawnItems[i].PrefabName);
+                                                }
+                                                else
+                                                {
+                                                    SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, spawnItems[i].PrefabName);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (hitInfo.point.y >= maxSandHeight && hitInfo.point.y <= minMountenHeight)
+                                        {
+                                            if (spawnItems[i].randomRot)
+                                            {
+                                                SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), spawnItems[i].PrefabName);
+                                            }
+                                            else
+                                            {
+                                                if (spawnItems[i].rotateWithMesh)
+                                                {
+                                                    SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), spawnItems[i].PrefabName);
+                                                }
+                                                else
+                                                {
+                                                    SpawnEnvironment(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, spawnItems[i].PrefabName);
+                                                }
                                             }
                                         }
                                     }
@@ -155,9 +152,8 @@ public class EnviromentSpawner : MonoBehaviour
                     }
                 }
             }
-		}
-
         Invoke("BuildNavMesh", 0.5f);
+        }
     }
     public void SpawnEnvironment(GameObject SpawnObject,Vector3 spawnPoint,Quaternion rotation,string ObjectName)
 	{
