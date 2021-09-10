@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
     float gravity = -1, staminaValue, staminaLossPerSec, staminaGainedPerSec;
 
     bool groundCheck = false;
+    float groundCheckTime;
     Vector3 movementSpeed, movementDirection;
     //ChestInventory lastChest;
     //CraftStation craftStation;
@@ -105,7 +106,7 @@ public class PlayerController : MonoBehaviour
         }
         if (Input.GetButtonDown("Jump"))
         {
-            if(controller.isGrounded)
+            if(groundCheck)
             {
                 Jump();
             }
@@ -163,12 +164,16 @@ public class PlayerController : MonoBehaviour
                 groundCheck = true;
                 gravity = -0.1f;
             }
+            groundCheckTime = Time.time;
         }
         else
         {
-            groundCheck = false;
+            if (Time.time >= groundCheckTime + 0.5f)
+            {
+                groundCheck = false;
+            }
             gravity -= weight * Time.deltaTime;
-            gravity = Mathf.Clamp(gravity, -10, 10);
+            gravity = Mathf.Clamp(gravity, -100, 100);
         }
     }
     void ApplyMovement()
@@ -179,6 +184,7 @@ public class PlayerController : MonoBehaviour
     void Jump()
     {
         gravity = jumpForce;
+        groundCheck = false;
     }
     void Rotation()
     {
