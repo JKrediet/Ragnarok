@@ -24,6 +24,14 @@ public class WorldItem : MonoBehaviour
     {
         mayBePickedUp = true;
     }
+    public void SetUp(string name, int amount, Sprite image, EquipmentType type, int _maxStack)
+    {
+        itemName = name;
+        itemAmount = amount;
+        itemImage = image;
+        equipment = type;
+        maxStack = _maxStack;
+    }
     protected void OnTriggerEnter(Collider other)
     {
         if (mayBePickedUp)

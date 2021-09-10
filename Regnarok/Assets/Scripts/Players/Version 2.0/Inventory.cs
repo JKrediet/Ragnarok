@@ -20,6 +20,9 @@ public class Inventory : MonoBehaviour
     bool inventoryEnabled;
     int hotbarLocation;
     private PhotonView pv;
+
+    CharacterStats character;
+
     private KeyCode[] keyCodes = {
          KeyCode.Alpha1,
          KeyCode.Alpha2,
@@ -32,6 +35,7 @@ public class Inventory : MonoBehaviour
     private void Awake()
     {
         pv = GetComponent<PhotonView>();
+        character = GetComponent<CharacterStats>();
         inventoryPanel.SetActive(false);
         if (pv.IsMine)
         {
@@ -182,7 +186,6 @@ public class Inventory : MonoBehaviour
         return true;
     }
 
-    //old stuff
     void ScrollHotbar()
     {
         //scroll in hotbar
@@ -222,10 +225,11 @@ public class Inventory : MonoBehaviour
             if (!inventoryEnabled)
             {
                 Cursor.lockState = CursorLockMode.Locked;
-                //if (mouseItemHolder.childCount > 0)
-                //{
-                //    DropItem();
-                //}
+                if (character.draggableItem.item != null)
+                {
+                    DropItem(character.draggableItem.item);
+                    character.draggableItem.item = null;
+                }
             }
             else
             {
@@ -234,10 +238,12 @@ public class Inventory : MonoBehaviour
             Cursor.visible = inventoryEnabled;
         }
     }
-    public void DropItem(string name, int amount, Sprite image)
+    public void DropItem(Item item)
     {
         //master client needs to do this!
+        EquipableItem tempItem = item as EquipableItem;
         GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", name), transform.position + transform.forward * 2, Quaternion.identity);
+        droppedItem.GetComponent<WorldItem>().SetUp(tempItem.itemName, tempItem.itemAmount, tempItem.icon, tempItem.equipment, tempItem.maxStack);
         droppedItem.GetComponent<Rigidbody>().AddExplosionForce(100, transform.position + transform.forward - transform.up, 2);
     }
 }

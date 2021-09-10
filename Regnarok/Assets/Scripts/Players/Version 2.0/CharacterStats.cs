@@ -7,7 +7,7 @@ public class CharacterStats : MonoBehaviour
 {
     [SerializeField] Inventory inventory;
     [SerializeField] EquipmentPanel EquipmentPanel;
-    [SerializeField] ItemSlot draggableItem;
+    public ItemSlot draggableItem;
 
     bool itemIsBeingDragged;
 
@@ -24,67 +24,75 @@ public class CharacterStats : MonoBehaviour
     }
     public void MoveItem(ItemSlot itemslot)
     {
-        if (itemIsBeingDragged)
+        if(Input.GetKey(KeyCode.Q))
         {
-            //empty slot
-            if (itemslot.item == null)
+            inventory.DropItem(itemslot.item);
+            itemslot.item = null;
+        }
+        else
+        {
+            if (itemIsBeingDragged)
             {
-                itemslot.item = draggableItem.item;
-                draggableItem.item = null;
-                draggableItem.gameObject.GetComponent<Image>().color = disabledColor;
-
-                //toggle
-                itemIsBeingDragged = !itemIsBeingDragged;
-            }
-            //slot with item in it
-            else if (itemslot.item != null)
-            {
-                //same item
-                if (itemslot.item.itemName == draggableItem.item.itemName)
+                //empty slot
+                if (itemslot.item == null)
                 {
-                    //less than max stack size
-                    if (itemslot.item.itemAmount + draggableItem.item.itemAmount <= itemslot.item.maxStack)
+                    itemslot.item = draggableItem.item;
+                    draggableItem.item = null;
+                    draggableItem.gameObject.GetComponent<Image>().color = disabledColor;
+
+                    //toggle
+                    itemIsBeingDragged = !itemIsBeingDragged;
+                }
+                //slot with item in it
+                else if (itemslot.item != null)
+                {
+                    //same item
+                    if (itemslot.item.itemName == draggableItem.item.itemName)
                     {
-                        itemslot.item.itemAmount += draggableItem.item.itemAmount;
-                        draggableItem.item = null;
-                        draggableItem.gameObject.GetComponent<Image>().color = disabledColor;
-                        itemIsBeingDragged = !itemIsBeingDragged;
+                        //less than max stack size
+                        if (itemslot.item.itemAmount + draggableItem.item.itemAmount <= itemslot.item.maxStack)
+                        {
+                            itemslot.item.itemAmount += draggableItem.item.itemAmount;
+                            draggableItem.item = null;
+                            draggableItem.gameObject.GetComponent<Image>().color = disabledColor;
+                            itemIsBeingDragged = !itemIsBeingDragged;
+                        }
+                        //more than stack size
+                        else
+                        {
+                            draggableItem.item.itemAmount = itemslot.item.itemAmount + draggableItem.item.itemAmount - itemslot.item.maxStack;
+                            itemslot.item.itemAmount = itemslot.item.maxStack;
+                        }
                     }
-                    //more than stack size
+                    //different item
                     else
                     {
-                        draggableItem.item.itemAmount = itemslot.item.itemAmount + draggableItem.item.itemAmount - itemslot.item.maxStack;
-                        itemslot.item.itemAmount = itemslot.item.maxStack;
+                        Item swappedItem = itemslot.item;
+                        itemslot.item = draggableItem.item;
+                        draggableItem.item = swappedItem;
+                        draggableItem.gameObject.GetComponent<Image>().color = normalColor;
+                        draggableItem.gameObject.GetComponent<Image>().sprite = draggableItem.item.icon;
+                        //do not toggle here! it will break
                     }
                 }
-                //different item
                 else
                 {
-                    Item swappedItem = itemslot.item;
-                    itemslot.item = draggableItem.item;
-                    draggableItem.item = swappedItem;
-                    draggableItem.gameObject.GetComponent<Image>().color = normalColor;
-                    draggableItem.gameObject.GetComponent<Image>().sprite = draggableItem.item.icon;
-                    //do not toggle here! it will break
+                    Debug.LogError("I need more pockets!");
                 }
             }
             else
             {
-                Debug.LogError("I need more pockets!");
-            }
-        }
-        else
-        {
-            //no item in slot
-            if (itemslot.item != null)
-            {
-                draggableItem.item = itemslot.item;
-                itemslot.item = null;
-                draggableItem.gameObject.GetComponent<Image>().color = normalColor;
-                draggableItem.gameObject.GetComponent<Image>().sprite = draggableItem.item.icon;
+                //no item in slot
+                if (itemslot.item != null)
+                {
+                    draggableItem.item = itemslot.item;
+                    itemslot.item = null;
+                    draggableItem.gameObject.GetComponent<Image>().color = normalColor;
+                    draggableItem.gameObject.GetComponent<Image>().sprite = draggableItem.item.icon;
 
-                //toggle
-                itemIsBeingDragged = !itemIsBeingDragged;
+                    //toggle
+                    itemIsBeingDragged = !itemIsBeingDragged;
+                }
             }
         }
         //add item to list of inv
