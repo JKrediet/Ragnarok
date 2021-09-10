@@ -8,7 +8,7 @@ public class CharacterStats : MonoBehaviour
     [SerializeField] Inventory inventory;
     [SerializeField] EquipmentPanel EquipmentPanel;
     public ItemSlot draggableItem;
-
+    public Items[] itemList;//list of items
     bool itemIsBeingDragged;
 
     //color
@@ -111,5 +111,11 @@ public class CharacterStats : MonoBehaviour
         newItem.SetUpNewItem(name, amount, image, type, maxStack);
 
         inventory.AddItem(newItem);
+    }
+    [System.Serializable]
+    public struct Items
+    {
+        public int id;
+        
     }
 }
