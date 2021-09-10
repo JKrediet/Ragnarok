@@ -14,10 +14,12 @@ public class EnviromentSpawner : MonoBehaviour
     public Transform secondPos;
     public Transform firstPosInner;
     public Transform secondPosInner;
+    public Transform grassHolder;
     [Space(2)]
     public GameObject mesh;
     public MapGenerator mapGen;
     private Vector3 spawnPoint;
+    
 
     public void Generate()
     {
@@ -32,6 +34,16 @@ public class EnviromentSpawner : MonoBehaviour
                 {
                     if (Chance())
                     {
+                        Transform parent;
+						if (spawnItems[i].isGrass)
+						{
+                            parent = grassHolder;
+						}
+						else
+						{
+                            parent = transform;
+
+                        }
                         if (spawnItems[i].innerCircle)
                         {
                             spawnPoint = new Vector3(Random.Range(firstPosInner.position.x, secondPosInner.position.x), spawnItems[i].startHeight, Random.Range(firstPosInner.position.z, secondPosInner.position.z));
@@ -61,17 +73,17 @@ public class EnviromentSpawner : MonoBehaviour
                                     {
                                         if (spawnItems[i].randomRot)
                                         {
-                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform);
+                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), parent);
                                         }
                                         else
                                         {
                                             if (spawnItems[i].rotateWithMesh)
                                             {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), transform);
+                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), parent);
                                             }
                                             else
                                             {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, transform);
+                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, parent);
                                             }
                                         }
                                     }
@@ -82,17 +94,17 @@ public class EnviromentSpawner : MonoBehaviour
                                     {
                                         if (spawnItems[i].randomRot)
                                         {
-                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform);
+                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), parent);
                                         }
                                         else
                                         {
                                             if (spawnItems[i].rotateWithMesh)
                                             {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), transform);
+                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), parent);
                                             }
                                             else
                                             {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, transform);
+                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, parent);
                                             }
                                         }
                                     }
@@ -103,17 +115,17 @@ public class EnviromentSpawner : MonoBehaviour
                                     {
                                         if (spawnItems[i].randomRot)
                                         {
-                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform);
+                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), parent);
                                         }
                                         else
                                         {
                                             if (spawnItems[i].rotateWithMesh)
                                             {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), transform);
+                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), parent);
                                             }
                                             else
                                             {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, transform);
+                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, parent);
                                             }
                                         }
                                     }
@@ -124,17 +136,17 @@ public class EnviromentSpawner : MonoBehaviour
                                     {
                                         if (spawnItems[i].randomRot)
                                         {
-                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), transform);
+                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), parent);
                                         }
                                         else
                                         {
                                             if (spawnItems[i].rotateWithMesh)
                                             {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), transform);
+                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), parent);
                                             }
                                             else
                                             {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, transform);
+                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, parent);
                                             }
                                         }
                                     }
@@ -175,6 +187,7 @@ public class EnviromentSpawner : MonoBehaviour
     public struct Objects
     {
         public bool spawnItem;
+        public bool isGrass;
         public GameObject toSpawn;
         public float startHeight;
         public int amountToSpawn;
