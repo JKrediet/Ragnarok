@@ -252,9 +252,8 @@ public class Inventory : MonoBehaviour
     public void DropItem(Item item)
     {
         //master client needs to do this!
-        EquipableItem tempItem = item as EquipableItem;
-        GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", name), transform.position + transform.forward * 2, Quaternion.identity);
-        droppedItem.GetComponent<WorldItem>().SetUp(tempItem.itemName, tempItem.itemAmount, tempItem.icon, tempItem.equipment, tempItem.maxStack);
+        GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", item.itemName), transform.position + transform.forward * 2, Quaternion.identity);
         droppedItem.GetComponent<Rigidbody>().AddExplosionForce(100, transform.position + transform.forward - transform.up, 2);
+        droppedItem.GetComponent<WorldItem>().SetUp(item.itemName, item.itemAmount, ItemList.SelectItem(item.itemName).sprite, ItemList.SelectItem(item.itemName).type, ItemList.SelectItem(item.itemName).maxStackSize);
     }
 }
