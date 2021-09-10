@@ -13,7 +13,8 @@ public class GameManager : MonoBehaviour
     public int days;
     [Header("Player Spawn")]
     public GameObject playerObject;
-    public LayerMask groundLayer;
+	public LayerMask groundLayer;
+    public float spawnHeightOffset;
     public float spawnRadius;
     public float spawnHeight;
     private EnemySpawner es;
@@ -45,13 +46,13 @@ public class GameManager : MonoBehaviour
 
             Ray ray = new Ray(spawnpos, -transform.up);
             RaycastHit hitInfo;
-            if (Physics.Raycast(ray, out hitInfo, groundLayer))
+            if (Physics.Raycast(ray, out hitInfo))
             {
-                
+                spawnpos.y = hitInfo.point.y+spawnHeightOffset;
             }
             if (playerManager.pv.Owner == PhotonNetwork.PlayerList[i])
             {
-                playerManager.SpawnPlayer(new Vector3(2 * i, 100, 0));
+                playerManager.SpawnPlayer(spawnpos);
             }
         }
 	}
