@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.Video;
+using System.IO;
 
 public class GameManager : MonoBehaviour
 {
@@ -77,4 +78,17 @@ public class GameManager : MonoBehaviour
             }
         }
 	}
+    #region destroyWorldItems
+    public void DropItems(string droppedItemName, Vector3 position, Quaternion rotation, int amount)
+    {
+        GetComponent<PhotonView>().RPC("DestroyWorldItem", RpcTarget.MasterClient, droppedItemName, position, rotation, amount);
+    }
+    [PunRPC]
+    public void DestroyWorldItem(string droppedItemName, Vector3 position, Quaternion rotation, int amount)
+    {
+        GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", droppedItemName), position, rotation);
+        droppedItem.GetComponent<WorldItem>().SetUp(ItemList.SelectItem(droppedItemName).name, amount, ItemList.SelectItem(droppedItemName).sprite, ItemList.SelectItem(droppedItemName).type, ItemList.SelectItem(droppedItemName).maxStackSize);
+        //PhotonNetwork.Destroy(gameObject);
+    }
+    #endregion
 }

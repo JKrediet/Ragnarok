@@ -19,12 +19,14 @@ public class EquipableItem : Item
     [Space]
     public int damageBonus;
     public int armorBonus;
-    public int speedBonus;
+    public int attackSpeedBonus;
+    public int critChanceBonus;
     public int healthBonus;
     [Space]
     public int damagePrecentBonus;
     public int armorPrecentBonus;
-    public int speedPrecentBonus;
+    public int attackSpeedPrecentBonus;
+    public int critChancePrecentBonus;
     public int healthPrecentBonus;
     [Space]
     public EquipmentType equipment;

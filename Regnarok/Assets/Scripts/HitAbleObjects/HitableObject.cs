@@ -1,15 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon.Pun;
-using Photon.Realtime;
-using System.IO;
 
 public class HitableObject : MonoBehaviour
 {
-    [SerializeField] protected float health, itemTypeNeeded, minDrop, maxDrop, itemId;
+    public int itemSerialNumber;
+    [SerializeField] protected float health, minDrop, maxDrop;
+    [SerializeField] protected EquipmentType itemTypeNeeded;
     protected float maxHealth;
-
+    [Space]
+    [SerializeField] string dropItemName;
     protected GameObject lastPlayerThatHitTree;
     protected Rigidbody rb;
 
@@ -24,8 +24,8 @@ public class HitableObject : MonoBehaviour
         health *= Random.Range(0.7f, 1.3f);
         maxHealth = health;
     }
-    public virtual void HitByPlayer(float _damage, GameObject _hitBy, int itemType)
-    {
+    public virtual void HitByPlayer(float _damage, GameObject _hitBy, EquipmentType itemType)
+    { 
         if (itemType == itemTypeNeeded)
         {
             if (health > 0)
@@ -39,17 +39,22 @@ public class HitableObject : MonoBehaviour
                 }
             }
         }
+        else
+        {
+            if (health > 0)
+            {
+                health = Mathf.Clamp(health -= 1, 0, maxHealth);
+                lastPlayerThatHitTree = _hitBy;
+                if (health == 0)
+                {
+                    //items
+                    Invoke("DropItems", 2);
+                }
+            }
+        }
     }
     protected virtual void DropItems()
     {
-        GetComponent<PhotonView>().RPC("DestroyWorldItem", RpcTarget.MasterClient);
-    }
-    [PunRPC]
-    public void DestroyWorldItem()
-    {
-        PhotonNetwork.Destroy(gameObject);
-        GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", $"Item" + itemId), transform.position + transform.forward * 2, Quaternion.identity);
-        //droppedItem.GetComponent<Item>().ToInventory(false);
-        //droppedItem.GetComponent<Item>().stackAmount = Random.Range((int)minDrop, (int)maxDrop);
+        FindObjectOfType<GameManager>().DropItems(dropItemName, transform.position, Quaternion.identity, Random.Range((int)minDrop, (int)maxDrop));
     }
 }

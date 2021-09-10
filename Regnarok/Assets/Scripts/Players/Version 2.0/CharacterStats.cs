@@ -10,17 +10,49 @@ public class CharacterStats : MonoBehaviour
     public ItemSlot draggableItem;
     public Items[] itemList;//list of items
     bool itemIsBeingDragged;
+    PlayerController playercontroller;
 
     //color
     private Color normalColor = Color.white;
     private Color disabledColor = new Color(1, 1, 1, 0);
 
+    [Space]
+    float endDamage, endAttackSpeed, endCritChance, endArmor, endHealth;
+    public float BaseDamage, baseAttackSpeed, baseCritChance, baseArmor, baseHealth;
+    float addedDamage, addedAttackSpeed, addedCritChance, addedArmor, addedHealth;
+    float precentAddedDamage, precentAddedAttackSpeed, precentAddedCritChance, precentAddedArmor, precentAddedHealth;
+
+
+    private void Awake()
+    {
+        playercontroller = GetComponent<PlayerController>();
+    }
     private void Update()
     {
         if(itemIsBeingDragged)
         {
             draggableItem.transform.position = Input.mousePosition;
         }
+    }
+    public void CalculateOffensiveStats(Item item)
+    {
+        EquipableItem equipableItem = item as EquipableItem;
+
+        endDamage = (BaseDamage + addedDamage + equipableItem.damageBonus) * (precentAddedDamage + equipableItem.damagePrecentBonus / 100 + 1);
+        float tempAttackSpeed = (baseAttackSpeed + addedAttackSpeed + equipableItem.attackSpeedBonus) * (precentAddedAttackSpeed + equipableItem.attackSpeedPrecentBonus / 100 + 1);
+        endAttackSpeed = tempAttackSpeed / (tempAttackSpeed * tempAttackSpeed);
+        endCritChance = (baseCritChance + addedCritChance + equipableItem.critChanceBonus) * (precentAddedCritChance + equipableItem.critChancePrecentBonus / 100 + 1);
+
+        //give stats/ offensive
+        playercontroller.RecieveStats(endDamage, endAttackSpeed, endCritChance);
+    }
+    public void CalculateDefensiveStats()
+    {
+        //defensive
+        endArmor = (baseArmor + addedArmor) * (precentAddedArmor / 100 + 1);
+        endHealth = (baseHealth + addedHealth) * (precentAddedHealth / 100 + 1);
+
+        //return to healthScript
     }
     public void MoveItem(ItemSlot itemslot)
     {
@@ -116,6 +148,7 @@ public class CharacterStats : MonoBehaviour
     public struct Items
     {
         public int id;
+        public int amount;
         
     }
 }

@@ -13,9 +13,8 @@ public class PlayerController : MonoBehaviour
     PhotonView pv;
 
     //attackStats
-    [SerializeField] float totalDamage;
-    [SerializeField] Item heldItem;
-    //0= nothin, 1=axe
+    [SerializeField] float totalDamage, totalAttackSpeed, totalCritChance;
+    public Item heldItem;
 
     //movement
     [SerializeField] float speed, sprintSpeed, weight, jumpForce, combinedSpeed;
@@ -82,7 +81,12 @@ public class PlayerController : MonoBehaviour
         mayAttack = true;
         camOriginpos.position = cam.transform.position;
     }
-
+    public void RecieveStats(float damage, float attackSpeed, float critChance)
+    {
+        totalDamage = damage;
+        totalAttackSpeed = attackSpeed;
+        totalCritChance = critChance;
+    }
     private void Update()
     {
         Movement();
@@ -168,7 +172,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            if (Time.time >= groundCheckTime + 0.5f)
+            if (Time.time >= groundCheckTime + 0.2f)
             {
                 groundCheck = false;
             }
@@ -241,14 +245,26 @@ public class PlayerController : MonoBehaviour
                     tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", hitObject.GetComponentInChildren<Renderer>().material.color);
                 }
 
+
+                //crit
+                float critDamage = 0;
+                float roll = Random.Range(0, 100);
+                if(roll < totalCritChance)
+                {
+                    critDamage = totalDamage;
+                }
                 //damage
                 if(heldItem != null)
                 {
-                    //hitObject.GetComponent<HitableObject>().HitByPlayer(heldItem.itemDamage, gameObject, heldItem.itemType);
+                    if(heldItem as EquipableItem)
+                    {
+                        EquipableItem tempItem = heldItem as EquipableItem;
+                        hitObject.GetComponent<HitableObject>().HitByPlayer(totalDamage + critDamage, gameObject, tempItem.equipment);
+                    }
                 }
                 else
                 {
-                    hitObject.GetComponent<HitableObject>().HitByPlayer(1, gameObject, 0);
+                    hitObject.GetComponent<HitableObject>().HitByPlayer(1 + critDamage, gameObject, 0);
                 }
             }
         }

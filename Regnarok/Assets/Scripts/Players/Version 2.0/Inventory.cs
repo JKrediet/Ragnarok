@@ -22,6 +22,7 @@ public class Inventory : MonoBehaviour
     private PhotonView pv;
 
     CharacterStats character;
+    PlayerController controller;
 
     private KeyCode[] keyCodes = {
          KeyCode.Alpha1,
@@ -36,6 +37,7 @@ public class Inventory : MonoBehaviour
     {
         pv = GetComponent<PhotonView>();
         character = GetComponent<CharacterStats>();
+        controller = GetComponent<PlayerController>();
         inventoryPanel.SetActive(false);
         if (pv.IsMine)
         {
@@ -214,6 +216,15 @@ public class Inventory : MonoBehaviour
     void SelectItemInHotBar(int _location)
     {
         hotbarIndecator.transform.position = hotBarSlots[_location].transform.position;
+        if(hotBarSlots[_location].item != null)
+        {
+            controller.heldItem = hotBarSlots[_location].item;
+            character.CalculateOffensiveStats(hotBarSlots[_location].item);
+        }
+        else
+        {
+            controller.heldItem = null;
+        }
     }
     void OpenInventory()
     {
