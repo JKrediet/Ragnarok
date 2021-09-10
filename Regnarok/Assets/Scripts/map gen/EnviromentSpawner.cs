@@ -1,5 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.AI;
 public class EnviromentSpawner : MonoBehaviour
 {
     public bool testing;
@@ -19,7 +21,6 @@ public class EnviromentSpawner : MonoBehaviour
     public GameObject mesh;
     public MapGenerator mapGen;
     private Vector3 spawnPoint;
-    
 
     public void Generate()
     {
@@ -163,9 +164,9 @@ public class EnviromentSpawner : MonoBehaviour
     public void BuildNavMesh()
     {
 		if (canBakeNav)
-        { 
-           // NavMeshBuilder.BuildNavMesh();
-		}
+        {
+            mesh.GetComponent<NavMeshSurface>().BuildNavMesh();
+        }
         Invoke("SpawnPlayers", 1);
     }
     public void SpawnPlayers()
