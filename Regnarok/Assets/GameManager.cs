@@ -51,7 +51,7 @@ public class GameManager : MonoBehaviour
             }
             if (playerManager.pv.Owner == PhotonNetwork.PlayerList[i])
             {
-                playerManager.SpawnPlayer(hitInfo.transform.position + new Vector3(2 * i, 100, 0));
+                playerManager.SpawnPlayer(new Vector3(2 * i, 100, 0));
             }
         }
 	}
