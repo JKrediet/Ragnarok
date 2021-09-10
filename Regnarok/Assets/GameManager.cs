@@ -25,20 +25,21 @@ public class GameManager : MonoBehaviour
     public GameObject loadingScreen, canvas;
     public VideoPlayer videoplayer;
 
+    int loopieloop;
+
 	private void Start()
 	{
         es = GetComponent<EnemySpawner>();
-        StartCoroutine("RerollVideo");
+        Reroll();
     }
-    public IEnumerator RerollVideo()
+    void Reroll()
     {
         int roll = Random.Range(0, videos.Length);
         videoplayer.clip = videos[roll];
         videoplayer.Play();
-        yield return new WaitForSecondsRealtime(5);
-        if (loadingScreen.activeSelf)
+        if(loadingScreen.activeSelf)
         {
-            StartCoroutine("RerollVideo");
+            Invoke("Reroll", 5);
         }
     }
 	public IEnumerator IsNight()
