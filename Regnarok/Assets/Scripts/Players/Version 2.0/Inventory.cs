@@ -14,6 +14,7 @@ public class Inventory : MonoBehaviour
     [SerializeField] ItemSlot[] itemSlots, hotBarSlots;
     [Space]
     [SerializeField] GameObject inventoryPanel;
+    [SerializeField] GameObject hotbarIndecator;
     [SerializeField] int allHotbarSlots = 6;
 
     bool inventoryEnabled;
@@ -61,6 +62,7 @@ public class Inventory : MonoBehaviour
         if (itemsParent != null)
         {
             itemSlots = itemsParent.GetComponentsInChildren<ItemSlot>();
+            hotBarSlots = hotbarParent.GetComponentsInChildren<ItemSlot>();
         }
         RefreshUI();
 
@@ -195,16 +197,20 @@ public class Inventory : MonoBehaviour
             {
                 hotbarLocation = allHotbarSlots - 1;
             }
-            //SelectItemInHotbar(hotbarLocation);
+            SelectItemInHotBar(hotbarLocation);
         }
         for (int i = 0; i < keyCodes.Length; i++)
         {
             if (Input.GetKeyDown(keyCodes[i]))
             {
                 hotbarLocation = i;
-                //SelectItemInHotbar(hotbarLocation);
+                SelectItemInHotBar(hotbarLocation);
             }
         }
+    }
+    void SelectItemInHotBar(int _location)
+    {
+        hotbarIndecator.transform.position = hotBarSlots[_location].transform.position;
     }
     void OpenInventory()
     {

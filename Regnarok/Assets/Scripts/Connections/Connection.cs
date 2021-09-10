@@ -5,6 +5,7 @@ using Photon.Pun;
 using UnityEngine.UI;
 using TMPro;
 using Photon.Realtime;
+using UnityEngine.Video;
 
 public class Connection : MonoBehaviourPunCallbacks
 {
@@ -18,6 +19,7 @@ public class Connection : MonoBehaviourPunCallbacks
     TextMeshProUGUI seedText;
     [SerializeField] GameObject startButton;
     [SerializeField] int seed;
+    [SerializeField] GameObject loadingScreen, videoplayer;
     #region base join
     private void Awake()
     {
@@ -86,6 +88,8 @@ public class Connection : MonoBehaviourPunCallbacks
     public void StartGame()
     {
         GetComponent<PhotonView>().RPC("SincSeed", RpcTarget.All, seed);
+        videoplayer.GetComponent<VideoPlayer>().Play();
+        loadingScreen.SetActive(true);
         Invoke("StartLevel", 5);
     }
     [PunRPC]
@@ -93,7 +97,7 @@ public class Connection : MonoBehaviourPunCallbacks
     {
         if(_seed == 0)
         {
-            //_seed = Random.Range(0, 99999);
+            _seed = Random.Range(0, 99999);
         }
         //after seed sinced
         PlayerPrefs.SetInt("Seed", _seed);

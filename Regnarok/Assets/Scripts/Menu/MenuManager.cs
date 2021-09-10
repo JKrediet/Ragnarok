@@ -1,6 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using UnityEngine.UI;
+using TMPro;
+using Photon.Realtime;
 
 public class MenuManager : MonoBehaviour
 {
@@ -25,6 +29,11 @@ public class MenuManager : MonoBehaviour
                 menus[i].gameObject.SetActive(true);
             }
         }
+    }
+    public void LeaveRoom(string _name)
+    {
+        PhotonNetwork.LeaveRoom();
+        ChangeMenu(_name);
     }
     public void Quit()
     {
