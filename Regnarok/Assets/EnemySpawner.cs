@@ -80,7 +80,7 @@ public class EnemySpawner : MonoBehaviour
 		RaycastHit hitInfo;
 		if (Physics.Raycast(ray, out hitInfo, groundLayer))
 		{
-			spawnPos = hitInfo.transform.position;
+			spawnPos = hitInfo.point+new Vector3(0,1,0);
 			return spawnPos;
 		}
 		else
