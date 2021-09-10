@@ -6,12 +6,14 @@ public class EnviormentSpawnBehavour : MonoBehaviour
 {
     public bool secondCheck;
     public bool isGrass;
+    public bool isPlant;
     public float heightOffset = 1f;
     public float turnOffRb=1f;
     public bool usesRbFall;
     void Start()
     {
         FindLand();
+        
     }
     public void FindLand()
     {
@@ -46,6 +48,17 @@ public class EnviormentSpawnBehavour : MonoBehaviour
                 }
             }
         }
+        if (isPlant)
+		{
+            if(transform.position.y > 90)
+			{
+                Invoke("FindLand", 0.15f);
+                if(transform.position.y < 4)
+				{
+                    Destroy(gameObject);
+				}
+            }
+		}
         if (secondCheck)
         {
             Invoke("FindLand", 0.15f);

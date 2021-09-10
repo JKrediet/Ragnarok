@@ -23,6 +23,7 @@ public class EnviromentSpawner : MonoBehaviour
     {
         Random.InitState(mapGen.mapSeed);
         mesh.AddComponent<MeshCollider>();
+        new WaitForSeconds(1);
         for (int i = 0; i < spawnItems.Length; i++)
 		{
 			for (int i_ = 0; i_ < spawnItems[i].amountToSpawn; i_++)
