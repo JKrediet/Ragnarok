@@ -84,10 +84,17 @@ public class Connection : MonoBehaviourPunCallbacks
     }
     public void RecieveSeed(Text _seed)
     {
-        seed = int.Parse(_seed.text);
+        if (_seed.text.Length > 0)
+        {
+            seed = int.Parse(_seed.text);
+        }
     }
     public void StartGame()
     {
+        if (seed == 0)
+        {
+            seed = Random.Range(0, 99999);
+        }
         GetComponent<PhotonView>().RPC("SincSeed", RpcTarget.All, seed);
         GetComponent<PhotonView>().RPC("LoadingScreen", RpcTarget.All);
         Invoke("StartLevel", 5);
@@ -95,10 +102,6 @@ public class Connection : MonoBehaviourPunCallbacks
     [PunRPC]
     void SincSeed(int _seed)
     {
-        if(_seed == 0)
-        {
-            _seed = Random.Range(0, 99999);
-        }
         //after seed sinced
         PlayerPrefs.SetInt("Seed", _seed);
     }
