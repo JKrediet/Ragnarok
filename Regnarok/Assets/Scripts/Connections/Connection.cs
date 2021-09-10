@@ -20,6 +20,7 @@ public class Connection : MonoBehaviourPunCallbacks
     [SerializeField] GameObject startButton;
     [SerializeField] int seed;
     [SerializeField] GameObject loadingScreen, videoplayer;
+    [SerializeField] VideoClip[] videos;
     #region base join
     private void Awake()
     {
@@ -88,8 +89,7 @@ public class Connection : MonoBehaviourPunCallbacks
     public void StartGame()
     {
         GetComponent<PhotonView>().RPC("SincSeed", RpcTarget.All, seed);
-        videoplayer.GetComponent<VideoPlayer>().Play();
-        loadingScreen.SetActive(true);
+        GetComponent<PhotonView>().RPC("LoadingScreen", RpcTarget.All);
         Invoke("StartLevel", 5);
     }
     [PunRPC]
@@ -101,6 +101,15 @@ public class Connection : MonoBehaviourPunCallbacks
         }
         //after seed sinced
         PlayerPrefs.SetInt("Seed", _seed);
+    }
+    [PunRPC]
+    void LoadingScreen()
+    {
+        int roll = Random.Range(0, videos.Length);
+        VideoPlayer videoHost = videoplayer.GetComponent<VideoPlayer>();
+        videoHost.clip = videos[roll];
+        videoHost.Play();
+        loadingScreen.SetActive(true);
     }
     void StartLevel()
     {
