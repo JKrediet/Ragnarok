@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.Video;
+
 public class GameManager : MonoBehaviour
 {
 
@@ -19,9 +21,25 @@ public class GameManager : MonoBehaviour
     public float spawnHeight;
     private EnemySpawner es;
     public PlayerManager playerManager;
+    public VideoClip[] videos;
+    public GameObject loadingScreen, canvas;
+    public VideoPlayer videoplayer;
+
 	private void Start()
 	{
         es = GetComponent<EnemySpawner>();
+        StartCoroutine("RerollVideo");
+    }
+    public IEnumerator RerollVideo()
+    {
+        int roll = Random.Range(0, videos.Length);
+        videoplayer.clip = videos[roll];
+        videoplayer.Play();
+        yield return new WaitForSecondsRealtime(5);
+        if (loadingScreen.activeSelf)
+        {
+            StartCoroutine("RerollVideo");
+        }
     }
 	public IEnumerator IsNight()
 	{
@@ -39,6 +57,8 @@ public class GameManager : MonoBehaviour
 	}
     public void SpawnPlayers()
 	{
+        loadingScreen.SetActive(false);
+        canvas.SetActive(false);
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
 		{
             Vector3 spawnpos = new Vector3(Random.Range(spawnRadius, -spawnRadius), spawnHeight, Random.Range(-spawnRadius, spawnRadius));

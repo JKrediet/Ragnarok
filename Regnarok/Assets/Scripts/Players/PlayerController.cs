@@ -162,7 +162,7 @@ public class PlayerController : MonoBehaviour
             if(!groundCheck)
             {
                 groundCheck = true;
-                gravity = -0.1f;
+                gravity = -0.3f;
             }
             groundCheckTime = Time.time;
         }
