@@ -172,7 +172,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            if (Time.time >= groundCheckTime + 0.2f)
+            if (Time.time >= groundCheckTime + 0.3f)
             {
                 groundCheck = false;
             }

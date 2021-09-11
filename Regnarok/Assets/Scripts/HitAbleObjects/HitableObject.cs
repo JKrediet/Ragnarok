@@ -55,6 +55,6 @@ public class HitableObject : MonoBehaviour
     }
     protected virtual void DropItems()
     {
-        FindObjectOfType<GameManager>().DropItems(dropItemName, transform.position, Quaternion.identity, Random.Range((int)minDrop, (int)maxDrop));
+        FindObjectOfType<GameManager>().DropItems(dropItemName, transform.position, Quaternion.identity, Random.Range((int)minDrop, (int)maxDrop), itemSerialNumber);
     }
 }

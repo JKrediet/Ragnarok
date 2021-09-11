@@ -27,6 +27,7 @@ public class EnviromentSpawner : MonoBehaviour
         Random.InitState(mapGen.mapSeed);
         mesh.AddComponent<MeshCollider>();
         new WaitForSeconds(1);
+        int serialNumberForHitableObjectsl = 0;
         for (int i = 0; i < spawnItems.Length; i++)
 		{
 			for (int i_ = 0; i_ < spawnItems[i].amountToSpawn; i_++)
@@ -137,7 +138,12 @@ public class EnviromentSpawner : MonoBehaviour
                                     {
                                         if (spawnItems[i].randomRot)
                                         {
-                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), parent);
+                                            GameObject tempObject = Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), parent);
+                                            if (tempObject.GetComponent<HitableObject>())
+                                            {
+                                                tempObject.GetComponent<HitableObject>().itemSerialNumber = serialNumberForHitableObjectsl;
+                                                serialNumberForHitableObjectsl++;
+                                            }
                                         }
                                         else
                                         {

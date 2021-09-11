@@ -79,16 +79,29 @@ public class GameManager : MonoBehaviour
         }
 	}
     #region destroyWorldItems
-    public void DropItems(string droppedItemName, Vector3 position, Quaternion rotation, int amount)
+    public void DropItems(string droppedItemName, Vector3 position, Quaternion rotation, int amount, int serialNumber)
     {
-        GetComponent<PhotonView>().RPC("DestroyWorldItem", RpcTarget.MasterClient, droppedItemName, position, rotation, amount);
+        GetComponent<PhotonView>().RPC("DestroyWorldItem", RpcTarget.MasterClient, droppedItemName, position, rotation, amount, serialNumber);
     }
     [PunRPC]
-    public void DestroyWorldItem(string droppedItemName, Vector3 position, Quaternion rotation, int amount)
+    public void DestroyWorldItem(string droppedItemName, Vector3 position, Quaternion rotation, int amount, int serialNumber)
     {
         GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", droppedItemName), position, rotation);
         droppedItem.GetComponent<WorldItem>().SetUp(ItemList.SelectItem(droppedItemName).name, amount, ItemList.SelectItem(droppedItemName).sprite, ItemList.SelectItem(droppedItemName).type, ItemList.SelectItem(droppedItemName).maxStackSize);
-        //PhotonNetwork.Destroy(gameObject);
+        GetComponent<PhotonView>().RPC("RemoveItemFromWorld", RpcTarget.All, serialNumber);
+    }
+    [PunRPC]
+    public void RemoveItemFromWorld(int serialNumber)
+    {
+        HitableObject[] objectsFound = FindObjectsOfType<HitableObject>();
+        for (int i = 0; i < objectsFound.Length; i++)
+        {
+            if (objectsFound[i].itemSerialNumber == serialNumber)
+            {
+                Destroy(objectsFound[i].gameObject);
+            }
+        }
+
     }
     #endregion
 }
