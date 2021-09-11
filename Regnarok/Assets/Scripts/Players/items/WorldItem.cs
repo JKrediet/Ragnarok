@@ -15,6 +15,19 @@ public class WorldItem : MonoBehaviour
 
     public EquipmentType equipment;
 
+    [Space]
+    [HideInInspector] public int damageBonus;
+    [HideInInspector] public int armorBonus;
+    [HideInInspector] public int attackSpeedBonus;
+    [HideInInspector] public int critChanceBonus;
+    [HideInInspector] public int healthBonus;
+    [Space]
+    [HideInInspector] public int damagePrecentBonus;
+    [HideInInspector] public int armorPrecentBonus;
+    [HideInInspector] public int attackSpeedPrecentBonus;
+    [HideInInspector] public int critChancePrecentBonus;
+    [HideInInspector] public int healthPrecentBonus;
+
     private void Start()
     {
         mayBePickedUp = false;
