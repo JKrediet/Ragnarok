@@ -10,10 +10,15 @@ public class EnemySpawner : MonoBehaviour
 	public float startRaycastHeight;
 	public int enemiesForPlayer;
 	public int playerAmount;
+	public Vector3 spawnOffset;
 	public LayerMask groundLayer;
 	public GameObject testEnemie;
 	private GameObject[] players;
 	private void Start()
+	{
+		Invoke("GetPlayers",4);
+	}
+	public void GetPlayers()
 	{
 		players = GameObject.FindGameObjectsWithTag("Player");
 	}
@@ -22,12 +27,8 @@ public class EnemySpawner : MonoBehaviour
 		playerAmount = 0;
 		for (int i = 0; i < players.Length; i++)
 		{
-			if (players[i].GetComponent<MeshRenderer>())///moet hier nogg ff de float health kunnne getten jorn!
-			{
-				playerAmount++;
-			}
+			playerAmount++;
 		}
-
 		for (int i = 0; i < enemiesForPlayer; i++)
 		{
 			for (int i_i = 0; i_i < playerAmount; i_i++)
@@ -46,7 +47,6 @@ public class EnemySpawner : MonoBehaviour
 				else
 				{
 					Instantiate(testEnemie,spawnPos, Quaternion.identity);
-					//PhotonNetwork.Instantiate("string omin te spawnen", spawnPos, Quaternion.identity);
 				}
 			}
 		}
@@ -65,6 +65,7 @@ public class EnemySpawner : MonoBehaviour
 	public Vector3 GetSpawnPos(int index)///ff fixen
 	{
 		Vector3 spawnPos = players[index].transform.position;
+		spawnPos.y += startRaycastHeight;
 		if (Chance())
 		{
 			spawnPos.x += Random.Range(toCloseDis, maxrangeFromPlayer);
@@ -80,7 +81,7 @@ public class EnemySpawner : MonoBehaviour
 		RaycastHit hitInfo;
 		if (Physics.Raycast(ray, out hitInfo, groundLayer))
 		{
-			spawnPos = hitInfo.point+new Vector3(0,1,0);
+			spawnPos = hitInfo.point+spawnOffset;
 			return spawnPos;
 		}
 		else

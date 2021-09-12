@@ -4,12 +4,13 @@ using UnityEngine;
 using UnityEngine.AI;
 public class EnemyScript : MonoBehaviour
 {
-    public GameObject player;
+    public GameObject[] players;
     public Animator anim;
     public float jumpSpeed;
     public float health;
     public float triggerRange;
     public float attackRange;
+    public float targetUpdateTime = 0.5f;
     [Header("Inumerator times")]
     public float deathAnimDuration;
     public float attackCoolDown;
@@ -17,11 +18,15 @@ public class EnemyScript : MonoBehaviour
     NavMeshAgent agent;
     private GameScaler gs;
     private Rigidbody rb;
+    private GameObject target;
+    private bool gettingTarget;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         //gs = FindObjectOfType<GameScaler>();
         agent = GetComponent<NavMeshAgent>();
+        players = GameObject.FindGameObjectsWithTag("Player");
+        target = players[0];
     }
     void Update()
     {
@@ -29,12 +34,16 @@ public class EnemyScript : MonoBehaviour
 		{
             return;
 		}
-        float dist = Vector3.Distance(transform.position, player.transform.position);
+		if (!gettingTarget)
+		{
+            StartCoroutine("GetTarget");
+		} 
+        float dist = Vector3.Distance(transform.position, target.transform.position);
 		if (dist <= triggerRange)
         {
 			if (dist <= attackRange)
 			{
-                Vector3 lookat = new Vector3(player.transform.position.x, 0, player.transform.position.z);//player pos without height
+                Vector3 lookat = new Vector3(target.transform.position.x, 0, target.transform.position.z);//player pos without height
 
                 transform.LookAt(lookat);
 
@@ -47,10 +56,9 @@ public class EnemyScript : MonoBehaviour
 			{
 				if (!doDamage)
 				{
-                    agent.destination = player.transform.position;
+                    agent.destination = target.transform.position;
                     ResetAnim();
                     anim.SetBool("IsWalking",true);
-
                 }
 			}
 		}
@@ -58,6 +66,25 @@ public class EnemyScript : MonoBehaviour
 		{
             StartCoroutine("Death");
         }
+    }
+    public IEnumerator GetTarget()
+	{
+        gettingTarget = true;
+
+        for (int i = 0; i < players.Length; i++)
+        {
+            float dis = Vector3.Distance(transform.position, players[i].transform.position);
+            float targetDis = Vector3.Distance(transform.position, target.transform.position);
+            if (dis < targetDis)
+            {
+                if (target != players[i])
+                {
+                    target = players[i];
+                }
+            }
+        }
+        yield return new WaitForSeconds(targetUpdateTime);
+        gettingTarget = false;
     }
     public void SpawnForce()
 	{
