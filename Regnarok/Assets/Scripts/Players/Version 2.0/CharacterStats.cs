@@ -61,6 +61,36 @@ public class CharacterStats : MonoBehaviour
             inventory.DropItem(itemslot.item);
             itemslot.item = null;
         }
+        else if (Input.GetKey(KeyCode.Mouse1))
+        {
+            if (!itemIsBeingDragged)
+            {
+                if(itemslot.item.itemAmount == 1)
+                {
+                    draggableItem.item = itemslot.item;
+                    draggableItem.item.itemAmount = 1;
+                    draggableItem.gameObject.GetComponent<Image>().color = normalColor;
+                    itemslot.item = null;
+                }
+                else if(itemslot.item.itemAmount > 1)
+                {
+                    itemslot.item.itemAmount--;
+                    draggableItem.item = itemslot.item;
+                    draggableItem.item.itemAmount = 1;
+                    draggableItem.gameObject.GetComponent<Image>().color = normalColor;
+                }
+                itemIsBeingDragged = true;
+                //add item to list of inv
+                if (itemslot.chestInv != null)
+                {
+                    //not yet inplemented
+                }
+                else if (itemslot.inv != null)
+                {
+                    itemslot.inv.RefreshUI();
+                }
+            }
+        }
         else if(Input.GetKey(KeyCode.LeftShift))
         {
             if (!itemIsBeingDragged)
@@ -82,14 +112,18 @@ public class CharacterStats : MonoBehaviour
                     if (half > 0)
                     {
                         itemslot.item.itemAmount = half;
+                        draggableItem.item = itemslot.item;
+                        draggableItem.item.itemAmount = half;
+                        draggableItem.gameObject.GetComponent<Image>().color = normalColor;
                     }
                     else
                     {
                         itemslot.item.itemAmount = (int)roundedUp;
                         draggableItem.item = itemslot.item;
                         draggableItem.item.itemAmount = (int)roundedDown;
-                        draggableItem.gameObject.GetComponent<Image>().color = disabledColor;
+                        draggableItem.gameObject.GetComponent<Image>().color = normalColor;
                     }
+                    itemIsBeingDragged = true;
                 }
             }
         }

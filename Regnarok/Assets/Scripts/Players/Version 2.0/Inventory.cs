@@ -89,6 +89,10 @@ public class Inventory : MonoBehaviour
                 {
                     itemSlots[i].stackAmountText.text = itemSlots[i].item.itemAmount.ToString();
                 }
+                else
+                {
+                    itemSlots[i].stackAmountText.text = "";
+                }
             }
             else
             {
