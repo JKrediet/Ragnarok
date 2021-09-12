@@ -66,15 +66,26 @@ public class EnemySpawner : MonoBehaviour
 	{
 		Vector3 spawnPos = players[index].transform.position;
 		spawnPos.y += startRaycastHeight;
-		if (Chance())
+		int spawnCorner = Random.Range(0, 4);
+		if (spawnCorner == 1)
 		{
 			spawnPos.x += Random.Range(toCloseDis, maxrangeFromPlayer);
 			spawnPos.z += Random.Range(toCloseDis, maxrangeFromPlayer);
 		}
-		else
+		else if (spawnCorner == 2)
 		{
 			spawnPos.x -= Random.Range(toCloseDis, maxrangeFromPlayer);
 			spawnPos.z -= Random.Range(toCloseDis, maxrangeFromPlayer);
+		}
+		else if (spawnCorner == 3)
+		{
+			spawnPos.x += Random.Range(toCloseDis, maxrangeFromPlayer);
+			spawnPos.z -= Random.Range(toCloseDis, maxrangeFromPlayer);
+		}
+		else
+		{
+			spawnPos.x -= Random.Range(toCloseDis, maxrangeFromPlayer);
+			spawnPos.z += Random.Range(toCloseDis, maxrangeFromPlayer);
 		}
 
 		Ray ray = new Ray(spawnPos, -transform.up);
