@@ -9,7 +9,7 @@ public class HitableObject : MonoBehaviour
     [SerializeField] protected EquipmentType itemTypeNeeded;
     protected float maxHealth;
     [Space]
-    [SerializeField] string dropItemName;
+    [SerializeField] string[] dropItemName;
     protected GameObject lastPlayerThatHitTree;
     protected Rigidbody rb;
 
@@ -55,6 +55,10 @@ public class HitableObject : MonoBehaviour
     }
     protected virtual void DropItems()
     {
-        FindObjectOfType<GameManager>().DropItems(dropItemName, transform.position, Quaternion.identity, Random.Range((int)minDrop, (int)maxDrop), itemSerialNumber);
+        for (int i = 0; i < dropItemName.Length; i++)
+        {
+            FindObjectOfType<GameManager>().DropItems(dropItemName[i], transform.position, Quaternion.identity, Random.Range((int)minDrop, (int)maxDrop), itemSerialNumber);
+        }
+        
     }
 }

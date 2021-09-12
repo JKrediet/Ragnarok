@@ -12,6 +12,7 @@ public enum EquipmentType
     axe,
     pickaxe,
     weapon,
+    food,
 }
 [CreateAssetMenu]
 public class EquipableItem : Item
