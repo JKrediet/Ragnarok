@@ -13,8 +13,8 @@ public class CharacterStats : MonoBehaviour
     PlayerController playercontroller;
 
     //color
-    private Color normalColor = Color.white;
-    private Color disabledColor = new Color(1, 1, 1, 0);
+    [HideInInspector] public Color normalColor = Color.white;
+    [HideInInspector] public Color disabledColor = new Color(1, 1, 1, 0);
 
     [Space]
     float endDamage, endAttackSpeed, endCritChance, endArmor, endHealth;
@@ -60,6 +60,38 @@ public class CharacterStats : MonoBehaviour
         {
             inventory.DropItem(itemslot.item);
             itemslot.item = null;
+        }
+        else if(Input.GetKey(KeyCode.LeftShift))
+        {
+            if (!itemIsBeingDragged)
+            {
+                if (itemslot.item.itemAmount > 1)
+                {
+                    float roundedDown = 0;
+                    float roundedUp = 0;
+                    int half = 0;
+                    if (itemslot.item.itemAmount % 2 == 0)
+                    {
+                        half = itemslot.item.itemAmount / 2;
+                    }
+                    else if (itemslot.item.itemAmount % 2 == 1)
+                    {
+                        roundedDown = (float)itemslot.item.itemAmount / 2 - 0.5f;
+                        roundedUp = (float)itemslot.item.itemAmount / 2 + 0.5f;
+                    }
+                    if (half > 0)
+                    {
+                        itemslot.item.itemAmount = half;
+                    }
+                    else
+                    {
+                        itemslot.item.itemAmount = (int)roundedUp;
+                        draggableItem.item = itemslot.item;
+                        draggableItem.item.itemAmount = (int)roundedDown;
+                        draggableItem.gameObject.GetComponent<Image>().color = disabledColor;
+                    }
+                }
+            }
         }
         else
         {

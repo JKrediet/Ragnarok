@@ -96,7 +96,7 @@ public class PlayerController : MonoBehaviour
             Rotation();
             CheckForInfo();
         }
-            //andere onzin
+        //andere onzin
         if (Input.GetButtonDown("Fire1"))
         {
             if(!InventoryIsOpen)

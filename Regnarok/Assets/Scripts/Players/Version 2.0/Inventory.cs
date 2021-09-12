@@ -71,7 +71,6 @@ public class Inventory : MonoBehaviour
             hotBarSlots = hotbarParent.GetComponentsInChildren<ItemSlot>();
         }
         RefreshUI();
-
     }
     private void Update() //<----------------------------- update
     {
@@ -240,6 +239,7 @@ public class Inventory : MonoBehaviour
                 {
                     DropItem(character.draggableItem.item);
                     character.draggableItem.item = null;
+                    character.draggableItem.gameObject.GetComponent<Image>().color = character.disabledColor;
                 }
             }
             else
