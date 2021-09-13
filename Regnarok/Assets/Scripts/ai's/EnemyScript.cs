@@ -6,6 +6,8 @@ public class EnemyScript : MonoBehaviour
 {
     public GameObject[] players;
     public Animator anim;
+    public float targetDelay=0.3f;
+    public float damage;
     public float jumpSpeed;
     public float health;
     public float triggerRange;
@@ -14,11 +16,11 @@ public class EnemyScript : MonoBehaviour
     [Header("Inumerator times")]
     public float deathAnimDuration;
     public float attackCoolDown;
-    private bool doDamage;
     NavMeshAgent agent;
     private GameScaler gs;
     private Rigidbody rb;
     private GameObject target;
+    private bool doAttack;
     private bool gettingTarget;
     private bool isSpawning;
     private bool isIdleWalking;
@@ -33,75 +35,77 @@ public class EnemyScript : MonoBehaviour
     }
     void Update()
     {
-		if (isSpawning)
-		{
-            return;
-		}
-		if (!agent.enabled)
-		{
-            return;
-		}
-		if (!gettingTarget)
-		{
-            StartCoroutine("GetTarget");
-		} 
-        float dist = Vector3.Distance(transform.position, target.transform.position);
-		if (dist <= triggerRange)
+        if (isSpawning)
         {
-			if (dist <= attackRange)
-			{
+            return;
+        }
+        if (!agent.enabled)
+        {
+            return;
+        }
+        if (!gettingTarget)
+        {
+            StartCoroutine("GetTarget");
+        }
+        float dist = Vector3.Distance(transform.position, target.transform.position);
+        if (dist <= triggerRange)
+        {
+            if (dist <= attackRange)
+            {
                 Vector3 lookat = new Vector3(target.transform.position.x, 0, target.transform.position.z);//player pos without height
 
                 transform.LookAt(lookat);
 
-				if (!doDamage)
-				{
-                    StartCoroutine("DoDamage");
+                if (!doAttack)
+                {
+                    StartCoroutine("DoAttack");
                 }
             }
-			else
-			{
-				if (!doDamage)
-				{
-                    agent.destination = target.transform.position;
+            else
+            {
+                if (!doAttack)
+                {
+                    Vector3 delayedPos = target.transform.position;
+                     new WaitForSeconds(targetDelay);
+                    agent.destination = delayedPos;
                     ResetAnim();
-                    anim.SetBool("IsWalking",true);
+                    anim.SetBool("IsWalking", true);
                 }
-			}
-		}
-		else
-		{
+            }
+        }
+        else
+        {
             float dis = Vector3.Distance(transform.position, agent.destination);
-			if (dis<5)
-			{
+            if (dis < 5)
+            {
                 isIdleWalking = false;
             }
-			else
-			{
+            else
+            {
                 isIdleWalking = true;
             }
 
             if (isIdleWalking)
-			{
+            {
                 anim.SetBool("IsWalking", true);
                 agent.destination = idleDes;
             }
-			else
-			{
+            else
+            {
                 anim.SetBool("IsWalking", false);
                 agent.destination = transform.position;
                 StartCoroutine("RandomRotation");
                 StartCoroutine("RandomIdlePos");
             }
         }
-		if (health <= 0)
-		{
+        if (health <= 0)
+        {
             StartCoroutine("Death");
         }
     }
     public IEnumerator RandomRotation()
-	{
-        float newRotation=transform.eulerAngles.y;
+    {
+        float newRotation = transform.eulerAngles.y;
         newRotation += Random.Range(1.00f, 3.00f);
         transform.rotation = Quaternion.Euler(0, newRotation, 0);
         yield return new WaitForSeconds(2.5f);
@@ -130,11 +134,11 @@ public class EnemyScript : MonoBehaviour
         yield return new WaitForSeconds(10);
     }
     public void CallAgain()
-	{
+    {
         StartCoroutine("RandomIdlePos");
     }
     public IEnumerator GetTarget()
-	{
+    {
         gettingTarget = true;
 
         for (int i = 0; i < players.Length; i++)
@@ -153,8 +157,8 @@ public class EnemyScript : MonoBehaviour
         gettingTarget = false;
     }
     public void SpawnForce()
-	{
-        rb.AddForce(Vector3.up * jumpSpeed*3);
+    {
+        rb.AddForce(Vector3.up * jumpSpeed * 3);
         isSpawning = true;
     }
     public void StopSpawnForce()
@@ -164,30 +168,46 @@ public class EnemyScript : MonoBehaviour
         Invoke("TurnOffGravity", 0.5f);
     }
     public void TurnOffGravity()
-	{
+    {
         rb.useGravity = false;
         rb.isKinematic = true;
         isSpawning = false;
     }
-    public IEnumerator DoDamage()
-	{
-        doDamage = true;
-        GiveReward();
+    public IEnumerator DoAttack()
+    {
+        doAttack = true;
+        float dis = Vector3.Distance(transform.position, target.transform.position);
+		if (dis > attackRange)
+		{
+            Ray ray = new Ray(transform.position, -transform.up);
+            RaycastHit hitInfo;
+            if (Physics.Raycast(ray, out hitInfo, attackRange))
+            {
+				if (hitInfo.transform.tag == "Player")
+				{
+                    ResetAnim();
+                    hitInfo.transform.GetComponent<PlayerHealth>().Health_Damage(damage);
+                    anim.SetBool("IsAttacking", true);
+                }
+            }
+        }
         yield return new WaitForSeconds(attackCoolDown);
-        doDamage = false;
+        doAttack = false;
     }
     public IEnumerator Death()
-	{
+    {
         anim.SetBool("isDying", true);
+        GiveReward();
         yield return new WaitForSeconds(deathAnimDuration);
         Destroy(gameObject);
-	}
+    }
     public void ResetAnim()
-	{
+    {
+        anim.SetBool("IsAttacking", false);
         anim.SetBool("IsWalking", false);
-	}
+    }
     public void GiveReward()
-	{
+    {
 
-	}
+    }
 }
