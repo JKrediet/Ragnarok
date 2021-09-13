@@ -75,9 +75,6 @@ public class PlayerController : MonoBehaviour
             staminaValue = maxStamina;
             staminaLossPerSec = baseStaminaLossPerSec;
             staminaGainedPerSec = baseStaminaGainedPerSec;
-
-            //turn own head off so you do not see the clipping
-            head.SetActive(false);
         }
         else
         {
@@ -125,10 +122,7 @@ public class PlayerController : MonoBehaviour
     //apply movement to character
     private void FixedUpdate()
     {
-        if (mayAttack)
-        {
-            ApplyMovement();
-        }
+         ApplyMovement();
     }
     void Movement()
     {
@@ -164,6 +158,10 @@ public class PlayerController : MonoBehaviour
         staminaSlider.value = staminaValue;
         if (!isThirdPerson)
         {
+            if (!mayAttack)
+            {
+                combinedSpeed *= 0.25f;
+            }
             movementDirection = (transform.forward * movementSpeed.z + transform.right * movementSpeed.x) * combinedSpeed;
             //else is done in rotation
         }
