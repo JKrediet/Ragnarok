@@ -234,9 +234,10 @@ public class PlayerController : MonoBehaviour
         {
             if (hitObject.GetComponent<HitableObject>())
             {
+                //particle color
                 GameObject tempObject = Instantiate(testGraph, hitObject.ClosestPoint(attackPos.position), Quaternion.identity);
                 Destroy(tempObject, 1);
-                if(hitObject.GetComponent<Renderer>())
+                if (hitObject.GetComponent<Renderer>())
                 {
                     tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", hitObject.GetComponent<Renderer>().material.color);
                 }

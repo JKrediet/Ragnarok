@@ -36,12 +36,20 @@ public class CharacterStats : MonoBehaviour
     }
     public void CalculateOffensiveStats(Item item)
     {
-        EquipableItem equipableItem = item as EquipableItem;
-
-        endDamage = (BaseDamage + addedDamage + equipableItem.damageBonus) * (precentAddedDamage + equipableItem.damagePrecentBonus / 100 + 1);
-        float tempAttackSpeed = (baseAttackSpeed + addedAttackSpeed + equipableItem.attackSpeedBonus) * (precentAddedAttackSpeed + equipableItem.attackSpeedPrecentBonus / 100 + 1);
-        endAttackSpeed = tempAttackSpeed / (tempAttackSpeed * tempAttackSpeed);
-        endCritChance = (baseCritChance + addedCritChance + equipableItem.critChanceBonus) * (precentAddedCritChance + equipableItem.critChancePrecentBonus / 100 + 1);
+        //nog geen accesory stats
+        if (item.equipment == EquipmentType.axe || item.equipment == EquipmentType.pickaxe || item.equipment == EquipmentType.weapon)
+        {
+            endDamage = (BaseDamage + addedDamage + item.damageBonus) * (precentAddedDamage + item.damagePrecentBonus / 100 + 1);
+            float tempAttackSpeed = (baseAttackSpeed + addedAttackSpeed + item.attackSpeedBonus) * (precentAddedAttackSpeed + item.attackSpeedPrecentBonus / 100 + 1);
+            endAttackSpeed = tempAttackSpeed / (tempAttackSpeed * tempAttackSpeed);
+            endCritChance = (baseCritChance + addedCritChance + item.critChanceBonus) * (precentAddedCritChance + item.critChancePrecentBonus / 100 + 1);
+        }
+        else
+        {
+            endDamage = 1;
+            endAttackSpeed = 1;
+            endCritChance = 5;
+        }
 
         //give stats/ offensive
         playercontroller.RecieveStats(endDamage, endAttackSpeed, endCritChance);
