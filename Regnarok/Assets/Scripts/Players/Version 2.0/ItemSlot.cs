@@ -9,7 +9,7 @@ public class ItemSlot : MonoBehaviour
     [SerializeField] Image image;
     public int slotID;
     public Inventory inv;
-    public Chest chestInv;
+    public ChestInventory chestInv;
 
     public TextMeshProUGUI stackAmountText;
 

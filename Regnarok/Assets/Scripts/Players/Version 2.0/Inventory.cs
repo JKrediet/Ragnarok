@@ -238,25 +238,34 @@ public class Inventory : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            inventoryEnabled = !inventoryEnabled;
-            inventoryPanel.SetActive(inventoryEnabled);
-            GetComponent<PlayerController>().LockCamera();
-            if (!inventoryEnabled)
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-                if (character.draggableItem.item != null)
-                {
-                    DropItem(character.draggableItem.item);
-                    character.draggableItem.item = null;
-                    character.draggableItem.gameObject.GetComponent<Image>().color = character.disabledColor;
-                }
-            }
-            else
-            {
-                Cursor.lockState = CursorLockMode.Confined;
-            }
-            Cursor.visible = inventoryEnabled;
+            OpenActualInventory();
         }
+    }
+    public void OpenActualInventory()
+    {
+        inventoryEnabled = !inventoryEnabled;
+        inventoryPanel.SetActive(inventoryEnabled);
+        GetComponent<PlayerController>().LockCamera();
+        if(GetComponent<PlayerController>().lastChest != null)
+        {
+            GetComponent<PlayerController>().lastChest.CloseChestInventory();
+            GetComponent<PlayerController>().lastChest = null;
+        }
+        if (!inventoryEnabled)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            if (character.draggableItem.item != null)
+            {
+                DropItem(character.draggableItem.item);
+                character.draggableItem.item = null;
+                character.draggableItem.gameObject.GetComponent<Image>().color = character.disabledColor;
+            }
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Confined;
+        }
+        Cursor.visible = inventoryEnabled;
     }
     public void DropItem(Item item)
     {

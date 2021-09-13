@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
     bool groundCheck = false;
     float groundCheckTime;
     Vector3 movementSpeed, movementDirection;
-    //ChestInventory lastChest;
+    [HideInInspector] public ChestInventory lastChest;
     //CraftStation craftStation;
 
     //camera
@@ -116,6 +116,16 @@ public class PlayerController : MonoBehaviour
             if(groundCheck)
             {
                 Jump();
+            }
+        }
+        //check for chestDistance
+        if(lastChest != null)
+        {
+            float distance = Vector3.Distance(transform.position, lastChest.transform.position);
+            if(distance > 5)
+            {
+                lastChest.CloseChestInventory();
+                lastChest = null;
             }
         }
     }
@@ -285,13 +295,6 @@ public class PlayerController : MonoBehaviour
     public void LockCamera()
     {
         InventoryIsOpen = !InventoryIsOpen;
-        if (!InventoryIsOpen)
-        {
-            //if (lastChest)
-            //{
-            //    lastChest = null;
-            //}
-        }
     }
     public void GiveItemStats(Item _itemType)
     {
@@ -316,6 +319,12 @@ public class PlayerController : MonoBehaviour
 				{
                     _hit.transform.GetComponent<Totem>().Interact();
 				}
+                else if(_hit.transform.GetComponent<ChestInventory>())
+                {
+                    GetComponent<Inventory>().OpenActualInventory();
+                    lastChest = _hit.transform.GetComponent<ChestInventory>();
+                    lastChest.OpenChestInventory();
+                }
             }
         }
     }

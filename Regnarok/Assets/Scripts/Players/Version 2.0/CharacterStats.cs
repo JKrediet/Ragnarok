@@ -88,15 +88,6 @@ public class CharacterStats : MonoBehaviour
                     draggableItem.gameObject.GetComponent<Image>().color = normalColor;
                 }
                 itemIsBeingDragged = true;
-                //add item to list of inv
-                if (itemslot.chestInv != null)
-                {
-                    //not yet inplemented
-                }
-                else if (itemslot.inv != null)
-                {
-                    itemslot.inv.RefreshUI();
-                }
             }
         }
         else if(Input.GetKey(KeyCode.LeftShift))
@@ -206,7 +197,7 @@ public class CharacterStats : MonoBehaviour
         {
             //not yet inplemented
         }
-        else if (itemslot.inv != null)
+        if (itemslot.inv != null)
         {
             itemslot.inv.RefreshUI();
         }
