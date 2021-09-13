@@ -4,8 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.AI;
 public class EnviromentSpawner : MonoBehaviour
 {
-    public bool testing;
-    public bool testEnvSpawn;
+    public float spawnCoolDownForEachSpawn=0.00001f;
     public bool canBakeNav;
     public Objects[] spawnItems;
     [Header("Height Values")]
@@ -22,8 +21,14 @@ public class EnviromentSpawner : MonoBehaviour
     public MapGenerator mapGen;
     private Vector3 spawnPoint;
 
-    public void Generate()
+    public void StartGenerating()
+	{
+        StartCoroutine(Generate());
+        print("started");
+	}
+    public IEnumerator Generate()
     {
+        print("starting");
         Random.InitState(mapGen.mapSeed);
         mesh.AddComponent<MeshCollider>();
         new WaitForSeconds(1);
@@ -34,8 +39,10 @@ public class EnviromentSpawner : MonoBehaviour
 			{
                 if (spawnItems[i].spawnItem)
                 {
+                    print("1");
                     if (Chance())
                     {
+                        print("2");
                         Transform parent;
 						if (spawnItems[i].isGrass)
 						{
@@ -163,6 +170,7 @@ public class EnviromentSpawner : MonoBehaviour
                     }
                 }
             }
+            yield return new WaitForSeconds(spawnCoolDownForEachSpawn);
 		}
 
         Invoke("BuildNavMesh", 0.5f);

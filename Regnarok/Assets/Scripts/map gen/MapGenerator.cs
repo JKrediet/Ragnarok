@@ -107,7 +107,7 @@ public class MapGenerator : MonoBehaviour
 	{
 		if (generateEnviroment)
 		{
-            envSpawn.Generate();
+            envSpawn.StartGenerating();
 		}
     }
 }
