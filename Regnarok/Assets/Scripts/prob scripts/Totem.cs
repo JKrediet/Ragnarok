@@ -14,18 +14,20 @@ public class Totem : MonoBehaviour
 	private List<GameObject> enemies;
 	private void Start()
 	{
-		gs = FindObjectOfType<GameScaler>();
-		float amountOfEnemies_ = (float)amountOfEnemies;
-		float resault = (amountOfEnemies_ * gs.scaling);
-		enemiesToSpawn = (int)resault;
+		//gs = FindObjectOfType<GameScaler>();
+		//float amountOfEnemies_ = (float)amountOfEnemies;
+		//float resault = (amountOfEnemies_ * gs.scaling);
+		//enemiesToSpawn = (int)resault;
 	}
 	public void Interact()
 	{
-		if (!isActiveAndEnabled)
-		{
-            SpawnEnemies();
-            activated = false;
-		}
+		print("totem");
+		//if (!isActiveAndEnabled)
+		//{
+  //          SpawnEnemies();
+		//	print("totem");
+  //          activated = true;
+		//}
 	}
     void SpawnEnemies()
     {
@@ -33,8 +35,8 @@ public class Totem : MonoBehaviour
 		{
 			int randomNum = Random.Range(0, enemielist.enemieList.Count);
 			Vector3 pos = transform.position;
-			pos.x += Random.Range(0.5f, 3);
-			pos.z += Random.Range(0.5f, 3);
+			pos.x += Random.Range(-3.00f, 3.00f);
+			pos.z += Random.Range(-3.00f, 3.00f);
 
 			pos.y = 100;
 			Ray ray = new Ray(pos, -transform.up);

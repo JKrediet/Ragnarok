@@ -24,11 +24,10 @@ public class EnviromentSpawner : MonoBehaviour
     public void StartGenerating()
 	{
         StartCoroutine(Generate());
-        print("started");
 	}
     public IEnumerator Generate()
     {
-        print("starting");
+
         Random.InitState(mapGen.mapSeed);
         mesh.AddComponent<MeshCollider>();
         new WaitForSeconds(1);
@@ -39,10 +38,8 @@ public class EnviromentSpawner : MonoBehaviour
 			{
                 if (spawnItems[i].spawnItem)
                 {
-                    print("1");
                     if (Chance())
                     {
-                        print("2");
                         Transform parent;
 						if (spawnItems[i].isGrass)
 						{
@@ -74,7 +71,7 @@ public class EnviromentSpawner : MonoBehaviour
                             {
 
                             }
-                            else
+                            else if(hitInfo.transform.tag == "Mesh")
                             {
                                 if (spawnItems[i].canSpawnOnSand)
                                 {

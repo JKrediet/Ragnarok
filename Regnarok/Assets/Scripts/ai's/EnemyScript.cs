@@ -20,6 +20,9 @@ public class EnemyScript : MonoBehaviour
     private Rigidbody rb;
     private GameObject target;
     private bool gettingTarget;
+    private bool isSpawning;
+    private bool isIdleWalking;
+    private Vector3 idleDes;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -30,6 +33,10 @@ public class EnemyScript : MonoBehaviour
     }
     void Update()
     {
+		if (isSpawning)
+		{
+            return;
+		}
 		if (!agent.enabled)
 		{
             return;
@@ -62,10 +69,69 @@ public class EnemyScript : MonoBehaviour
                 }
 			}
 		}
+		else
+		{
+            float dis = Vector3.Distance(transform.position, agent.destination);
+			if (dis<5)
+			{
+                isIdleWalking = false;
+            }
+			else
+			{
+                isIdleWalking = true;
+            }
+
+            if (isIdleWalking)
+			{
+                anim.SetBool("IsWalking", true);
+                agent.destination = idleDes;
+            }
+			else
+			{
+                anim.SetBool("IsWalking", false);
+                agent.destination = transform.position;
+                StartCoroutine("RandomRotation");
+                StartCoroutine("RandomIdlePos");
+            }
+        }
 		if (health <= 0)
 		{
             StartCoroutine("Death");
         }
+    }
+    public IEnumerator RandomRotation()
+	{
+        float newRotation=transform.eulerAngles.y;
+        newRotation += Random.Range(1.00f, 3.00f);
+        transform.rotation = Quaternion.Euler(0, newRotation, 0);
+        yield return new WaitForSeconds(2.5f);
+    }
+    public IEnumerator RandomIdlePos()
+    {
+        if (!isIdleWalking)
+        {
+            idleDes = transform.position + new Vector3(Random.Range(-10, 10), 100, Random.Range(-10, 10));
+            Ray ray = new Ray(idleDes, -transform.up);
+            RaycastHit hitInfo;
+            if (Physics.Raycast(ray, out hitInfo))
+            {
+                if (hitInfo.transform.tag == "Mesh")
+                {
+                    idleDes = hitInfo.point;
+                }
+                else
+                {
+                    yield return new WaitForSeconds(0.5f);
+                    CallAgain();
+                }
+            }
+        }
+        isIdleWalking = true;
+        yield return new WaitForSeconds(10);
+    }
+    public void CallAgain()
+	{
+        StartCoroutine("RandomIdlePos");
     }
     public IEnumerator GetTarget()
 	{
@@ -89,6 +155,7 @@ public class EnemyScript : MonoBehaviour
     public void SpawnForce()
 	{
         rb.AddForce(Vector3.up * jumpSpeed*3);
+        isSpawning = true;
     }
     public void StopSpawnForce()
     {
@@ -100,7 +167,8 @@ public class EnemyScript : MonoBehaviour
 	{
         rb.useGravity = false;
         rb.isKinematic = true;
-	}
+        isSpawning = false;
+    }
     public IEnumerator DoDamage()
 	{
         doDamage = true;

@@ -58,6 +58,8 @@ public class PlayerController : MonoBehaviour
 
     public LayerMask chestLayer;
 
+    public int playerBalance;
+
     private void Awake()
     {
         pv = GetComponent<PhotonView>();
@@ -287,36 +289,25 @@ public class PlayerController : MonoBehaviour
     }
     void CheckForInfo()
     {
-        //if(lastChest == null)
-        //{
-        //    if (Input.GetKeyDown(KeyCode.E))
-        //    {
-        //        RaycastHit _hit;
-        //        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out _hit, 5, chestLayer))
-        //        {
-        //            if (_hit.transform.GetComponent<ChestInventory>())
-        //            {
-        //                lastChest = _hit.transform.GetComponent<ChestInventory>();
-        //                lastChest.OpenChest(GetComponent<Inventory>());
-        //                //lastChest.mouseItemHolder = GetComponent<Inventory>().mouseItemHolder;
-        //            }
-        //            if(_hit.transform.GetComponent<ChestInventory>())
-        //            {
-        //                craftStation = _hit.transform.GetComponent<CraftStation>();
-        //                craftStation.OpenCraftStation(GetComponent<Inventory>());
-        //            }
-        //        }
-        //    }
-        //}
-        //else
-        //{
-        //    float distance = Vector3.Distance(transform.position, lastChest.transform.position);
-        //    if (distance > 6)
-        //    {
-        //        lastChest.gameObject.SetActive(false);
-        //        lastChest = null;
-        //    }
-        //}
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            RaycastHit _hit;
+            if (Physics.Raycast(cam.transform.position, cam.transform.forward, out _hit, 5))
+            {
+                if (_hit.transform.GetComponent<ChestScript>())
+                {
+                    if (playerBalance >= _hit.transform.GetComponent<ChestScript>().cost)
+                    {
+                        playerBalance -= _hit.transform.GetComponent<ChestScript>().cost;
+                        _hit.transform.GetComponent<ChestScript>().Interact();
+                    }
+                }
+                else if (_hit.transform.GetComponent<Totem>())
+				{
+                    _hit.transform.GetComponent<Totem>().Interact();
+				}
+            }
+        }
     }
     #region anim
     void Anim_idle()
