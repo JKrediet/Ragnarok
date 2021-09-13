@@ -30,6 +30,7 @@ public class PlayerController : MonoBehaviour
     //CraftStation craftStation;
 
     //camera
+    [SerializeField] GameObject head;
     [SerializeField] LayerMask playerAimMask;
     [SerializeField] Camera cam;
     [SerializeField] float mouseSensitivity, pitchDown, pitchUp;
@@ -74,6 +75,9 @@ public class PlayerController : MonoBehaviour
             staminaValue = maxStamina;
             staminaLossPerSec = baseStaminaLossPerSec;
             staminaGainedPerSec = baseStaminaGainedPerSec;
+
+            //turn own head off so you do not see the clipping
+            head.SetActive(false);
         }
         else
         {
@@ -106,7 +110,7 @@ public class PlayerController : MonoBehaviour
                 if(mayAttack)
                 {
                     mayAttack = false;
-                    Attack();
+                    Anim_attack();
                 }
             }
         }
@@ -121,7 +125,10 @@ public class PlayerController : MonoBehaviour
     //apply movement to character
     private void FixedUpdate()
     {
-        ApplyMovement();
+        if (mayAttack)
+        {
+            ApplyMovement();
+        }
     }
     void Movement()
     {
@@ -226,9 +233,8 @@ public class PlayerController : MonoBehaviour
             cam.transform.localEulerAngles = Vector3.right * cameraPitch;
         }
     }
-    void Attack()
+    public void Attack()
     {
-        Anim_attack();
         Collider[] thingsHit = Physics.OverlapSphere(attackPos.position, attackRadius);
 
         //check hit things
@@ -271,6 +277,11 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+    }
+    public void DoneAttacking()
+    {
+        mayAttack = true;
+        animController.SetInteger("Attack", 0);
     }
     public void LockCamera()
     {
@@ -324,8 +335,7 @@ public class PlayerController : MonoBehaviour
     }
     void Anim_attack()
     {
-        //mayAttack must be set to true again at end of attack animation
-        mayAttack = true;
+        animController.SetInteger("Attack", 1);
     }
     #endregion
 }

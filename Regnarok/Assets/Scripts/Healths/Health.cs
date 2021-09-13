@@ -13,6 +13,8 @@ public class Health : MonoBehaviour
 
     public PhotonView PV;
 
+    float armor;
+
 
     protected virtual void Awake()
     {
@@ -24,7 +26,8 @@ public class Health : MonoBehaviour
     }
     public virtual void Health_Damage(float damageValue)
     {
-        if(health > 0)
+        damageValue = Mathf.Clamp(damageValue - armor, 1, maxHealth);
+        if (health > 0)
         {
             health = Mathf.Clamp(health - damageValue, 0, maxHealth);
             if(health == 0)
@@ -64,5 +67,10 @@ public class Health : MonoBehaviour
     public virtual void GiveKiller(GameObject killer)
     {
         //nothing here yet
+    }
+    public void RecieveStats(float _health, float _armor)
+    {
+        maxHealth = _health;
+        armor = _armor;
     }
 }

@@ -60,7 +60,7 @@ public class CharacterStats : MonoBehaviour
         endArmor = (baseArmor + addedArmor) * (precentAddedArmor / 100 + 1);
         endHealth = (baseHealth + addedHealth) * (precentAddedHealth / 100 + 1);
 
-        //return to healthScript
+        GetComponent<Health>().RecieveStats(endHealth, endArmor);
     }
     public void MoveItem(ItemSlot itemslot)
     {

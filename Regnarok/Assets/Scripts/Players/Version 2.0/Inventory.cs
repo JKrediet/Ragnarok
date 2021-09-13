@@ -99,13 +99,18 @@ public class Inventory : MonoBehaviour
                 itemSlots[i].stackAmountText.text = "";
             }
         }
-        for (; i < items.Count && i < hotBarSlots.Length; i++)
+        i = 0;
+        for (; i < hotBarSlots.Length; i++)
         {
             if (hotBarSlots[i].item != null)
             {
                 if (hotBarSlots[i].item.itemAmount > 1)
                 {
                     hotBarSlots[i].stackAmountText.text = hotBarSlots[i].item.itemAmount.ToString();
+                }
+                else
+                {
+                    hotBarSlots[i].stackAmountText.text = "";
                 }
             }
             else
