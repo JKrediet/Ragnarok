@@ -280,6 +280,7 @@ public class PlayerController : MonoBehaviour
     {
         mayAttack = true;
         animController.SetInteger("Attack", 0);
+        animController.speed = 1;
     }
     public void LockCamera()
     {
@@ -334,6 +335,7 @@ public class PlayerController : MonoBehaviour
     void Anim_attack()
     {
         animController.SetInteger("Attack", 1);
+        animController.speed = totalAttackSpeed;
     }
     #endregion
 }
