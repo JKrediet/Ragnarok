@@ -4,25 +4,70 @@ using UnityEngine;
 using System;
 
 [Serializable]
+public struct Result
+{
+    public string craftResult;
+    public List<ItemAmount> itemsNeeded;
+}
+[Serializable]
 public struct ItemAmount
 {
-    public Item item;
+    public string itemNeeded;
     [Range(1, 999)]
     public int Amount;
 }
 
 [CreateAssetMenu]
-public class CraftingRecipe : ScriptableObject
+public class CraftingRecipe : MonoBehaviour
 {
-    public List<ItemAmount> materials;
-    public List<ItemAmount> result;
+    public List<Result> craft;
+    [Space]
+    [SerializeField] GameObject uipanel;
+    CharacterStats character;
+    Inventory inventory;
+    List<string> itemsInInventory;
+    List<Result> craftAble;
+    Result craftThis;
 
-    public bool CanCraft(Inventory inventory)
+    public void SelectRecipe(int i)
     {
-        return false;
+        craftThis = craft[i];
     }
-    public void Craft(Inventory inventory)
+    public void CanCraft()
+    {
+        itemsInInventory.Clear();
+        for (int i = 0; i < inventory.itemSlots.Length; i++)
+        {
+            if(inventory.itemSlots[i].item != null)
+            {
+                itemsInInventory.Add(inventory.itemSlots[i].item.itemName);
+            }
+        }
+        for (int i = 0; i < craft.Count; i++)
+        {
+            for (int u = 0; u < craft[i].itemsNeeded.Count; u++)
+            {
+                if(itemsInInventory.Contains(craft[i].itemsNeeded[u].itemNeeded))
+                {
+
+                }
+            }
+        }
+    }
+    public void Craft()
     {
 
+    }
+
+    public void OpenChestInventory(CharacterStats charr, Inventory inv)
+    {
+        uipanel.gameObject.SetActive(true);
+        character = charr;
+        inventory = inv;
+    }
+    public void CloseChestInventory()
+    {
+        uipanel.gameObject.SetActive(false);
+        character = null;
     }
 }

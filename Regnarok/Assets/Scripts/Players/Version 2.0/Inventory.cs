@@ -9,9 +9,9 @@ using System;
 
 public class Inventory : MonoBehaviour
 {
-    [SerializeField] List<Item> items;
+    public List<Item> items;
     [SerializeField] Transform itemsParent, hotbarParent;
-    [SerializeField] ItemSlot[] itemSlots, hotBarSlots;
+    public ItemSlot[] itemSlots, hotBarSlots;
     [Space]
     [SerializeField] GameObject inventoryPanel;
     [SerializeField] GameObject hotbarIndecator;
