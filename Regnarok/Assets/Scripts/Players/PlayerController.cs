@@ -309,10 +309,13 @@ public class PlayerController : MonoBehaviour
             {
                 if (_hit.transform.GetComponent<ChestScript>())
                 {
-                    if (playerBalance >= _hit.transform.GetComponent<ChestScript>().cost)
+                    if (_hit.transform.GetComponent<ChestScript>().canInteract)
                     {
-                        playerBalance -= _hit.transform.GetComponent<ChestScript>().cost;
-                        _hit.transform.GetComponent<ChestScript>().Interact();
+                        if (playerBalance >= _hit.transform.GetComponent<ChestScript>().cost)
+                        {
+                            playerBalance -= _hit.transform.GetComponent<ChestScript>().cost;
+                            _hit.transform.GetComponent<ChestScript>().Interact();
+                        }
                     }
                 }
                 else if (_hit.transform.GetComponent<Totem>())

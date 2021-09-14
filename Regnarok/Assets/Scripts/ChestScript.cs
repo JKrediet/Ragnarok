@@ -8,10 +8,14 @@ public class ChestScript : MonoBehaviour
     public enum chestType { small=1,medium=2,large=3,golden=4 };
     public Transform spawnPos;
     public GameObject testObj;
-    public void Interact()
+    public bool canInteract;
+	private void Start()
 	{
-        RollItem();
-        print("chest");
+		canInteract = true;
+	}
+	public void Interact()
+	{
+        RollItem();    
 	}
     public void RollItem()
 	{
@@ -19,7 +23,7 @@ public class ChestScript : MonoBehaviour
 	}
     public void SpawnITem()
 	{
-        //Instantiate(testObj, spawnPos);
-        //PhotonNetwork.Instantiate(, spawnPos.position, spawnPos.rotation);
+        Instantiate(testObj, spawnPos);
+        //PhotonNetwork.Instantiate("", spawnPos.position, spawnPos.rotation);
 	}
 }
