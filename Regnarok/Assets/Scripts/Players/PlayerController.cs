@@ -325,6 +325,10 @@ public class PlayerController : MonoBehaviour
                     lastChest = _hit.transform.GetComponent<ChestInventory>();
                     lastChest.OpenChestInventory(GetComponent<CharacterStats>());
                 }
+                else if (_hit.transform.GetComponent<ItemPickUp>())
+                {
+                    _hit.transform.GetComponent<ItemPickUp>().DropItems();
+                }
             }
         }
     }

@@ -99,9 +99,18 @@ public class GameManager : MonoBehaviour
             if (objectsFound[i].itemSerialNumber == serialNumber)
             {
                 Destroy(objectsFound[i].gameObject);
+                return;
             }
         }
-
+        ItemPickUp[] objectsFoundPickUp = FindObjectsOfType<ItemPickUp>();
+        for (int i = 0; i < objectsFoundPickUp.Length; i++)
+        {
+            if (objectsFoundPickUp[i].itemSerialNumber == serialNumber)
+            {
+                Destroy(objectsFoundPickUp[i].gameObject);
+                return;
+            }
+        }
     }
     #endregion
 }

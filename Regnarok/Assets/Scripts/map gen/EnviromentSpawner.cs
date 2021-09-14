@@ -79,7 +79,12 @@ public class EnviromentSpawner : MonoBehaviour
                                     {
                                         if (spawnItems[i].randomRot)
                                         {
-                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), parent);
+                                            GameObject tempObject = Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), parent);
+                                            if (tempObject.GetComponent<ItemPickUp>())
+                                            {
+                                                tempObject.GetComponent<ItemPickUp>().itemSerialNumber = serialNumberForHitableObjectsl;
+                                                serialNumberForHitableObjectsl++;
+                                            }
                                         }
                                         else
                                         {
