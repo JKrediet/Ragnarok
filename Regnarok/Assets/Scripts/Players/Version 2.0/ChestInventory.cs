@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class ChestInventory : MonoBehaviour
 {
@@ -8,7 +9,7 @@ public class ChestInventory : MonoBehaviour
     [SerializeField] List<Item> items;
 
     [SerializeField] Transform itemsParent;
-
+    CharacterStats character;
 
     private void OnValidate()
     {
@@ -50,12 +51,19 @@ public class ChestInventory : MonoBehaviour
             }
         }
     }
-    public void OpenChestInventory()
+    public void OpenChestInventory(CharacterStats charr)
     {
         itemsParent.gameObject.SetActive(true);
+        character = charr;
+    }
+    public void OnSlotClick(ItemSlot slot)
+    {
+        character.MoveItem(slot);
+        ChestRefreshUI();
     }
     public void CloseChestInventory()
     {
         itemsParent.gameObject.SetActive(false);
+        character = null;
     }
 }

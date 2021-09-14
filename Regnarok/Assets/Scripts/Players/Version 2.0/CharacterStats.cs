@@ -192,14 +192,19 @@ public class CharacterStats : MonoBehaviour
                 }
             }
         }
-        //add item to list of inv
-        if (itemslot.chestInv != null)
-        {
-            //not yet inplemented
-        }
+        //refresh inventory ui/ chest does it himself
         if (itemslot.inv != null)
         {
             itemslot.inv.RefreshUI();
+        }
+        //update dragged item stats
+        if (draggableItem.item != null)
+        {
+            draggableItem.stackAmountText.text = draggableItem.item.itemAmount.ToString();
+        }
+        else
+        {
+            draggableItem.stackAmountText.text = "";
         }
     }
     public void CreateItem(string name, int amount, Sprite image, EquipmentType type, int maxStack)

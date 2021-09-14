@@ -323,7 +323,7 @@ public class PlayerController : MonoBehaviour
                 {
                     GetComponent<Inventory>().OpenActualInventory();
                     lastChest = _hit.transform.GetComponent<ChestInventory>();
-                    lastChest.OpenChestInventory();
+                    lastChest.OpenChestInventory(GetComponent<CharacterStats>());
                 }
             }
         }
