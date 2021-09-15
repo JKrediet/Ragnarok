@@ -10,6 +10,7 @@ public class IdleState : State
     public StateManager sm;
     [Space(5)]
     public NavMeshAgent agent;
+    public float behindEnemieDivtation = 3;
     public float idleRange=2f;
     public float idleWalkTime=7.5f;
     public LayerMask grasslayer;
@@ -21,17 +22,20 @@ public class IdleState : State
 	{
         float dist = Vector3.Distance(transform.position, sm.target.transform.position);
         float disIdlePos = Vector3.Distance(transform.position, idleDes);
-        if (dist <= sm.triggerRange)
-        {
+        Vector3 forward = transform.TransformDirection(Vector3.forward);
+        Vector3 toOther = sm.target.transform.position - transform.position;
+
+            if (dist <= sm.triggerRange&& Vector3.Dot(forward, toOther) > 0
+                || dist <= sm.triggerRange/behindEnemieDivtation && Vector3.Dot(forward, toOther) < 0)
+            {
             if (dist <= sm.attackRange)
             {
-                Vector3 lookat = agent.destination;
-                lookat.y = 0;
-                transform.LookAt(lookat);
+                transform.LookAt(new Vector3(agent.destination.z, 0, agent.destination.z));
                 return attack;
             }
             else
-            {             
+            {         
+                
                 return trigger;
             }
         }

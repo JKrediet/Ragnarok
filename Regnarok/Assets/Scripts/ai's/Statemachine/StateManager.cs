@@ -66,7 +66,6 @@ public class StateManager : MonoBehaviour
 	public void ResetAnim()
 	{
 		anim.SetBool("IsWalking", false);
-		anim.SetBool("IsDying", false);
 		anim.SetBool("Attack1", false);
 		anim.SetBool("Attack2", false);
 		anim.SetBool("Attack3", false);

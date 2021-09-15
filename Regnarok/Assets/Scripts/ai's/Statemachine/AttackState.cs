@@ -34,6 +34,7 @@ public class AttackState : State
                 if (!isAttacking)
                 {
                     sm.doAttack = false;
+                    sm.ResetAnim();
                     return trigger;
                 }
             }
@@ -42,16 +43,39 @@ public class AttackState : State
         {
             return idle;
         }
+		if (sm.spawned)
+		{
+            agent.destination = transform.position;
+		}
         return this;
     }
     public void Attack()
 	{
+        sm.ResetAnim();
         isAttacking = true;
         sm.doAttack = true;
         int RandomInt = Random.Range(1, attackAmount+1);
-        string attackString = "Attack" + RandomInt.ToString();
-        sm.anim.SetBool(attackString,true);
-        StartCoroutine(DoDamage(attackCoolDown[RandomInt]));
+		if (RandomInt == 1)
+		{
+            sm.anim.SetBool("Attack1", true);
+        }
+        else if (RandomInt == 2)
+		{
+            sm.anim.SetBool("Attack2", true);
+        }
+        else if (RandomInt == 3)
+        {
+            sm.anim.SetBool("Attack3", true);
+        }
+        else if (RandomInt == 4)
+        {
+            sm.anim.SetBool("Attack4", true);
+        }
+        else if (RandomInt == 5)
+        {
+            sm.anim.SetBool("Attack5", true);
+        }
+        StartCoroutine(DoDamage(attackCoolDown[RandomInt-1]));
     }
     public IEnumerator DoDamage(float waittime)
 	{

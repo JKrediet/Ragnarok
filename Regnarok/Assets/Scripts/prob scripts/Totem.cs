@@ -17,24 +17,16 @@ public class Totem : MonoBehaviour
 			for (int i = 0; i < amountOfEnemies; i++)
 			{
 				SpawnEnemies();
-				print("5");
 			}
 			activated = true;
 		}
-		print("totem");
 	}
 	void SpawnEnemies()
 	{
 		int randomNum = Random.Range(0, enemielist.enemieList.Count);
-		Vector3 spawnPos = GetSpawnPos();
-		GameObject spawnedEnemie = Instantiate(enemielist.enemieList[randomNum], spawnPos + spawnOffset, Quaternion.identity);
-		//enemies.Add(spawnedEnemie);
-	}
-	public Vector3 GetSpawnPos()
-	{
 		Vector3 pos = transform.position;
-		pos.x += Random.Range(-3.00f, 3.00f);
-		pos.z += Random.Range(-3.00f, 3.00f);
+		pos.x += Random.Range(-6.00f, 6.00f);
+		pos.z += Random.Range(-6.00f, 6.00f);
 
 		pos.y = 100;
 		Ray ray = new Ray(pos, -transform.up);
@@ -43,14 +35,13 @@ public class Totem : MonoBehaviour
 		{
 			if (hitInfo.transform.tag == "Mesh")
 			{
-
-				return hitInfo.point;
+				GameObject spawnedEnemie = Instantiate(enemielist.enemieList[randomNum], hitInfo.point + spawnOffset, Quaternion.identity);
 			}
 			else
 			{
-				GetSpawnPos();
+				amountOfEnemies++;
 			}
 		}
-		return new Vector3();
+		//enemies.Add(spawnedEnemie);
 	}
 }
