@@ -43,36 +43,7 @@ public class EnemyScript : MonoBehaviour
         {
             return;
         }
-        if (!gettingTarget)
-        {
-            StartCoroutine("GetTarget");
-        }
-        float dist = Vector3.Distance(transform.position, target.transform.position);
-        if (dist <= triggerRange)
-        {
-            if (dist <= attackRange)
-            {
-                Vector3 lookat = new Vector3(target.transform.position.x, 0, target.transform.position.z);//player pos without height
-
-                transform.LookAt(lookat);
-
-                if (!doAttack)
-                {
-                    StartCoroutine("DoAttack");
-                }
-            }
-            else
-            {
-                if (!doAttack)
-                {
-                    Vector3 delayedPos = target.transform.position;
-                     new WaitForSeconds(targetDelay);
-                    agent.destination = delayedPos;
-                    ResetAnim();
-                    anim.SetBool("IsWalking", true);
-                }
-            }
-        }
+        
         else
         {
             float dis = Vector3.Distance(transform.position, agent.destination);
@@ -103,36 +74,8 @@ public class EnemyScript : MonoBehaviour
             StartCoroutine("Death");
         }
     }
-    public IEnumerator RandomRotation()
-    {
-        float newRotation = transform.eulerAngles.y;
-        newRotation += Random.Range(1.00f, 3.00f);
-        transform.rotation = Quaternion.Euler(0, newRotation, 0);
-        yield return new WaitForSeconds(2.5f);
-    }
-    public IEnumerator RandomIdlePos()
-    {
-        if (!isIdleWalking)
-        {
-            idleDes = transform.position + new Vector3(Random.Range(-10, 10), 100, Random.Range(-10, 10));
-            Ray ray = new Ray(idleDes, -transform.up);
-            RaycastHit hitInfo;
-            if (Physics.Raycast(ray, out hitInfo))
-            {
-                if (hitInfo.transform.tag == "Mesh")
-                {
-                    idleDes = hitInfo.point;
-                }
-                else
-                {
-                    yield return new WaitForSeconds(0.5f);
-                    CallAgain();
-                }
-            }
-        }
-        isIdleWalking = true;
-        yield return new WaitForSeconds(10);
-    }
+
+   
     public void CallAgain()
     {
         StartCoroutine("RandomIdlePos");
@@ -155,23 +98,6 @@ public class EnemyScript : MonoBehaviour
         }
         yield return new WaitForSeconds(targetUpdateTime);
         gettingTarget = false;
-    }
-    public void SpawnForce()
-    {
-        rb.AddForce(Vector3.up * jumpSpeed * 3);
-        isSpawning = true;
-    }
-    public void StopSpawnForce()
-    {
-        anim.applyRootMotion = false;
-        agent.enabled = true;
-        Invoke("TurnOffGravity", 0.5f);
-    }
-    public void TurnOffGravity()
-    {
-        rb.useGravity = false;
-        rb.isKinematic = true;
-        isSpawning = false;
     }
     public IEnumerator DoAttack()
     {
