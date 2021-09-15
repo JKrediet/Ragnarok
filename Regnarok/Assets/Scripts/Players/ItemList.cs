@@ -2,6 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
+
+[Serializable]
+public struct ItemContent
+{
+    public string name;
+    public GameObject worldItem;
+    [Space]
+    public Sprite sprite;
+    public EquipmentType type;
+    public int maxStackSize;
+}
 
 public class ItemList : MonoBehaviour
 {
@@ -11,17 +23,6 @@ public class ItemList : MonoBehaviour
     private void Awake()
     {
         staticItemContents = new List<ItemContent>(itemContents);
-    }
-    [System.Serializable]
-    public struct ItemContent
-    {
-        public string name;
-        public GameObject worldItem;
-        public GameObject UiItem;
-        [Space]
-        public Sprite sprite;
-        public EquipmentType type;
-        public int maxStackSize;
     }
 
     public static ItemContent SelectItem(string itemName)

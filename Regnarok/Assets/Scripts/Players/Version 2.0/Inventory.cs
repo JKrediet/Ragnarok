@@ -163,11 +163,20 @@ public class Inventory : MonoBehaviour
                 else
                 {
                     Debug.LogError("I need more pockets!");
+                    DropItem(item);
                     //add item to list of inv
                     RefreshUI();
                     return;
                 }
             }
+        }
+        else
+        {
+            Debug.LogError("I need more pockets!");
+            DropItem(item);
+            //add item to list of inv
+            RefreshUI();
+            return;
         }
     }
     //delete items only from list
@@ -250,6 +259,11 @@ public class Inventory : MonoBehaviour
         {
             GetComponent<PlayerController>().lastChest.CloseChestInventory();
             GetComponent<PlayerController>().lastChest = null;
+        }
+        if (GetComponent<PlayerController>().lastCratingStation != null)
+        {
+            GetComponent<PlayerController>().lastCratingStation.CloseChestInventory();
+            GetComponent<PlayerController>().lastCratingStation = null;
         }
         if (!inventoryEnabled)
         {
