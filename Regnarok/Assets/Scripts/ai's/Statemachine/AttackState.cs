@@ -46,12 +46,10 @@ public class AttackState : State
     }
     public void Attack()
 	{
-        print("att");
         isAttacking = true;
         sm.doAttack = true;
         int RandomInt = Random.Range(1, attackAmount+1);
         string attackString = "Attack" + RandomInt.ToString();
-        print(attackString);
         sm.anim.SetBool(attackString,true);
         StartCoroutine(DoDamage(attackCoolDown[RandomInt]));
     }

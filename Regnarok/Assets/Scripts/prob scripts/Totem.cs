@@ -14,20 +14,21 @@ public class Totem : MonoBehaviour
 	{
 		if (!activated)
 		{
-			SpawnEnemies();
+			for (int i = 0; i < amountOfEnemies; i++)
+			{
+				SpawnEnemies();
+				print("5");
+			}
 			activated = true;
 		}
 		print("totem");
 	}
 	void SpawnEnemies()
 	{
-		for (int i = 0; i < amountOfEnemies; i++)
-		{
-			int randomNum = Random.Range(0, enemielist.enemieList.Count);
-			Vector3 spawnPos = GetSpawnPos();
-			GameObject spawnedEnemie = Instantiate(enemielist.enemieList[randomNum], spawnPos + spawnOffset, Quaternion.identity);
-			enemies.Add(spawnedEnemie);
-		}
+		int randomNum = Random.Range(0, enemielist.enemieList.Count);
+		Vector3 spawnPos = GetSpawnPos();
+		GameObject spawnedEnemie = Instantiate(enemielist.enemieList[randomNum], spawnPos + spawnOffset, Quaternion.identity);
+		//enemies.Add(spawnedEnemie);
 	}
 	public Vector3 GetSpawnPos()
 	{

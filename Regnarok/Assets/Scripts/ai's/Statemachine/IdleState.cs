@@ -12,6 +12,7 @@ public class IdleState : State
     public NavMeshAgent agent;
     public float idleRange=2f;
     public float idleWalkTime=7.5f;
+    public LayerMask grasslayer;
     private bool isIdleMoving;
     private bool isWalking;
     private Vector3 idleDes;
@@ -45,7 +46,10 @@ public class IdleState : State
 		if(isWalking)
 		{
             sm.anim.SetBool("IsWalking", true);
-            agent.destination = idleDes;
+			if (sm.spawned)
+			{
+                agent.destination = idleDes;
+			}
         }
 		if (sm.spawned&&!isWalking)
 		{
@@ -65,7 +69,7 @@ public class IdleState : State
             idleDes = transform.position + new Vector3(Random.Range(-10, 10), 100, Random.Range(-10, 10));
             Ray ray = new Ray(idleDes, -transform.up);
             RaycastHit hitInfo;
-            if (Physics.Raycast(ray, out hitInfo))
+            if (Physics.Raycast(ray, out hitInfo,1000,grasslayer))
             {
                 if (hitInfo.transform.tag == "Mesh")
                 {

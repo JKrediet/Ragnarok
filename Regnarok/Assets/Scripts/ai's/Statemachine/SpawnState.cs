@@ -11,6 +11,7 @@ public class SpawnState : State
     public Rigidbody rb;
     public Animator anim;
     public NavMeshAgent agent;
+    public GameObject mesh;
     public float jumpSpeed;
     private bool isSpawning;
 	public override State RunCurrentState()
@@ -21,6 +22,7 @@ public class SpawnState : State
 		}
 		else
 		{
+            sm.spawned = true;
             return idleState;
         }
 	}
@@ -28,11 +30,13 @@ public class SpawnState : State
     {
         rb.AddForce(Vector3.up * jumpSpeed * 3);
         isSpawning = true;
+        mesh.SetActive(false);
     }
     public void StopSpawnForce()
     {
         anim.applyRootMotion = false;
-        agent.enabled = true;
+		agent.enabled = true;
+        mesh.SetActive(true);
         Invoke("TurnOffGravity", 0.5f);
     }
     public void TurnOffGravity()
@@ -40,6 +44,5 @@ public class SpawnState : State
         rb.useGravity = false;
         rb.isKinematic = true;
         isSpawning = false;
-        sm.spawned = true;
     }
 }
