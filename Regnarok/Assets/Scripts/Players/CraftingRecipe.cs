@@ -20,8 +20,9 @@ public class CraftingRecipe : ScriptableObject
     public Sprite resourceSprite1, resourceSprite2;
     public int resourceAmount1, resourceAmount2;
 
-    public void SetUp(Result craft)
+    public void SetUp(Result crafty)
     {
+        craft = crafty;
         ItemContent content = ItemList.SelectItem(craft.craftResult);
 
         //result

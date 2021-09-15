@@ -34,7 +34,7 @@ public class ItemList : MonoBehaviour
                 return staticItemContents[i];
             }
         }
-        Debug.LogError("Specified item not found!");
+        Debug.LogError("Specified item not found!: " + itemName);
         return default;
     }
 }
