@@ -11,7 +11,6 @@ public class IdleState : State
     [Space(5)]
     public NavMeshAgent agent;
     public float behindEnemieDivtation = 3;
-    public float idleRange=2f;
     public float idleWalkTime=7.5f;
     public LayerMask grasslayer;
     private bool isIdleMoving;
@@ -24,10 +23,11 @@ public class IdleState : State
         float disIdlePos = Vector3.Distance(transform.position, idleDes);
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 toOther = sm.target.transform.position - transform.position;
-
-            if (dist <= sm.triggerRange&& Vector3.Dot(forward, toOther) > 0
-                || dist <= sm.triggerRange/behindEnemieDivtation && Vector3.Dot(forward, toOther) < 0)
-            {
+        print("1");
+        if (dist <= sm.triggerRange&& Vector3.Dot(forward, toOther) > 0
+            || dist <= sm.triggerRange/behindEnemieDivtation && Vector3.Dot(forward, toOther) < 0)
+        {
+            print("2");
             if (dist <= sm.attackRange)
             {
                 transform.LookAt(new Vector3(agent.destination.z, 0, agent.destination.z));
@@ -35,13 +35,13 @@ public class IdleState : State
             }
             else
             {         
-                
                 return trigger;
             }
         }
-        if(disIdlePos<= idleRange)
+        if(disIdlePos<= sm.idleRange)
 		{
             isWalking=false;
+            sm.idleRange = 2f;
         }
 		else
 		{
@@ -53,16 +53,19 @@ public class IdleState : State
 			if (sm.spawned)
 			{
                 agent.destination = idleDes;
-			}
+                print("??");
+            }
         }
 		if (sm.spawned&&!isWalking)
 		{
             agent.destination = transform.position;
             sm.ResetAnim();
+            print("normal");
         }
 		if (!isIdleMoving&& !isWalking)
 		{
             StartCoroutine(RandomIdlePos());
+            print("start");
         }
         return this;
 	}
@@ -78,11 +81,16 @@ public class IdleState : State
                 if (hitInfo.transform.tag == "Mesh")
                 {
                     idleDes = hitInfo.point;
+                    print("MEsh");
                 }
                 else
                 {
-                    yield return new WaitForSeconds(0.5f);
-                    CallAgain();
+                    print("no");
+                    Vector3 rotation = transform.eulerAngles;
+                    transform.eulerAngles = rotation+new Vector3(0, 15, 0);
+                    agent.destination = transform.position;
+                    sm.ResetAnim();
+                    isWalking = false;
                 }
             }
         }
@@ -90,9 +98,5 @@ public class IdleState : State
         isWalking = true;
         yield return new WaitForSeconds(idleWalkTime);
         isIdleMoving = false;
-    }
-    public void CallAgain()
-    {
-        StartCoroutine("RandomIdlePos");
     }
 }

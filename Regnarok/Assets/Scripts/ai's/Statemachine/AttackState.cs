@@ -41,6 +41,7 @@ public class AttackState : State
         }
         else
         {
+            sm.idleRange = 1000f;
             return idle;
         }
 		if (sm.spawned)

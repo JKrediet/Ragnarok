@@ -53,6 +53,7 @@ public class TriggerState : State
         }
 		else
 		{
+            sm.idleRange = 1000f;
             return idle;
 		}
         sm.ResetAnim();

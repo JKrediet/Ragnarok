@@ -13,6 +13,7 @@ public class StateManager : MonoBehaviour
 	public float targetDelay;
 	public float triggerRange;
 	public float attackRange;
+	public float idleRange=2f;
 	public bool doAttack;
 	public bool spawned;
 	private bool gettingTarget;
