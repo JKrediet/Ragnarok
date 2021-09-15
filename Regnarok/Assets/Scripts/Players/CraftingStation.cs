@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
 
 [Serializable]
 public struct Result
@@ -18,7 +19,6 @@ public struct ItemAmount
     public int amountNeeded;
 }
 
-[CreateAssetMenu]
 public class CraftingStation : MonoBehaviour
 {
     public List<Result> craft;
@@ -29,6 +29,8 @@ public class CraftingStation : MonoBehaviour
     [SerializeField] List<Item> itemsInInventory;
     Result craftThis;
     Result selectedCraft;
+
+    public Image craftThisSprite;
 
     public List<RecipeHolder> slots;
 
@@ -97,11 +99,14 @@ public class CraftingStation : MonoBehaviour
     private void Start()
     {
         itemsInInventory = new List<Item>();
+        craftThisSprite.gameObject.SetActive(false);
     }
 
     public void SelectRecipe(RecipeHolder i)
     {
         selectedCraft = i.recipe.craft;
+        craftThisSprite.gameObject.SetActive(true);
+        craftThisSprite.sprite = ItemList.SelectItem(selectedCraft.craftResult).sprite;
     }
     public void CanCraft()
     {
@@ -168,21 +173,33 @@ public class CraftingStation : MonoBehaviour
     }
     public void Craft()
     {
+        craftThisSprite.gameObject.SetActive(false);
         //remove needed items
-        if(selectedCraft.craftResult.Length > 0)
+        if (selectedCraft.craftResult.Length > 0)
         {
             for (int i = 0; i < inventory.itemSlots.Length; i++)
             {
-                for (int y = 0; y < selectedCraft.craftResult.Length; i++)
+                for (int y = 0; y < selectedCraft.itemsNeeded.Count; y++)
                 {
                     string neededNameItem = selectedCraft.itemsNeeded[y].itemNeeded;
                     int neededAmountItem = selectedCraft.itemsNeeded[y].amountNeeded;
 
-                    if (inventory.itemSlots[i].item.itemName == neededNameItem && inventory.itemSlots[i].item.itemAmount >= neededAmountItem)
+                    if(inventory.itemSlots[i].item == null)
+                    {
+                        continue;
+                    }
+                    else if(inventory.itemSlots[i].item.itemName != neededNameItem)
+                    {
+                        continue;
+                    }
+                    else if (inventory.itemSlots[i].item.itemAmount >= neededAmountItem)
                     {
                         inventory.itemSlots[i].item.itemAmount -= neededAmountItem;
                     }
-                    print("not enough items!: " + neededNameItem + " " + neededAmountItem);
+                    else
+                    {
+                        print("not enough items!: " + neededNameItem + " " + neededAmountItem);
+                    }
                 }
             }
             FinishCrafting();
@@ -190,8 +207,10 @@ public class CraftingStation : MonoBehaviour
     }
     void FinishCrafting()
     {
+        print(selectedCraft.craftResult);
         character.CreateItem(ItemList.SelectItem(selectedCraft.craftResult).name, 1, ItemList.SelectItem(selectedCraft.craftResult).sprite, ItemList.SelectItem(selectedCraft.craftResult).type, ItemList.SelectItem(selectedCraft.craftResult).maxStackSize);
         inventory.RefreshUI();
+        selectedCraft = default;
     }
 
     public void OpenCratingInventory(CharacterStats charr, Inventory inv)

@@ -85,6 +85,13 @@ public class Inventory : MonoBehaviour
             items[i] = itemSlots[i].item;
             if (itemSlots[i].item != null)
             {
+                //if 0 or less remove
+                if(itemSlots[i].item.itemAmount < 1)
+                {
+                    itemSlots[i].stackAmountText.text = "";
+                    itemSlots[i].item = null;
+                    continue;
+                }
                 if (itemSlots[i].item.itemAmount > 1)
                 {
                     itemSlots[i].stackAmountText.text = itemSlots[i].item.itemAmount.ToString();
