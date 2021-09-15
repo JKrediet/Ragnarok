@@ -1,73 +1,47 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 
-[Serializable]
-public struct Result
-{
-    public string craftResult;
-    public List<ItemAmount> itemsNeeded;
-}
-[Serializable]
-public struct ItemAmount
-{
-    public string itemNeeded;
-    [Range(1, 999)]
-    public int Amount;
-}
-
 [CreateAssetMenu]
-public class CraftingRecipe : MonoBehaviour
+public class CraftingRecipe : ScriptableObject
 {
-    public List<Result> craft;
+    public Result craft;
+
+    public string resultName;
+    public Sprite resultSprite;
+    public int resultAmount;
+
     [Space]
-    [SerializeField] GameObject uipanel;
-    CharacterStats character;
-    Inventory inventory;
-    List<string> itemsInInventory;
-    List<Result> craftAble;
-    Result craftThis;
 
-    public void SelectRecipe(int i)
+    public string resourseName1;
+    public string resourseName2;
+    public Sprite resourceSprite1, resourceSprite2;
+    public int resourceAmount1, resourceAmount2;
+
+    public void SetUp(Result craft)
     {
-        craftThis = craft[i];
-    }
-    public void CanCraft()
-    {
-        itemsInInventory.Clear();
-        for (int i = 0; i < inventory.itemSlots.Length; i++)
+        ItemContent content = ItemList.SelectItem(craft.craftResult);
+
+        //result
+        resultName = content.name;
+        resultSprite = content.sprite;
+        resultAmount = craft.craftAmount; //for now 1 craft at the time
+
+        content = ItemList.SelectItem(craft.itemsNeeded[0].itemNeeded);
+        //needed 1
+        resourseName1 = content.name;
+        resourceSprite1 = content.sprite;
+        resourceAmount1 = craft.itemsNeeded[0].amountNeeded;
+
+        if (craft.itemsNeeded.Count > 1)
         {
-            if(inventory.itemSlots[i].item != null)
-            {
-                itemsInInventory.Add(inventory.itemSlots[i].item.itemName);
-            }
+            content = ItemList.SelectItem(craft.itemsNeeded[1].itemNeeded);
+
+            resourseName2 = content.name;
+            resourceSprite2 = content.sprite;
+            resourceAmount2 = craft.itemsNeeded[1].amountNeeded;
         }
-        for (int i = 0; i < craft.Count; i++)
-        {
-            for (int u = 0; u < craft[i].itemsNeeded.Count; u++)
-            {
-                if(itemsInInventory.Contains(craft[i].itemsNeeded[u].itemNeeded))
-                {
-
-                }
-            }
-        }
-    }
-    public void Craft()
-    {
-
-    }
-
-    public void OpenChestInventory(CharacterStats charr, Inventory inv)
-    {
-        uipanel.gameObject.SetActive(true);
-        character = charr;
-        inventory = inv;
-    }
-    public void CloseChestInventory()
-    {
-        uipanel.gameObject.SetActive(false);
-        character = null;
     }
 }

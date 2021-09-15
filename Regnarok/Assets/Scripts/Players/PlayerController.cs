@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
     float groundCheckTime;
     Vector3 movementSpeed, movementDirection;
     [HideInInspector] public ChestInventory lastChest;
+    [HideInInspector] public CraftingStation lastCratingStation;
     //CraftStation craftStation;
 
     //camera
@@ -126,6 +127,15 @@ public class PlayerController : MonoBehaviour
             {
                 lastChest.CloseChestInventory();
                 lastChest = null;
+            }
+        }
+        if (lastCratingStation != null)
+        {
+            float distance = Vector3.Distance(transform.position, lastCratingStation.transform.position);
+            if (distance > 5)
+            {
+                lastCratingStation.CloseChestInventory();
+                lastCratingStation = null;
             }
         }
     }
@@ -327,6 +337,12 @@ public class PlayerController : MonoBehaviour
                     GetComponent<Inventory>().OpenActualInventory();
                     lastChest = _hit.transform.GetComponent<ChestInventory>();
                     lastChest.OpenChestInventory(GetComponent<CharacterStats>());
+                }
+                else if (_hit.transform.GetComponent<CraftingStation>())
+                {
+                    GetComponent<Inventory>().OpenActualInventory();
+                    lastCratingStation = _hit.transform.GetComponent<CraftingStation>();
+                    lastCratingStation.OpenCratingInventory(GetComponent<CharacterStats>(), GetComponent<Inventory>());
                 }
                 else if (_hit.transform.GetComponent<ItemPickUp>())
                 {

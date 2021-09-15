@@ -200,7 +200,14 @@ public class CharacterStats : MonoBehaviour
         //update dragged item stats
         if (draggableItem.item != null)
         {
-            draggableItem.stackAmountText.text = draggableItem.item.itemAmount.ToString();
+            if (draggableItem.item.itemAmount > 1)
+            {
+                draggableItem.stackAmountText.text = draggableItem.item.itemAmount.ToString();
+            }
+            else
+            {
+                draggableItem.stackAmountText.text = "";
+            }
         }
         else
         {
