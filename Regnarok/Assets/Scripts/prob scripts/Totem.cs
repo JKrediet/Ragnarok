@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class Totem : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class Totem : MonoBehaviour
 	public Vector3 spawnOffset = new Vector3(0, 1, 0);
 	public GameObject[] torches;
 	public EnemyList enemielist;
+	public string spawnParticleName;
 	private List<GameObject> enemies;
 	public void Interact()
 	{
@@ -35,6 +37,7 @@ public class Totem : MonoBehaviour
 		{
 			if (hitInfo.transform.tag == "Mesh")
 			{
+				
 				GameObject spawnedEnemie = Instantiate(enemielist.enemieList[randomNum], hitInfo.point + spawnOffset, Quaternion.identity);
 			}
 			else

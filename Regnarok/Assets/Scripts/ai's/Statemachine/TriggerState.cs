@@ -6,17 +6,12 @@ using UnityEngine.AI;
 public class TriggerState : State
 {
     public IdleState idle;
-    public AttackState attack;
     [Space(5)]
     public StateManager sm;
     public NavMeshAgent agent;
 
     public override State RunCurrentState()
 	{
-		if (agent.destination == null)
-		{
-            print(agent.destination);
-		}
         float dist = Vector3.Distance(transform.position, sm.target.transform.position);
         if (dist <= sm.triggerRange)
         {
@@ -29,16 +24,15 @@ public class TriggerState : State
 
                 if (!sm.doAttack)
                 {
-                    sm.doAttack = true;
 
                     Vector3 forward = transform.TransformDirection(Vector3.forward);
                     Vector3 toOther = sm.target.transform.position - transform.position;
-
                     if (Vector3.Dot(forward, toOther) > 0)
-                    {
-                        return attack;
-                    }
-                }
+					{
+						int randomI = Random.Range(0, sm.attackStates.Length);
+                        return sm.attackStates[randomI];
+					}
+				}
             }
             else
             {
@@ -47,7 +41,7 @@ public class TriggerState : State
 					if (sm.spawned)
 					{
                         agent.destination = sm.delayedPos;
-					}
+                    }
                 }
             }
         }

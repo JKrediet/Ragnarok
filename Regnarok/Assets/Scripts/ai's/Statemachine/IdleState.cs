@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class IdleState : State
 {
     public TriggerState trigger;
-    public AttackState attack;
+    public AttackingState attack;
     public StateManager sm;
     [Space(5)]
     public NavMeshAgent agent;

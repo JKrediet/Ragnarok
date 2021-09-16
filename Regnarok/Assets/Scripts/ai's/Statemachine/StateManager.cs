@@ -7,6 +7,7 @@ public class StateManager : MonoBehaviour
 	public State curentState;
 	public GameObject[] players;
 	public GameObject target;
+	public AttackState[] attackStates;
 	public Animator anim;
 	public Vector3 delayedPos;
 	public float targetUpdateTime;
@@ -14,6 +15,8 @@ public class StateManager : MonoBehaviour
 	public float triggerRange;
 	public float attackRange;
 	public float idleRange=2f;
+	public float attackMovementSpeed;
+	public float movementSpeed;
 	public bool doAttack;
 	public bool spawned;
 	private bool gettingTarget;
@@ -66,9 +69,10 @@ public class StateManager : MonoBehaviour
 	}
 	public void ResetAnim()
 	{
-		anim.SetBool("IsWalking", false);
-		anim.SetBool("Attack1", false);
-		anim.SetBool("Attack2", false);
-		anim.SetBool("Attack3", false);
+		for (int i = 0; i < attackStates.Length; i++)
+		{
+			anim.SetBool(attackStates[i].animationName, false);
+		}
+		anim.SetBool("IsWalking", false);		
 	}
 }
