@@ -12,6 +12,10 @@ public class TriggerState : State
 
     public override State RunCurrentState()
 	{
+        if (sm.isDead)
+        {
+            return this;
+        }
         float dist = Vector3.Distance(transform.position, sm.target.transform.position);
         if (dist <= sm.triggerRange)
         {
@@ -30,6 +34,7 @@ public class TriggerState : State
                     if (Vector3.Dot(forward, toOther) > 0)
 					{
 						int randomI = Random.Range(0, sm.attackStates.Length);
+                        sm.currentAttack = randomI;
                         return sm.attackStates[randomI];
 					}
 				}

@@ -6,6 +6,10 @@ public class BasicAttack : AttackState
 {
     public override State RunCurrentState()
     {
+		if (sm.isDead)
+		{
+            return this; 
+		}
         float dist = Vector3.Distance(transform.position, sm.target.transform.position);
         if (dist <= sm.triggerRange)
         {

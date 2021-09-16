@@ -10,6 +10,7 @@ public class AttackState : State
 	public NavMeshAgent agent;
 	public TriggerState trigger;
 	public IdleState idle;
+	public float damage;
 	public override State RunCurrentState()
 	{
 		return this;

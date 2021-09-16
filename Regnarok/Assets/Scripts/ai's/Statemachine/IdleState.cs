@@ -19,6 +19,10 @@ public class IdleState : State
 
     public override State RunCurrentState()
 	{
+        if (sm.isDead)
+        {
+            return this;
+        }
         float dist = Vector3.Distance(transform.position, sm.target.transform.position);
         float disIdlePos = Vector3.Distance(transform.position, idleDes);
         Vector3 forward = transform.TransformDirection(Vector3.forward);
