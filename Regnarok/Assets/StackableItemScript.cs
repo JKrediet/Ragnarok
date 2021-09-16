@@ -37,9 +37,65 @@ public class StackableItemScript : MonoBehaviour
 	}
     void GiveStatsToStats()
     {
+        CharacterStats stats = GetComponent<CharacterStats>();
+        for (int i = 0; i < itemlist.Length; i++)
+        {
+            if(itemlist[i].amount > 0)
+            {
+                if(itemlist[i].itemName == "EnergyDrink")
+                {
+                    //movement speed added
+                }
+                else if (itemlist[i].itemName == "Shield")
+                {
+                    //defence to hp
+                }
+                else if (itemlist[i].itemName == "IronKnuckle")
+                {
+                    stats.GiveStats_damageFlat(itemlist[i].amount * itemlist[i].value);
+                }
+                else if (itemlist[i].itemName == "HeartContainer")
+                {
+                    //max life
+                }
+                else if (itemlist[i].itemName == "ShadowOrb")
+                {
+                    //heal on kill
+                }
+                else if (itemlist[i].itemName == "Crown")
+                {
+                    //xp nog niet added
+                }
+                else if (itemlist[i].itemName == "Knife")
+                {
+                    //chance to bleed
+                }
+                else if (itemlist[i].itemName == "Clock")
+                {
+                    stats.GiveStats_attackSpeedFlat(itemlist[i].amount * itemlist[i].value);
+                }
+                else if (itemlist[i].itemName == "Scouter")
+                {
+                    stats.GiveStats_critChanceFlat(itemlist[i].amount * itemlist[i].value);
+                }
+                else if (itemlist[i].itemName == "GoldPouch")
+                {
+                    // more gold
+                }
+                else if (itemlist[i].itemName == "Plaster")
+                {
+                    //health regen
+                }
+                else if (itemlist[i].itemName == "Tooth")
+                {
+                    //lifesteal
+                }
+            }
+        }
 
-        GetComponent<CharacterStats>().CalculateOffensiveStats();
-        GetComponent<CharacterStats>().CalculateDefensiveStats();
+
+        stats.CalculateOffensiveStats();
+        stats.CalculateDefensiveStats();
     }
 	public void ResetCooldown()
 	{
@@ -86,5 +142,8 @@ public class StackableItemScript : MonoBehaviour
 	{
 		public string itemName;
 		public int amount;
-	}
+        [TextArea]
+        public string decription;
+        public float value;
+    }
 }

@@ -34,14 +34,33 @@ public class CharacterStats : MonoBehaviour
             draggableItem.transform.position = Input.mousePosition;
         }
     }
-    public void GiveStats_damageFlat(float damage)
+    #region be granted with stats :D
+    public void GiveStats_damageFlat(float value)
     {
-        addedDamage = damage;
+        addedDamage = value;
     }
-    public void GiveStats_damagePrecent(float damage)
+    public void GiveStats_damagePrecent(float value)
     {
-        addedDamage = damage;
+        precentAddedDamage = value;
     }
+    public void GiveStats_attackSpeedFlat(float value)
+    {
+        addedAttackSpeed = value;
+    }
+    public void GiveStats_attackSpeedPrecent(float value)
+    {
+        precentAddedAttackSpeed = value;
+    }
+    public void GiveStats_critChanceFlat(float value)
+    {
+        addedCritChance = value;
+    }
+    public void GiveStats_critChancePrecent(float value)
+    {
+        precentAddedCritChance = value;
+    }
+
+    #endregion
     public void CalculateOffensiveStats()
     {
         //nog geen accesory stats
