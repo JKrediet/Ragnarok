@@ -84,7 +84,7 @@ public class StackableItemScript : MonoBehaviour
                 }
                 else if (itemlist[i].itemName == "Plaster")
                 {
-                    //health regen
+                    stats.GiveStats_healthRegen(itemlist[i].amount * itemlist[i].value);
                 }
                 else if (itemlist[i].itemName == "Tooth")
                 {

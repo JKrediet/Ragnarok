@@ -15,6 +15,8 @@ public class Health : MonoBehaviour
 
     float armor;
 
+    protected float healthRegen;
+
 
     protected virtual void Awake()
     {
@@ -49,28 +51,15 @@ public class Health : MonoBehaviour
         Destroy(gameObject);
     }
 
-    //on item equip
-    public virtual void SetMaxHealth(float extraHealth, bool gain)
-    {
-        if(!gain)
-        {
-            extraHealth *= -1;
-        }
-        maxHealth += extraHealth;
-        if(health > maxHealth)
-        {
-            health = maxHealth;
-        }
-    }
-
     //stats
     public virtual void GiveKiller(GameObject killer)
     {
         //nothing here yet
     }
-    public void RecieveStats(float _health, float _armor)
+    public virtual void RecieveStats(float _health, float _armor, float _healthRegen)
     {
         maxHealth = _health;
         armor = _armor;
+        healthRegen = _healthRegen;
     }
 }

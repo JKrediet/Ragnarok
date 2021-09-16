@@ -19,7 +19,7 @@ public class CharacterStats : MonoBehaviour
     [Space]
     [SerializeField] float endDamage, endAttackSpeed, endCritChance, endArmor, endHealth;
     public float BaseDamage, baseAttackSpeed, baseCritChance, baseArmor, baseHealth;
-    [SerializeField] float addedDamage, addedAttackSpeed, addedCritChance, addedArmor, addedHealth;
+    [SerializeField] float addedDamage, addedAttackSpeed, addedCritChance, addedArmor, addedHealth, addedHealthRegen;
     [SerializeField] float precentAddedDamage, precentAddedAttackSpeed, precentAddedCritChance, precentAddedArmor, precentAddedHealth;
 
 
@@ -59,6 +59,19 @@ public class CharacterStats : MonoBehaviour
     {
         precentAddedCritChance = value;
     }
+    //health things
+    public void GiveStats_addedHealth(float value)
+    {
+        addedHealth = value;
+    }
+    public void GiveStats_healthRegen(float value)
+    {
+        addedHealthRegen = value;
+    }
+    public void GiveStats_addedArmor(float value)
+    {
+        addedArmor = value;
+    }
 
     #endregion
     public void CalculateOffensiveStats()
@@ -69,10 +82,10 @@ public class CharacterStats : MonoBehaviour
         {
             if (item.equipment == EquipmentType.axe || item.equipment == EquipmentType.pickaxe || item.equipment == EquipmentType.weapon)
             {
-                endDamage = (BaseDamage + addedDamage + item.damageBonus) * (precentAddedDamage + item.damagePrecentBonus / 100 + 1);
-                float tempAttackSpeed = (baseAttackSpeed + addedAttackSpeed + item.attackSpeedBonus) * (precentAddedAttackSpeed + item.attackSpeedPrecentBonus / 100 + 1);
+                endDamage = (BaseDamage + addedDamage + item.damageBonus) * ((precentAddedDamage + item.damagePrecentBonus) / 100 + 1);
+                float tempAttackSpeed = (baseAttackSpeed + addedAttackSpeed + item.attackSpeedBonus) * ((precentAddedAttackSpeed + item.attackSpeedPrecentBonus) / 100 + 1);
                 endAttackSpeed = tempAttackSpeed / (tempAttackSpeed * tempAttackSpeed);
-                endCritChance = (baseCritChance + addedCritChance + item.critChanceBonus) * (precentAddedCritChance + item.critChancePrecentBonus / 100 + 1);
+                endCritChance = (baseCritChance + addedCritChance + item.critChanceBonus) * ((precentAddedCritChance + item.critChancePrecentBonus) / 100 + 1);
             }
             else
             {
@@ -91,7 +104,7 @@ public class CharacterStats : MonoBehaviour
         endArmor = (baseArmor + addedArmor) * (precentAddedArmor / 100 + 1);
         endHealth = (baseHealth + addedHealth) * (precentAddedHealth / 100 + 1);
 
-        GetComponent<Health>().RecieveStats(endHealth, endArmor);
+        GetComponent<Health>().RecieveStats(endHealth, endArmor, addedHealthRegen);
     }
     public void MoveItem(ItemSlot itemslot)
     {

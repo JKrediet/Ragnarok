@@ -16,6 +16,7 @@ public class PlayerHealth : Health
         {
             HealthSlider.maxValue = maxHealth;
             HealthSlider.value = health;
+            StartCoroutine("HealthRegen");
         }
     }
     public override void Health_Damage(float damageValue)
@@ -26,12 +27,31 @@ public class PlayerHealth : Health
             HealthSlider.value = health;
         }
     }
-    public override void SetMaxHealth(float extraHealth, bool gain)
+    public override void Health_Heal(float healValue)
     {
-        base.SetMaxHealth(extraHealth, gain);
-        if (HealthSlider)
+        base.Health_Heal(healValue);
+        if(PV.IsMine)
+        {
+            HealthSlider.value = health;
+        }
+    }
+    public override void RecieveStats(float _health, float _armor, float _healthRegen)
+    {
+        base.RecieveStats(_health, _armor, _healthRegen);
+        if (PV.IsMine)
         {
             HealthSlider.maxValue = maxHealth;
         }
+    }
+
+    IEnumerator HealthRegen()
+    {
+        if(health < maxHealth)
+        {
+            Health_Heal(healthRegen);
+        }
+
+        yield return new WaitForSeconds(1);
+        StartCoroutine("HealthRegen");
     }
 }
