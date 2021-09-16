@@ -9,6 +9,7 @@ public class StackableItemScript : MonoBehaviour
 	private bool cooldownBool;
 	private void OnTriggerEnter(Collider other)
 	{
+        //destory for multiplayer
 		if (other.transform.GetComponent<StackAbleItem>())
 		{
 			if (!cooldownBool)
@@ -29,8 +30,17 @@ public class StackableItemScript : MonoBehaviour
 		{
 			itemlist[index].amount++;
 		}
-		Invoke("ResetCooldown", 0.1f);
+        //hier stat calculation
+        GiveStatsToStats();
+
+        Invoke("ResetCooldown", 0.1f);
 	}
+    void GiveStatsToStats()
+    {
+
+        GetComponent<CharacterStats>().CalculateOffensiveStats();
+        GetComponent<CharacterStats>().CalculateDefensiveStats();
+    }
 	public void ResetCooldown()
 	{
 		cooldownBool = false;

@@ -42,7 +42,14 @@ public class Connection : MonoBehaviourPunCallbacks
     #endregion
     public void CreateRoom()
     {
-        PhotonNetwork.CreateRoom(roomName);
+        if(PhotonNetwork.CreateRoom(roomName))
+        {
+
+        }
+        else
+        {
+            PhotonNetwork.CreateRoom(roomName + Random.Range(0, 1000));
+        }
     }
     public override void OnJoinedRoom()
     {
@@ -73,13 +80,17 @@ public class Connection : MonoBehaviourPunCallbacks
     {
         foreach(Transform room in menu_RoomParent)
         {
-            Destroy(room);
+            Destroy(room.gameObject);
         }
         for (int i = 0; i < roomList.Count; i++)
         {
             GameObject tempRoomObject = Instantiate(menu_RoomPrefab, menu_RoomParent);
             tempRoomObject.GetComponent<JoinRoom>().roomName = roomList[i].Name;
             tempRoomObject.GetComponent<JoinRoom>().GiveName();
+            if (roomList[i].PlayerCount == 0)
+            {
+                Destroy(tempRoomObject.gameObject);
+            }
         }
     }
     public void RecieveSeed(Text _seed)

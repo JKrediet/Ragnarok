@@ -13,6 +13,13 @@ public struct ItemContent
     public Sprite sprite;
     public EquipmentType type;
     public int maxStackSize;
+    [Space]
+    [Range(1, 100)]
+    public int baseDamage;
+    [Range(100, 1000)]
+    public int baseAttackSpeed;
+    [Range(5, 100)]
+    public int baseCritChance;
 }
 
 public class ItemList : MonoBehaviour

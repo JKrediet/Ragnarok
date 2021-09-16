@@ -243,7 +243,7 @@ public class Inventory : MonoBehaviour
         if(hotBarSlots[_location].item != null)
         {
             controller.heldItem = hotBarSlots[_location].item;
-            character.CalculateOffensiveStats(hotBarSlots[_location].item);
+            character.CalculateOffensiveStats();
         }
         else
         {

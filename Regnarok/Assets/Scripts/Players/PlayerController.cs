@@ -258,21 +258,32 @@ public class PlayerController : MonoBehaviour
         //check hit things
         foreach(Collider hitObject in thingsHit)
         {
-            if (hitObject.GetComponent<HitableObject>())
+            RaycastHit _hit;
+            if(Physics.Linecast(attackPos.position, hitObject.ClosestPoint(attackPos.position), out _hit))
             {
-                //particle color
+                Renderer rend = _hit.transform.GetComponent<Renderer>();
+                MeshCollider meshCollider = _hit.collider as MeshCollider;
                 GameObject tempObject = Instantiate(testGraph, hitObject.ClosestPoint(attackPos.position), Quaternion.identity);
                 Destroy(tempObject, 1);
-                if (hitObject.GetComponent<Renderer>())
+                if (rend == null || rend.sharedMaterial == null || rend.sharedMaterial.mainTexture == null || meshCollider == null)
                 {
-                    tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", hitObject.GetComponent<Renderer>().material.color);
+                    tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", Color.black);
                 }
                 else
                 {
-                    tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", hitObject.GetComponentInChildren<Renderer>().material.color);
+                    Texture2D tex = rend.material.mainTexture as Texture2D;
+                    Vector2 pixelUV = _hit.textureCoord;
+                    pixelUV.x *= tex.width;
+                    pixelUV.y *= tex.height;
+
+                    Color kleurtje = tex.GetPixel((int)pixelUV.x, (int)pixelUV.y);
+
+                    //particle color
+                    tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", kleurtje);
                 }
-
-
+            }
+            if (hitObject.GetComponent<HitableObject>())
+            {
                 //crit
                 float critDamage = 0;
                 float roll = Random.Range(0, 100);

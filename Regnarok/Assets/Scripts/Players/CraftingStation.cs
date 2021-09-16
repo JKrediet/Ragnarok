@@ -207,7 +207,7 @@ public class CraftingStation : MonoBehaviour
     }
     void FinishCrafting()
     {
-        print(selectedCraft.craftResult);
+        inventory.RefreshUI();
         character.CreateItem(ItemList.SelectItem(selectedCraft.craftResult).name, 1, ItemList.SelectItem(selectedCraft.craftResult).sprite, ItemList.SelectItem(selectedCraft.craftResult).type, ItemList.SelectItem(selectedCraft.craftResult).maxStackSize);
         inventory.RefreshUI();
         selectedCraft = default;

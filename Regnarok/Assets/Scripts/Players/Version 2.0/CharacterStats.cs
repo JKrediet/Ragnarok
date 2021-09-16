@@ -17,10 +17,10 @@ public class CharacterStats : MonoBehaviour
     [HideInInspector] public Color disabledColor = new Color(1, 1, 1, 0);
 
     [Space]
-    float endDamage, endAttackSpeed, endCritChance, endArmor, endHealth;
+    [SerializeField] float endDamage, endAttackSpeed, endCritChance, endArmor, endHealth;
     public float BaseDamage, baseAttackSpeed, baseCritChance, baseArmor, baseHealth;
-    float addedDamage, addedAttackSpeed, addedCritChance, addedArmor, addedHealth;
-    float precentAddedDamage, precentAddedAttackSpeed, precentAddedCritChance, precentAddedArmor, precentAddedHealth;
+    [SerializeField] float addedDamage, addedAttackSpeed, addedCritChance, addedArmor, addedHealth;
+    [SerializeField] float precentAddedDamage, precentAddedAttackSpeed, precentAddedCritChance, precentAddedArmor, precentAddedHealth;
 
 
     private void Awake()
@@ -34,21 +34,33 @@ public class CharacterStats : MonoBehaviour
             draggableItem.transform.position = Input.mousePosition;
         }
     }
-    public void CalculateOffensiveStats(Item item)
+    public void GiveStats_damageFlat(float damage)
+    {
+        addedDamage = damage;
+    }
+    public void GiveStats_damagePrecent(float damage)
+    {
+        addedDamage = damage;
+    }
+    public void CalculateOffensiveStats()
     {
         //nog geen accesory stats
-        if (item.equipment == EquipmentType.axe || item.equipment == EquipmentType.pickaxe || item.equipment == EquipmentType.weapon)
+        Item item = GetComponent<PlayerController>().heldItem;
+        if (item != null)
         {
-            endDamage = (BaseDamage + addedDamage + item.damageBonus) * (precentAddedDamage + item.damagePrecentBonus / 100 + 1);
-            float tempAttackSpeed = (baseAttackSpeed + addedAttackSpeed + item.attackSpeedBonus) * (precentAddedAttackSpeed + item.attackSpeedPrecentBonus / 100 + 1);
-            endAttackSpeed = tempAttackSpeed / (tempAttackSpeed * tempAttackSpeed);
-            endCritChance = (baseCritChance + addedCritChance + item.critChanceBonus) * (precentAddedCritChance + item.critChancePrecentBonus / 100 + 1);
-        }
-        else
-        {
-            endDamage = 1;
-            endAttackSpeed = 1;
-            endCritChance = 5;
+            if (item.equipment == EquipmentType.axe || item.equipment == EquipmentType.pickaxe || item.equipment == EquipmentType.weapon)
+            {
+                endDamage = (BaseDamage + addedDamage + item.damageBonus) * (precentAddedDamage + item.damagePrecentBonus / 100 + 1);
+                float tempAttackSpeed = (baseAttackSpeed + addedAttackSpeed + item.attackSpeedBonus) * (precentAddedAttackSpeed + item.attackSpeedPrecentBonus / 100 + 1);
+                endAttackSpeed = tempAttackSpeed / (tempAttackSpeed * tempAttackSpeed);
+                endCritChance = (baseCritChance + addedCritChance + item.critChanceBonus) * (precentAddedCritChance + item.critChancePrecentBonus / 100 + 1);
+            }
+            else
+            {
+                endDamage = 1;
+                endAttackSpeed = 1;
+                endCritChance = 5;
+            }
         }
 
         //give stats/ offensive
@@ -217,6 +229,12 @@ public class CharacterStats : MonoBehaviour
     public void CreateItem(string name, int amount, Sprite image, EquipmentType type, int maxStack)
     {
         Item newItem = ScriptableObject.CreateInstance<Item>();
+        if(type != EquipmentType.none)
+        {
+            newItem.damageBonus = ItemList.SelectItem(name).baseDamage;
+            newItem.attackSpeedBonus = ItemList.SelectItem(name).baseAttackSpeed;
+            newItem.critChanceBonus = ItemList.SelectItem(name).baseCritChance;
+        }
         newItem.SetUpNewItem(name, amount, image, type, maxStack);
 
         inventory.AddItem(newItem);
