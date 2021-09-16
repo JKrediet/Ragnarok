@@ -9,14 +9,16 @@ using UnityEngine.UI;
 public class Health : MonoBehaviour
 {
     [SerializeField] protected float maxHealth;
-    protected float health;
+    [HideInInspector] public float health;
 
     public PhotonView PV;
 
-    float armor;
+    public float armor;
 
     protected float healthRegen;
 
+    int BleedTicks;
+    float bleedDamage;
 
     protected virtual void Awake()
     {
@@ -26,7 +28,7 @@ public class Health : MonoBehaviour
         }
         health = maxHealth;
     }
-    public virtual void Health_Damage(float damageValue)
+    public virtual void Health_Damage(float damageValue, bool bleed)
     {
         damageValue = Mathf.Clamp(damageValue - armor, 1, maxHealth);
         if (health > 0)
@@ -36,6 +38,14 @@ public class Health : MonoBehaviour
             {
                 Health_Dead();
             }
+        }
+        if(bleed)
+        {
+            if(bleedDamage < damageValue * 0.25f)
+            {
+                bleedDamage = damageValue * 0.25f;
+            }
+            BleedTicks += 5;
         }
     }
     public virtual void Health_Heal(float healValue)
@@ -61,5 +71,20 @@ public class Health : MonoBehaviour
         maxHealth = _health;
         armor = _armor;
         healthRegen = _healthRegen;
+    }
+
+    protected virtual IEnumerator Bleed()
+    {
+        yield return new WaitForSeconds(1);
+        if(BleedTicks > 0)
+        {
+            BleedTicks--;
+            Health_Damage(bleedDamage, false);
+            StartCoroutine("Bleed");
+        }
+        else if (BleedTicks == 0)
+        {
+            bleedDamage = 0;
+        }
     }
 }

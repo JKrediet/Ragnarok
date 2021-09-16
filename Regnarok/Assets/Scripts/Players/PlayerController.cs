@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     PhotonView pv;
 
     //attackStats
-    [SerializeField] float totalDamage, totalAttackSpeed, totalCritChance;
+    [SerializeField] float totalDamage, totalAttackSpeed, totalCritChance, totalLifeSteal, totalChanceToInflictBleed, totalHealthOnKill, totalExtraSpeed;
     public Item heldItem;
 
     //movement
@@ -85,11 +85,15 @@ public class PlayerController : MonoBehaviour
         mayAttack = true;
         camOriginpos.position = cam.transform.position;
     }
-    public void RecieveStats(float damage, float attackSpeed, float critChance)
+    public void RecieveStats(float _damage, float _attackSpeed, float _critChance, float _lifesteal, float _bleedChance, float _healthOnKill, float _movementSpeed)
     {
-        totalDamage = damage;
-        totalAttackSpeed = attackSpeed;
-        totalCritChance = critChance;
+        totalDamage = _damage;
+        totalAttackSpeed = _attackSpeed;
+        totalCritChance = _critChance;
+        totalLifeSteal = _lifesteal;
+        totalChanceToInflictBleed = _bleedChance;
+        totalHealthOnKill = _healthOnKill;
+        totalExtraSpeed = _movementSpeed;
     }
     private void Update()
     {
@@ -150,13 +154,13 @@ public class PlayerController : MonoBehaviour
         movementSpeed.Normalize();
         if (movementSpeed.magnitude != 0)
         {
-            combinedSpeed = speed;
+            combinedSpeed = speed + totalExtraSpeed;
             if (Input.GetButton("Sprint"))
             {
                 if (staminaValue > 0)
                 {
                     staminaValue = Mathf.Clamp(staminaValue -= staminaLossPerSec * Time.deltaTime, 0, maxStamina);
-                    combinedSpeed = sprintSpeed;
+                    combinedSpeed = sprintSpeed + totalExtraSpeed;
                     Anim_sprint();
                 }
                 else
@@ -282,27 +286,54 @@ public class PlayerController : MonoBehaviour
                     tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", kleurtje);
                 }
             }
+            //crit
+            float critDamage = 0;
+            bool inflictBleed = false;
+            float roll = Random.Range(0, 100);
+            if (roll < totalCritChance)
+            {
+                critDamage = totalDamage;
+            }
+            roll = Random.Range(0, 100);
+            if (roll < totalChanceToInflictBleed)
+            {
+                inflictBleed = true;
+            }
+            //actual hit
             if (hitObject.GetComponent<HitableObject>())
             {
-                //crit
-                float critDamage = 0;
-                float roll = Random.Range(0, 100);
-                if(roll < totalCritChance)
-                {
-                    critDamage = totalDamage;
-                }
                 //damage
                 if(heldItem != null)
                 {
-                    if(heldItem as EquipableItem)
+                    hitObject.GetComponent<HitableObject>().HitByPlayer(totalDamage + critDamage, gameObject, heldItem.equipment);
+                }
+                else
+                {
+                    hitObject.GetComponent<HitableObject>().HitByPlayer(1, gameObject, 0);
+                }
+            }
+            if(hitObject.GetComponent<EnemieHealth>())
+            {
+                //damage
+                if (heldItem != null)
+                {
+                    hitObject.GetComponent<EnemieHealth>().Health_Damage(totalDamage + critDamage, inflictBleed);
+                    if(totalLifeSteal > 0)
                     {
-                        EquipableItem tempItem = heldItem as EquipableItem;
-                        hitObject.GetComponent<HitableObject>().HitByPlayer(totalDamage + critDamage, gameObject, tempItem.equipment);
+                        float healAmount = (totalDamage + critDamage - hitObject.GetComponent<EnemieHealth>().armor) * (totalLifeSteal / 100);
+                        GetComponent<Health>().Health_Heal(healAmount);
+                    }
+                    if(totalHealthOnKill > 0)
+                    {
+                        if(hitObject.GetComponent<EnemieHealth>().health - (totalDamage + critDamage - hitObject.GetComponent<EnemieHealth>().armor) <= 0)
+                        {
+                            GetComponent<Health>().Health_Heal(totalHealthOnKill);
+                        }
                     }
                 }
                 else
                 {
-                    hitObject.GetComponent<HitableObject>().HitByPlayer(1 + critDamage, gameObject, 0);
+                    hitObject.GetComponent<EnemieHealth>().Health_Damage(1, false);
                 }
             }
         }

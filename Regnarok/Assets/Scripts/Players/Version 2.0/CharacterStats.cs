@@ -19,7 +19,7 @@ public class CharacterStats : MonoBehaviour
     [Space]
     [SerializeField] float endDamage, endAttackSpeed, endCritChance, endArmor, endHealth;
     public float BaseDamage, baseAttackSpeed, baseCritChance, baseArmor, baseHealth;
-    [SerializeField] float addedDamage, addedAttackSpeed, addedCritChance, addedArmor, addedHealth, addedHealthRegen;
+    [SerializeField] float addedDamage, addedAttackSpeed, addedCritChance, addedArmor, addedHealth, addedHealthRegen, addedLifeSteal, addedBleedChance, addedHealthOnKill, addedMovementSpeed;
     [SerializeField] float precentAddedDamage, precentAddedAttackSpeed, precentAddedCritChance, precentAddedArmor, precentAddedHealth;
 
 
@@ -72,6 +72,22 @@ public class CharacterStats : MonoBehaviour
     {
         addedArmor = value;
     }
+    public void GiveStats_addLifeSteal(float value)
+    {
+        addedLifeSteal = value;
+    }
+    public void GiveStats_bleedChance(float value)
+    {
+        addedBleedChance = value;
+    }
+    public void GiveStats_healthOnKill(float value)
+    {
+        addedHealthOnKill = value;
+    }
+    public void GiveStats_movementSpeed(float value)
+    {
+        addedMovementSpeed = value;
+    }
 
     #endregion
     public void CalculateOffensiveStats()
@@ -96,7 +112,7 @@ public class CharacterStats : MonoBehaviour
         }
 
         //give stats/ offensive
-        playercontroller.RecieveStats(endDamage, endAttackSpeed, endCritChance);
+        playercontroller.RecieveStats(endDamage, endAttackSpeed, endCritChance, addedLifeSteal, addedBleedChance, addedHealthOnKill, addedMovementSpeed);
     }
     public void CalculateDefensiveStats()
     {

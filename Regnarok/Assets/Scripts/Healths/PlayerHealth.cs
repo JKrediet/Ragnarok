@@ -19,9 +19,9 @@ public class PlayerHealth : Health
             StartCoroutine("HealthRegen");
         }
     }
-    public override void Health_Damage(float damageValue)
+    public override void Health_Damage(float damageValue, bool bleed)
     {
-        base.Health_Damage(damageValue);
+        base.Health_Damage(damageValue, bleed);
         if(HealthSlider)
         {
             HealthSlider.value = health;

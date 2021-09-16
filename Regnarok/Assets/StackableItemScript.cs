@@ -44,7 +44,7 @@ public class StackableItemScript : MonoBehaviour
             {
                 if(itemlist[i].itemName == "EnergyDrink")
                 {
-                    //movement speed added
+                    stats.GiveStats_movementSpeed(itemlist[i].amount * itemlist[i].value);
                 }
                 else if (itemlist[i].itemName == "Shield")
                 {
@@ -60,7 +60,7 @@ public class StackableItemScript : MonoBehaviour
                 }
                 else if (itemlist[i].itemName == "ShadowOrb")
                 {
-                    //heal on kill
+                    stats.GiveStats_healthOnKill(itemlist[i].amount * itemlist[i].value);
                 }
                 else if (itemlist[i].itemName == "Crown")
                 {
@@ -68,7 +68,7 @@ public class StackableItemScript : MonoBehaviour
                 }
                 else if (itemlist[i].itemName == "Knife")
                 {
-                    //chance to bleed
+                    stats.GiveStats_bleedChance(itemlist[i].amount * itemlist[i].value);
                 }
                 else if (itemlist[i].itemName == "Clock")
                 {
@@ -88,7 +88,7 @@ public class StackableItemScript : MonoBehaviour
                 }
                 else if (itemlist[i].itemName == "Tooth")
                 {
-                    //lifesteal
+                    stats.GiveStats_addLifeSteal(itemlist[i].amount * itemlist[i].value);
                 }
             }
         }
