@@ -45,30 +45,37 @@ public class StackableItemScript : MonoBehaviour
                 if(itemlist[i].itemName == "EnergyDrink")
                 {
                     stats.GiveStats_movementSpeed(itemlist[i].amount * itemlist[i].value);
+                    continue;
                 }
                 else if (itemlist[i].itemName == "Shield")
                 {
                     stats.GiveStats_addedArmor(itemlist[i].amount * itemlist[i].value);
+                    continue;
                 }
                 else if (itemlist[i].itemName == "IronKnuckle")
                 {
                     stats.GiveStats_damageFlat(itemlist[i].amount * itemlist[i].value);
+                    continue;
                 }
                 else if (itemlist[i].itemName == "HeartContainer")
                 {
                     stats.GiveStats_addedHealth(itemlist[i].amount * itemlist[i].value);
+                    continue;
                 }
                 else if (itemlist[i].itemName == "ShadowOrb")
                 {
                     stats.GiveStats_healthOnKill(itemlist[i].amount * itemlist[i].value);
+                    continue;
                 }
                 else if (itemlist[i].itemName == "Crown")
                 {
                     //xp nog niet added
+                    continue;
                 }
                 else if (itemlist[i].itemName == "Knife")
                 {
                     stats.GiveStats_bleedChance(itemlist[i].amount * itemlist[i].value);
+                    continue;
                 }
                 else if (itemlist[i].itemName == "Clock")
                 {
@@ -77,18 +84,22 @@ public class StackableItemScript : MonoBehaviour
                 else if (itemlist[i].itemName == "Scouter")
                 {
                     stats.GiveStats_critChanceFlat(itemlist[i].amount * itemlist[i].value);
+                    continue;
                 }
                 else if (itemlist[i].itemName == "GoldPouch")
                 {
                     // more gold
+                    continue;
                 }
                 else if (itemlist[i].itemName == "Plaster")
                 {
                     stats.GiveStats_healthRegen(itemlist[i].amount * itemlist[i].value);
+                    continue;
                 }
                 else if (itemlist[i].itemName == "Tooth")
                 {
                     stats.GiveStats_addLifeSteal(itemlist[i].amount * itemlist[i].value);
+                    continue;
                 }
             }
         }
