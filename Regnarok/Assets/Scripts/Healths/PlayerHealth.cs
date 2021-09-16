@@ -46,11 +46,7 @@ public class PlayerHealth : Health
 
     IEnumerator HealthRegen()
     {
-        if(health < maxHealth)
-        {
-            Health_Heal(healthRegen);
-        }
-
+        Health_Heal(healthRegen);
         yield return new WaitForSeconds(1);
         StartCoroutine("HealthRegen");
     }

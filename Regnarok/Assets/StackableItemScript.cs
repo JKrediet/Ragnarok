@@ -48,7 +48,7 @@ public class StackableItemScript : MonoBehaviour
                 }
                 else if (itemlist[i].itemName == "Shield")
                 {
-                    //defence to hp
+                    stats.GiveStats_addedArmor(itemlist[i].amount * itemlist[i].value);
                 }
                 else if (itemlist[i].itemName == "IronKnuckle")
                 {
@@ -56,7 +56,7 @@ public class StackableItemScript : MonoBehaviour
                 }
                 else if (itemlist[i].itemName == "HeartContainer")
                 {
-                    //max life
+                    stats.GiveStats_addedHealth(itemlist[i].amount * itemlist[i].value);
                 }
                 else if (itemlist[i].itemName == "ShadowOrb")
                 {
