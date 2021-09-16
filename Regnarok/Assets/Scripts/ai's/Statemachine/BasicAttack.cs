@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-
-public class SmashAttackState : AttackState
+public class BasicAttack : AttackState
 {
     public override State RunCurrentState()
     {

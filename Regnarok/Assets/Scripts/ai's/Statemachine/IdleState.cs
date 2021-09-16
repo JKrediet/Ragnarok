@@ -30,8 +30,11 @@ public class IdleState : State
             print("2");
             if (dist <= sm.attackRange)
             {
-                transform.LookAt(new Vector3(agent.destination.z, 0, agent.destination.z));
-                return attack;
+                if (sm.spawned)
+                {
+                    transform.LookAt(new Vector3(agent.destination.z, 0, agent.destination.z));
+                    return attack;
+                }
             }
             else
             {         
