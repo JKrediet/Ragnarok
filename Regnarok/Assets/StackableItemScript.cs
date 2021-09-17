@@ -112,31 +112,6 @@ public class StackableItemScript : MonoBehaviour
 	{
 		cooldownBool = false;
 	}
-	public int RaretyChance()
-	{
-		float randomNum = Random.Range(0.00f, 100.00f);
-		if (randomNum <= 20)
-		{
-			return 1;
-		}
-		else if (randomNum > 20 &&randomNum <= 40)
-		{
-			return 2;
-		}
-		else if (randomNum > 40 && randomNum <= 60)
-		{
-			return 3;
-		}
-		else if (randomNum > 60 && randomNum <= 80)
-		{
-			return 4;
-		}
-		else if (randomNum >80)
-		{
-			return 5;
-		}
-		return 0;
-	}
 	public bool ChanceToGetDubbel()
 	{
 		if (Random.Range(0.00f, 100.00f) <= 1)
