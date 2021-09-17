@@ -6,9 +6,10 @@ using TMPro;
 public class DamageNumbers : MonoBehaviour
 {
     public float damageAmount;
+    public GameObject mainObject;
 
     //privates
-    private TextMeshPro textMesh;
+    public TextMeshProUGUI textMesh;
     private float disappearTime;
     private Color textColor;
     private Transform player;
@@ -16,7 +17,7 @@ public class DamageNumbers : MonoBehaviour
     private void Start()
     {
         player = FindObjectOfType<PlayerHealth>().transform;
-        textMesh = GetComponent<TextMeshPro>();
+        textMesh = GetComponent<TextMeshProUGUI>();
         textMesh.SetText(damageAmount.ToString());
         textColor = textMesh.color;
         disappearTime = 1f;
@@ -25,7 +26,7 @@ public class DamageNumbers : MonoBehaviour
     {
         transform.LookAt(player);
         transform.rotation = Quaternion.LookRotation(player.transform.forward);
-        float moveYSpeed = 2;
+        float moveYSpeed = 4;
         transform.position += new Vector3(0, moveYSpeed, 0) * Time.deltaTime;
 
         disappearTime -= Time.deltaTime;
@@ -36,7 +37,7 @@ public class DamageNumbers : MonoBehaviour
             textMesh.color = textColor;
             if (textColor.a < 0)
             {
-                Destroy(gameObject);
+                Destroy(mainObject);
             }
         }
     }

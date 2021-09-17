@@ -30,8 +30,9 @@ public class LightingManager : MonoBehaviour
                 TimeOfDay += Time.deltaTime/ devideNight;
 				if (!isNight)
 				{
-                    isNight = true;
-					if (!gm.isDoingNight)
+					isNight = true;
+                    RenderSettings.fog = true;
+                    if (!gm.isDoingNight)
 					{
                         gm.StartCoroutine("IsNight");
 					}
@@ -42,6 +43,7 @@ public class LightingManager : MonoBehaviour
                 TimeOfDay += Time.deltaTime / devideDay;
                 if (isNight)
                 {
+                    RenderSettings.fog = false;
                     isNight = false;
                 }
             }
