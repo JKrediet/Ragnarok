@@ -49,7 +49,6 @@ public class Health : MonoBehaviour
                 }
                 BleedTicks += 5;
             }
-            PV.RPC("SincHealthOnMAster", RpcTarget.MasterClient, health);
         }
     }
     public virtual void Health_Heal(float healValue)
@@ -60,13 +59,12 @@ public class Health : MonoBehaviour
             {
                 health = Mathf.Clamp(health + healValue, 0, maxHealth);
             }
-            PV.RPC("SincHealthOnMAster", RpcTarget.MasterClient, health);
         }
     }
     public virtual void Health_Dead()
     {
         print("used base function");
-        Destroy(gameObject);
+        PhotonNetwork.Destroy(gameObject);
     }
 
     //stats
@@ -97,15 +95,38 @@ public class Health : MonoBehaviour
     }
 
     #region sinc
-    [PunRPC]
-    public void SincHealthOnMAster(float _health)
+    //damage
+    public void TakeDamage(float damageValue, bool _bleed)
     {
-         PV.RPC("SincHealth", RpcTarget.All, health);
+        PV.RPC("SincHealthOnMAster", RpcTarget.MasterClient, damageValue, _bleed);
+    }
+    //heal
+    public void TakeHeal(float damageValue)
+    {
+        PV.RPC("SincHealOnMAster", RpcTarget.MasterClient, damageValue);
+    }
+
+    //damage
+    [PunRPC]
+    public void SincHealthOnMAster(float _health, bool _bleed)
+    {
+         PV.RPC("SincHealth", RpcTarget.All, _health, _bleed);
     }
     [PunRPC]
-    public void SincHealth(float _health)
+    public void SincHealth(float _health, bool _bleed)
     {
-        health = _health;
+        Health_Damage(_health, _bleed);
+    }
+    //heal
+    [PunRPC]
+    public void SincHealOnMAster(float _health)
+    {
+        PV.RPC("SincHeal", RpcTarget.All, _health);
+    }
+    [PunRPC]
+    public void SincHeal(float _health)
+    {
+        Health_Heal(_health);
     }
     #endregion
 }
