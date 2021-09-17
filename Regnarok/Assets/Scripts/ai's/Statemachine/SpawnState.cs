@@ -22,7 +22,6 @@ public class SpawnState : State
 		}
 		else
 		{
-            sm.spawned = true;
             return idleState;
         }
 	}

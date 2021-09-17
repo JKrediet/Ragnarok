@@ -118,4 +118,8 @@ public class StateManager : MonoBehaviour
 		hitboxActive = false;
 		hitColliders = null;
 	}
+	public void Spawned()
+	{
+		spawned = true;
+	}
 }
