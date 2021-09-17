@@ -27,11 +27,9 @@ public class IdleState : State
         float disIdlePos = Vector3.Distance(transform.position, idleDes);
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 toOther = sm.target.transform.position - transform.position;
-        print("1");
         if (dist <= sm.triggerRange&& Vector3.Dot(forward, toOther) > 0
             || dist <= sm.triggerRange/behindEnemieDivtation && Vector3.Dot(forward, toOther) < 0)
         {
-            print("2");
             if (dist <= sm.attackRange)
             {
                 if (sm.spawned)

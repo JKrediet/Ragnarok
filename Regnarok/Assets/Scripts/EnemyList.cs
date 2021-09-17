@@ -5,5 +5,5 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "EnemieList", menuName = "ScriptableObjects/EnemieList", order = 1)]
 public class EnemyList : ScriptableObject
 {
-    public List<GameObject> enemieList;
+    public List<string> enemieList;
 }
