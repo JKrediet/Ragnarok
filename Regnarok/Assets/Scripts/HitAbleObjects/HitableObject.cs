@@ -60,4 +60,8 @@ public class HitableObject : MonoBehaviour
             FindObjectOfType<GameManager>().DropItems(dropItemName[i], transform.position, Quaternion.identity, Random.Range((int)minDrop, (int)maxDrop), itemSerialNumber);
         }
     }
+    public void SetHealth(float _health)
+    {
+        health = _health;
+    }
 }

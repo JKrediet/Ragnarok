@@ -30,29 +30,37 @@ public class Health : MonoBehaviour
     }
     public virtual void Health_Damage(float damageValue, bool bleed)
     {
-        damageValue = Mathf.Clamp(damageValue - armor, 1, maxHealth);
-        if (health > 0)
+        if (PV.IsMine)
         {
-            health = Mathf.Clamp(health - damageValue, 0, maxHealth);
-            if(health == 0)
+            damageValue = Mathf.Clamp(damageValue - armor, 1, maxHealth);
+            if (health > 0)
             {
-                Health_Dead();
+                health = Mathf.Clamp(health - damageValue, 0, maxHealth);
+                if (health == 0)
+                {
+                    Health_Dead();
+                }
             }
-        }
-        if(bleed)
-        {
-            if(bleedDamage < damageValue * 0.25f)
+            if (bleed)
             {
-                bleedDamage = damageValue * 0.25f;
+                if (bleedDamage < damageValue * 0.25f)
+                {
+                    bleedDamage = damageValue * 0.25f;
+                }
+                BleedTicks += 5;
             }
-            BleedTicks += 5;
+            PV.RPC("SincHealthOnMAster", RpcTarget.MasterClient, health);
         }
     }
     public virtual void Health_Heal(float healValue)
     {
-        if (health < maxHealth)
+        if (PV.IsMine)
         {
-            health = Mathf.Clamp(health + healValue, 0, maxHealth);
+            if (health < maxHealth)
+            {
+                health = Mathf.Clamp(health + healValue, 0, maxHealth);
+            }
+            PV.RPC("SincHealthOnMAster", RpcTarget.MasterClient, health);
         }
     }
     public virtual void Health_Dead()
@@ -87,4 +95,17 @@ public class Health : MonoBehaviour
             bleedDamage = 0;
         }
     }
+
+    #region sinc
+    [PunRPC]
+    public void SincHealthOnMAster(float _health)
+    {
+         PV.RPC("SincHealth", RpcTarget.All, health);
+    }
+    [PunRPC]
+    public void SincHealth(float _health)
+    {
+        health = _health;
+    }
+    #endregion
 }

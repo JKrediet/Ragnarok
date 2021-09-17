@@ -113,4 +113,40 @@ public class GameManager : MonoBehaviour
         }
     }
     #endregion
+
+    public bool IsThisMasterClient()
+    {
+        if(GetComponent<PhotonView>().Owner == PhotonNetwork.MasterClient)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    #region sincHealth
+    public void SincHealthOfHitableObject(int _serialNumber, float _healthAmount)
+    {
+        GetComponent<PhotonView>().RPC("SincHealthOnMaster", RpcTarget.MasterClient, _serialNumber, _healthAmount);
+    }
+    public void SincHealthOnMaster(int _serialNumber, float _healthAmount)
+    {
+        GetComponent<PhotonView>().RPC("SetHealth", RpcTarget.All, _serialNumber, _healthAmount);
+    }
+    [PunRPC]
+    public void SetHealth(int _serialNumber, float _healthAmount)
+    {
+        HitableObject[] objectsFound = FindObjectsOfType<HitableObject>();
+        for (int i = 0; i < objectsFound.Length; i++)
+        {
+            if (objectsFound[i].itemSerialNumber == _serialNumber)
+            {
+                objectsFound[i].SetHealth(_healthAmount);
+                return;
+            }
+        }
+    }
+    #endregion
 }
