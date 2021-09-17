@@ -339,11 +339,11 @@ public class PlayerController : MonoBehaviour
                         //damage
                         if (heldItem != null)
                         {
-                            hitObject.GetComponent<HitableObject>().HitByPlayer(totalDamage + critDamage, gameObject, heldItem.equipment);
+                            hitObject.GetComponent<HitableObject>().HitByPlayer(totalDamage + critDamage, heldItem.equipment);
                         }
                         else
                         {
-                            hitObject.GetComponent<HitableObject>().HitByPlayer(1, gameObject, 0);
+                            hitObject.GetComponent<HitableObject>().HitByPlayer(1, 0);
                         }
                     }
                     if (hitObject.GetComponent<EnemieHealth>())
@@ -351,7 +351,7 @@ public class PlayerController : MonoBehaviour
                         //damage
                         if (heldItem != null)
                         {
-                            hitObject.GetComponent<EnemieHealth>().Health_Damage(totalDamage + critDamage, inflictBleed);
+                            hitObject.GetComponent<EnemieHealth>().TakeDamage(totalDamage + critDamage, inflictBleed);
                             if (totalLifeSteal > 0)
                             {
                                 float healAmount = (totalDamage + critDamage - hitObject.GetComponent<EnemieHealth>().armor) * (totalLifeSteal / 100);
@@ -367,7 +367,7 @@ public class PlayerController : MonoBehaviour
                         }
                         else
                         {
-                            hitObject.GetComponent<EnemieHealth>().Health_Damage(1, false);
+                            hitObject.GetComponent<EnemieHealth>().TakeDamage(1, false);
                         }
                     }
                 }

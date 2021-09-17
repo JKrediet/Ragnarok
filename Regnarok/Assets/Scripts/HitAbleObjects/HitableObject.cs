@@ -10,7 +10,6 @@ public class HitableObject : MonoBehaviour
     protected float maxHealth;
     [Space]
     [SerializeField] string[] dropItemName;
-    protected GameObject lastPlayerThatHitTree;
     protected Rigidbody rb;
 
     protected void Awake()
@@ -24,33 +23,23 @@ public class HitableObject : MonoBehaviour
         health *= Random.Range(0.7f, 1.3f);
         maxHealth = health;
     }
-    public virtual void HitByPlayer(float _damage, GameObject _hitBy, EquipmentType itemType)
+    public virtual void HitByPlayer(float _damage, EquipmentType itemType)
     { 
         if (itemType == itemTypeNeeded)
         {
             if (health > 0)
             {
-                health = Mathf.Clamp(health -= _damage, 0, maxHealth);
-                lastPlayerThatHitTree = _hitBy;
-                if (health == 0)
-                {
-                    //items
-                    Invoke("DropItems", 2);
-                }
+                health = Mathf.Clamp(health - _damage, 1, maxHealth);
             }
         }
         else
         {
-            if (health > 0)
-            {
-                health = Mathf.Clamp(health -= 1, 0, maxHealth);
-                lastPlayerThatHitTree = _hitBy;
-                if (health == 0)
-                {
-                    //items
-                    Invoke("DropItems", 2);
-                }
-            }
+            health = Mathf.Clamp(health - 1, 1, maxHealth);
+        }
+        if (health == 0)
+        {
+            //items
+            DropItems();
         }
     }
     protected virtual void DropItems()
@@ -60,8 +49,8 @@ public class HitableObject : MonoBehaviour
             FindObjectOfType<GameManager>().DropItems(dropItemName[i], transform.position, Quaternion.identity, Random.Range((int)minDrop, (int)maxDrop), itemSerialNumber);
         }
     }
-    public void SetHealth(float _health)
+    public void TakeDamage(float _damage, EquipmentType _itemType)
     {
-        health = _health;
+        FindObjectOfType<GameManager>().SincHealthOfHitableObject(itemSerialNumber, _damage, _itemType);
     }
 }
