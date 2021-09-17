@@ -64,7 +64,7 @@ public class StateManager : MonoBehaviour
 	public IEnumerator DoDamge(int i)
 	{
 		doingDamage = true;
-		hitColliders[i].transform.GetComponent<PlayerHealth>().Health_Damage(attackStates[currentAttack].damage);
+		hitColliders[i].transform.GetComponent<PlayerHealth>().Health_Damage(attackStates[currentAttack].damage,false);
 		yield return new WaitForSeconds(5);
 		doingDamage = false;
 	}

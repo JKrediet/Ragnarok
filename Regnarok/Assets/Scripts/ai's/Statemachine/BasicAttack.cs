@@ -51,9 +51,12 @@ public class BasicAttack : AttackState
         }
         else
         {
-            agent.speed = sm.movementSpeed;
-            sm.idleRange = 1000f;
-            return idle;
+            if (!sm.anim.GetCurrentAnimatorStateInfo(0).IsName(animationName))
+            {
+                agent.speed = sm.movementSpeed;
+                sm.idleRange = 1000f;
+                return idle;
+            }
         }
         return this;
     }
@@ -61,7 +64,6 @@ public class BasicAttack : AttackState
 	{
         sm.ResetAnim();
         sm.anim.SetBool(animationName, true);
-        print(animationName);
         agent.speed=sm.attackMovementSpeed;
     }
 }

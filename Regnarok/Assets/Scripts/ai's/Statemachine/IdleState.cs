@@ -36,8 +36,9 @@ public class IdleState : State
             {
                 if (sm.spawned)
                 {
-                    transform.LookAt(new Vector3(agent.destination.z, 0, agent.destination.z));
-                    return attack;
+                    int randomI = Random.Range(0, sm.attackStates.Length);
+                    sm.currentAttack = randomI;
+                    return sm.attackStates[randomI];
                 }
             }
             else
@@ -60,19 +61,16 @@ public class IdleState : State
 			if (sm.spawned)
 			{
                 agent.destination = idleDes;
-                print("??");
             }
         }
 		if (sm.spawned&&!isWalking)
 		{
             agent.destination = transform.position;
             sm.ResetAnim();
-            print("normal");
         }
 		if (!isIdleMoving&& !isWalking)
 		{
             StartCoroutine(RandomIdlePos());
-            print("start");
         }
         return this;
 	}
@@ -88,11 +86,9 @@ public class IdleState : State
                 if (hitInfo.transform.tag == "Mesh")
                 {
                     idleDes = hitInfo.point;
-                    print("MEsh");
                 }
                 else
                 {
-                    print("no");
                     Vector3 rotation = transform.eulerAngles;
                     transform.eulerAngles = rotation+new Vector3(0, 15, 0);
                     agent.destination = transform.position;

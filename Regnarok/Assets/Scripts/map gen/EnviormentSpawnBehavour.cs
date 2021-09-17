@@ -25,7 +25,15 @@ public class EnviormentSpawnBehavour : MonoBehaviour
             {
                 if (hitInfo.point != transform.position)
                 {
-                    transform.position = new Vector3(hitInfo.point.x, hitInfo.point.y - heightOffset, hitInfo.point.z);
+                    if (hitInfo.transform.tag == "Water"
+                           || hitInfo.transform.tag == "Rock"
+                           || hitInfo.transform.tag == "Tree"
+                           || hitInfo.transform.tag == "Chest"
+                           || hitInfo.transform.tag == "Totem")
+                    {
+                        Destroy(gameObject);
+                    }
+                        transform.position = new Vector3(hitInfo.point.x, hitInfo.point.y - heightOffset, hitInfo.point.z);
                     if (isGrass)
                     {
                         transform.rotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
@@ -38,6 +46,14 @@ public class EnviormentSpawnBehavour : MonoBehaviour
             ray = new Ray(transform.position, transform.up);
             if (Physics.Raycast(ray, out hitInfo))
             {
+                if (hitInfo.transform.tag == "Water"
+                   || hitInfo.transform.tag == "Rock"
+                   || hitInfo.transform.tag == "Tree"
+                   || hitInfo.transform.tag == "Chest"
+                   || hitInfo.transform.tag == "Totem")
+                {
+                    Destroy(gameObject);
+                }
                 if (hitInfo.transform != transform)
                 {
                     transform.position = new Vector3(hitInfo.point.x, hitInfo.point.y - heightOffset, hitInfo.point.z);
