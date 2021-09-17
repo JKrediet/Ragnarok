@@ -20,6 +20,7 @@ public class EnviromentSpawner : MonoBehaviour
     public GameObject mesh;
     public MapGenerator mapGen;
     private Vector3 spawnPoint;
+    int serialNumberForHitableObjectsl = 0;
 
     public void StartGenerating()
 	{
@@ -31,7 +32,6 @@ public class EnviromentSpawner : MonoBehaviour
         Random.InitState(mapGen.mapSeed);
         mesh.AddComponent<MeshCollider>();
         new WaitForSeconds(1);
-        int serialNumberForHitableObjectsl = 0;
         for (int i = 0; i < spawnItems.Length; i++)
 		{
 			for (int i_ = 0; i_ < spawnItems[i].amountToSpawn; i_++)
@@ -79,22 +79,17 @@ public class EnviromentSpawner : MonoBehaviour
                                     {
                                         if (spawnItems[i].randomRot)
                                         {
-                                            GameObject tempObject = Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), parent);
-                                            if (tempObject.GetComponent<ItemPickUp>())
-                                            {
-                                                tempObject.GetComponent<ItemPickUp>().itemSerialNumber = serialNumberForHitableObjectsl;
-                                                serialNumberForHitableObjectsl++;
-                                            }
+                                            InstatiateEnviorment(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), parent);
                                         }
                                         else
                                         {
                                             if (spawnItems[i].rotateWithMesh)
                                             {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), parent);
+                                                InstatiateEnviorment(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), parent);
                                             }
                                             else
                                             {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, parent);
+                                                InstatiateEnviorment(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, parent);
                                             }
                                         }
                                     }
@@ -105,17 +100,17 @@ public class EnviromentSpawner : MonoBehaviour
                                     {
                                         if (spawnItems[i].randomRot)
                                         {
-                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), parent);
+                                            InstatiateEnviorment(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), parent);
                                         }
                                         else
                                         {
                                             if (spawnItems[i].rotateWithMesh)
                                             {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), parent);
+                                                InstatiateEnviorment(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), parent);
                                             }
                                             else
                                             {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, parent);
+                                                InstatiateEnviorment(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, parent);
                                             }
                                         }
                                     }
@@ -126,17 +121,17 @@ public class EnviromentSpawner : MonoBehaviour
                                     {
                                         if (spawnItems[i].randomRot)
                                         {
-                                            Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), parent);
+                                            InstatiateEnviorment(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), parent);
                                         }
                                         else
                                         {
                                             if (spawnItems[i].rotateWithMesh)
                                             {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), parent);
+                                                InstatiateEnviorment(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), parent);
                                             }
                                             else
                                             {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, parent);
+                                                InstatiateEnviorment(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, parent);
                                             }
                                         }
                                     }
@@ -147,22 +142,17 @@ public class EnviromentSpawner : MonoBehaviour
                                     {
                                         if (spawnItems[i].randomRot)
                                         {
-                                            GameObject tempObject = Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), parent);
-                                            if (tempObject.GetComponent<HitableObject>())
-                                            {
-                                                tempObject.GetComponent<HitableObject>().itemSerialNumber = serialNumberForHitableObjectsl;
-                                                serialNumberForHitableObjectsl++;
-                                            }
+                                            InstatiateEnviorment(spawnItems[i].toSpawn, spawnPoint, Quaternion.Euler(0, Random.Range(0, 360), 0), parent);
                                         }
                                         else
                                         {
                                             if (spawnItems[i].rotateWithMesh)
                                             {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), parent);
+                                                InstatiateEnviorment(spawnItems[i].toSpawn, spawnPoint, Quaternion.FromToRotation(Vector3.up, hitInfo.normal), parent);
                                             }
                                             else
                                             {
-                                                Instantiate(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, parent);
+                                                InstatiateEnviorment(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, parent);
                                             }
                                         }
                                     }
@@ -176,6 +166,21 @@ public class EnviromentSpawner : MonoBehaviour
 		}
 
         Invoke("BuildNavMesh", 0.5f);
+    }
+    public void InstatiateEnviorment(GameObject toSpawn, Vector3 location, Quaternion rotation, Transform parent)
+    {
+        GameObject tempObject = Instantiate(toSpawn, location, rotation, parent);
+
+        if (tempObject.GetComponent<HitableObject>())
+        {
+            tempObject.GetComponent<HitableObject>().itemSerialNumber = serialNumberForHitableObjectsl;
+            serialNumberForHitableObjectsl++;
+        }
+        else if (tempObject.GetComponent<ItemPickUp>())
+        {
+            tempObject.GetComponent<ItemPickUp>().itemSerialNumber = serialNumberForHitableObjectsl;
+            serialNumberForHitableObjectsl++;
+        }
     }
     public void BuildNavMesh()
     {
