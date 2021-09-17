@@ -17,6 +17,7 @@ public class LightingManager : MonoBehaviour
 	private void Start()
 	{
         gm = GetComponent<GameManager>();
+        RenderSettings.fog = false;
     }
 	private void Update()
     {
@@ -45,6 +46,7 @@ public class LightingManager : MonoBehaviour
                 {
                     RenderSettings.fog = false;
                     isNight = false;
+                    gm.isDoingNight = false;
                 }
             }
             TimeOfDay %= 24; //Modulus to ensure always between 0-24

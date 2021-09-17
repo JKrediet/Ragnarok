@@ -26,8 +26,6 @@ public class GameManager : MonoBehaviour
     public GameObject loadingScreen, canvas;
     public VideoPlayer videoplayer;
 
-    int loopieloop;
-
     public List<GameObject> playerObjectList;
 
 	private void Start()
@@ -49,7 +47,8 @@ public class GameManager : MonoBehaviour
 	{
         isDoingNight = true;
         days++;
-        ScalingLeJorn();
+        es.ClearPlayers();
+        es.GetPlayers();
         es.SpawnEnemies(ScalingLeJorn());
         yield return new WaitForSeconds(timeForNightToEnd);
         scalingAmount = 1;

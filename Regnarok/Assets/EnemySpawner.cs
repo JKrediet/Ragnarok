@@ -16,16 +16,9 @@ public class EnemySpawner : MonoBehaviour
 	public EnemyList enemielist;
 	public List<GameObject> enemies;
 	private GameObject[] players;
-	private PhotonView pv;
-	private LightingManager lm;
-	private GameManager gm;
-	private void Start()
-	{
-		Invoke("GetPlayers", 4);
-		pv.GetComponent<PhotonView>();
-		lm.GetComponent<LightingManager>();
-		gm.GetComponent<GameManager>();
-	}
+	public PhotonView pv;
+	public LightingManager lm;
+	public GameManager gm;
 	private void Update()
 	{
 		if (lm.isNight)
@@ -36,6 +29,10 @@ public class EnemySpawner : MonoBehaviour
 			}
 		}
 	}
+	public void ClearPlayers()
+	{
+		players = null;
+	}
 	public void GetPlayers()
 	{
 		players = GameObject.FindGameObjectsWithTag("Player");
@@ -45,7 +42,7 @@ public class EnemySpawner : MonoBehaviour
 		playerAmount = 0;
 		for (int i = 0; i < players.Length; i++)
 		{
-			playerAmount++;
+			playerAmount++;//doe hier nog health check van players of ze levend zijn zo niet doe geen ++
 		}
 		for (int i = 0; i < enemiesForPlayer; i++)
 		{

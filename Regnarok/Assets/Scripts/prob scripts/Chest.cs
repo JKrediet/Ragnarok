@@ -6,7 +6,8 @@ using UnityEngine;
 public class Chest : ProbScript
 {
     private GameObject listHolder;
-
+    public enum ChestType { small=0,medium =1, big =2, golden =3}
+    public ChestType type;
     public int chestRarity;
     
     public void Awake()
@@ -35,7 +36,8 @@ public class Chest : ProbScript
     {
         float randomNum = Random.Range(0.00f, 100.00f);
         int itemRarity = 0;
-        if (chestRarity == 0)
+   
+        if (type==ChestType.small)
         {
             if (randomNum <= 68.5f){//common
                 itemRarity = 0;}
@@ -48,7 +50,7 @@ public class Chest : ProbScript
             else if (randomNum > 99.5f){//mythic
                 itemRarity = 4;}
         }
-        else if (chestRarity == 1)
+        else if (type == ChestType.medium)
         {
             if (randomNum <= 27.5f){//common
                 itemRarity = 0;}
@@ -61,7 +63,7 @@ public class Chest : ProbScript
             else if (randomNum > 97.5f){//mythic
                 itemRarity = 4;}
         }
-        else if (chestRarity == 2)
+        else if (type == ChestType.big)
         {
             if (randomNum <= 24.2f){//common
                 itemRarity = 0;}
@@ -74,7 +76,7 @@ public class Chest : ProbScript
             else if (randomNum > 94){//mythic
                 itemRarity = 4;}
         }
-        else if (chestRarity == 3)
+        else if (type == ChestType.golden)
         {
             if (randomNum <= 5){//common
                 itemRarity = 0;}
