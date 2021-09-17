@@ -62,6 +62,9 @@ public class PlayerController : MonoBehaviour
 
     public int playerBalance;
 
+    public GameObject nameOfPlayer;
+    GameObject localplayerObject;
+
     private void Awake()
     {
         pv = GetComponent<PhotonView>();
@@ -76,14 +79,18 @@ public class PlayerController : MonoBehaviour
             staminaValue = maxStamina;
             staminaLossPerSec = baseStaminaLossPerSec;
             staminaGainedPerSec = baseStaminaGainedPerSec;
+            nameOfPlayer.SetActive(false);
+
+            mayAttack = true;
+            camOriginpos.position = cam.transform.position;
         }
         else
         {
             Destroy(cam.gameObject);
-            enabled = false;
+            nameOfPlayer.SetActive(true);
+            nameOfPlayer.GetComponentInChildren<TextMeshProUGUI>().text = PhotonNetwork.LocalPlayer.NickName;
         }
-        mayAttack = true;
-        camOriginpos.position = cam.transform.position;
+        FindObjectOfType<GameManager>().playerObjectList.Add(gameObject);
     }
     public void RecieveStats(float _damage, float _attackSpeed, float _critChance, float _lifesteal, float _bleedChance, float _healthOnKill, float _movementSpeed)
     {
@@ -97,56 +104,79 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
-        Movement();
-        Gravity();
-        if (!InventoryIsOpen)
+        if (pv.IsMine)
         {
-            Rotation();
-            CheckForInfo();
-        }
-        //andere onzin
-        if (Input.GetButtonDown("Fire1"))
-        {
-            if(!InventoryIsOpen)
+            Movement();
+            Gravity();
+            if (!InventoryIsOpen)
             {
-                if(mayAttack)
+                Rotation();
+                CheckForInfo();
+            }
+            //andere onzin
+            if (Input.GetButtonDown("Fire1"))
+            {
+                if (!InventoryIsOpen)
                 {
-                    mayAttack = false;
-                    Anim_attack();
+                    if (mayAttack)
+                    {
+                        mayAttack = false;
+                        Anim_attack();
+                    }
+                }
+            }
+            if (Input.GetButtonDown("Jump"))
+            {
+                if (groundCheck)
+                {
+                    Jump();
+                }
+            }
+            //check for chestDistance
+            if (lastChest != null)
+            {
+                float distance = Vector3.Distance(transform.position, lastChest.transform.position);
+                if (distance > 5)
+                {
+                    lastChest.CloseChestInventory();
+                    lastChest = null;
+                }
+            }
+            if (lastCratingStation != null)
+            {
+                float distance = Vector3.Distance(transform.position, lastCratingStation.transform.position);
+                if (distance > 5)
+                {
+                    lastCratingStation.CloseChestInventory();
+                    lastCratingStation = null;
                 }
             }
         }
-        if (Input.GetButtonDown("Jump"))
+        else
         {
-            if(groundCheck)
+            if(localplayerObject != null)
             {
-                Jump();
+                nameOfPlayer.transform.LookAt(localplayerObject.transform, transform.up);
             }
-        }
-        //check for chestDistance
-        if(lastChest != null)
-        {
-            float distance = Vector3.Distance(transform.position, lastChest.transform.position);
-            if(distance > 5)
+            else
             {
-                lastChest.CloseChestInventory();
-                lastChest = null;
-            }
-        }
-        if (lastCratingStation != null)
-        {
-            float distance = Vector3.Distance(transform.position, lastCratingStation.transform.position);
-            if (distance > 5)
-            {
-                lastCratingStation.CloseChestInventory();
-                lastCratingStation = null;
+                for (int i = 0; i < FindObjectOfType<GameManager>().playerObjectList.Count; i++)
+                {
+                    if (FindObjectOfType<GameManager>().playerObjectList[i].GetComponent<PhotonView>().IsMine)
+                    {
+                        localplayerObject = FindObjectOfType<GameManager>().playerObjectList[i];
+                    }
+                }
             }
         }
     }
     //apply movement to character
     private void FixedUpdate()
     {
-         ApplyMovement();
+        if (pv.IsMine)
+        {
+            ApplyMovement();
+        }
     }
     void Movement()
     {
@@ -257,83 +287,86 @@ public class PlayerController : MonoBehaviour
     }
     public void Attack()
     {
-        Collider[] thingsHit = Physics.OverlapSphere(attackPos.position, attackRadius);
-
-        //check hit things
-        foreach(Collider hitObject in thingsHit)
+        if (pv.IsMine)
         {
-            RaycastHit _hit;
-            if(Physics.Linecast(attackPos.position, hitObject.ClosestPoint(attackPos.position), out _hit))
-            {
-                Renderer rend = _hit.transform.GetComponent<Renderer>();
-                MeshCollider meshCollider = _hit.collider as MeshCollider;
-                GameObject tempObject = Instantiate(testGraph, hitObject.ClosestPoint(attackPos.position), Quaternion.identity);
-                Destroy(tempObject, 1);
-                if (rend == null || rend.sharedMaterial == null || rend.sharedMaterial.mainTexture == null || meshCollider == null)
-                {
-                    tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", Color.black);
-                }
-                else
-                {
-                    Texture2D tex = rend.material.mainTexture as Texture2D;
-                    Vector2 pixelUV = _hit.textureCoord;
-                    pixelUV.x *= tex.width;
-                    pixelUV.y *= tex.height;
+            Collider[] thingsHit = Physics.OverlapSphere(attackPos.position, attackRadius);
 
-                    Color kleurtje = tex.GetPixel((int)pixelUV.x, (int)pixelUV.y);
-
-                    //particle color
-                    tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", kleurtje);
-                }
-            }
-            //crit
-            float critDamage = 0;
-            bool inflictBleed = false;
-            float roll = Random.Range(0, 100);
-            if (roll < totalCritChance)
+            //check hit things
+            foreach (Collider hitObject in thingsHit)
             {
-                critDamage = totalDamage;
-            }
-            roll = Random.Range(0, 100);
-            if (roll < totalChanceToInflictBleed)
-            {
-                inflictBleed = true;
-            }
-            //actual hit
-            if (hitObject.GetComponent<HitableObject>())
-            {
-                //damage
-                if(heldItem != null)
+                RaycastHit _hit;
+                if (Physics.Linecast(attackPos.position, hitObject.ClosestPoint(attackPos.position), out _hit))
                 {
-                    hitObject.GetComponent<HitableObject>().HitByPlayer(totalDamage + critDamage, gameObject, heldItem.equipment);
-                }
-                else
-                {
-                    hitObject.GetComponent<HitableObject>().HitByPlayer(1, gameObject, 0);
-                }
-            }
-            if(hitObject.GetComponent<EnemieHealth>())
-            {
-                //damage
-                if (heldItem != null)
-                {
-                    hitObject.GetComponent<EnemieHealth>().Health_Damage(totalDamage + critDamage, inflictBleed);
-                    if(totalLifeSteal > 0)
+                    Renderer rend = _hit.transform.GetComponent<Renderer>();
+                    MeshCollider meshCollider = _hit.collider as MeshCollider;
+                    GameObject tempObject = Instantiate(testGraph, hitObject.ClosestPoint(attackPos.position), Quaternion.identity);
+                    Destroy(tempObject, 1);
+                    if (rend == null || rend.sharedMaterial == null || rend.sharedMaterial.mainTexture == null || meshCollider == null)
                     {
-                        float healAmount = (totalDamage + critDamage - hitObject.GetComponent<EnemieHealth>().armor) * (totalLifeSteal / 100);
-                        GetComponent<Health>().Health_Heal(healAmount);
+                        tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", Color.black);
                     }
-                    if(totalHealthOnKill > 0)
+                    else
                     {
-                        if(hitObject.GetComponent<EnemieHealth>().health - (totalDamage + critDamage - hitObject.GetComponent<EnemieHealth>().armor) <= 0)
+                        Texture2D tex = rend.material.mainTexture as Texture2D;
+                        Vector2 pixelUV = _hit.textureCoord;
+                        pixelUV.x *= tex.width;
+                        pixelUV.y *= tex.height;
+
+                        Color kleurtje = tex.GetPixel((int)pixelUV.x, (int)pixelUV.y);
+
+                        //particle color
+                        tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", kleurtje);
+                    }
+                }
+                //crit
+                float critDamage = 0;
+                bool inflictBleed = false;
+                float roll = Random.Range(0, 100);
+                if (roll < totalCritChance)
+                {
+                    critDamage = totalDamage;
+                }
+                roll = Random.Range(0, 100);
+                if (roll < totalChanceToInflictBleed)
+                {
+                    inflictBleed = true;
+                }
+                //actual hit
+                if (hitObject.GetComponent<HitableObject>())
+                {
+                    //damage
+                    if (heldItem != null)
+                    {
+                        hitObject.GetComponent<HitableObject>().HitByPlayer(totalDamage + critDamage, gameObject, heldItem.equipment);
+                    }
+                    else
+                    {
+                        hitObject.GetComponent<HitableObject>().HitByPlayer(1, gameObject, 0);
+                    }
+                }
+                if (hitObject.GetComponent<EnemieHealth>())
+                {
+                    //damage
+                    if (heldItem != null)
+                    {
+                        hitObject.GetComponent<EnemieHealth>().Health_Damage(totalDamage + critDamage, inflictBleed);
+                        if (totalLifeSteal > 0)
                         {
-                            GetComponent<Health>().Health_Heal(totalHealthOnKill);
+                            float healAmount = (totalDamage + critDamage - hitObject.GetComponent<EnemieHealth>().armor) * (totalLifeSteal / 100);
+                            GetComponent<Health>().Health_Heal(healAmount);
+                        }
+                        if (totalHealthOnKill > 0)
+                        {
+                            if (hitObject.GetComponent<EnemieHealth>().health - (totalDamage + critDamage - hitObject.GetComponent<EnemieHealth>().armor) <= 0)
+                            {
+                                GetComponent<Health>().Health_Heal(totalHealthOnKill);
+                            }
                         }
                     }
-                }
-                else
-                {
-                    hitObject.GetComponent<EnemieHealth>().Health_Damage(1, false);
+                    else
+                    {
+                        hitObject.GetComponent<EnemieHealth>().Health_Damage(1, false);
+                    }
                 }
             }
         }
@@ -354,41 +387,44 @@ public class PlayerController : MonoBehaviour
     }
     void CheckForInfo()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (pv.IsMine)
         {
-            RaycastHit _hit;
-            if (Physics.Raycast(cam.transform.position, cam.transform.forward, out _hit, 5))
+            if (Input.GetKeyDown(KeyCode.E))
             {
-                if (_hit.transform.GetComponent<ChestScript>())
+                RaycastHit _hit;
+                if (Physics.Raycast(cam.transform.position, cam.transform.forward, out _hit, 5))
                 {
-                    if (_hit.transform.GetComponent<ChestScript>().canInteract)
+                    if (_hit.transform.GetComponent<ChestScript>())
                     {
-                        if (playerBalance >= _hit.transform.GetComponent<ChestScript>().cost)
+                        if (_hit.transform.GetComponent<ChestScript>().canInteract)
                         {
-                            playerBalance -= _hit.transform.GetComponent<ChestScript>().cost;
-                            _hit.transform.GetComponent<ChestScript>().Interact();
+                            if (playerBalance >= _hit.transform.GetComponent<ChestScript>().cost)
+                            {
+                                playerBalance -= _hit.transform.GetComponent<ChestScript>().cost;
+                                _hit.transform.GetComponent<ChestScript>().Interact();
+                            }
                         }
                     }
-                }
-                else if (_hit.transform.GetComponent<Totem>())
-				{
-                    _hit.transform.GetComponent<Totem>().Interact();
-				}
-                else if(_hit.transform.GetComponent<ChestInventory>())
-                {
-                    GetComponent<Inventory>().OpenActualInventory();
-                    lastChest = _hit.transform.GetComponent<ChestInventory>();
-                    lastChest.OpenChestInventory(GetComponent<CharacterStats>());
-                }
-                else if (_hit.transform.GetComponent<CraftingStation>())
-                {
-                    GetComponent<Inventory>().OpenActualInventory();
-                    lastCratingStation = _hit.transform.GetComponent<CraftingStation>();
-                    lastCratingStation.OpenCratingInventory(GetComponent<CharacterStats>(), GetComponent<Inventory>());
-                }
-                else if (_hit.transform.GetComponent<ItemPickUp>())
-                {
-                    _hit.transform.GetComponent<ItemPickUp>().DropItems();
+                    else if (_hit.transform.GetComponent<Totem>())
+                    {
+                        _hit.transform.GetComponent<Totem>().Interact();
+                    }
+                    else if (_hit.transform.GetComponent<ChestInventory>())
+                    {
+                        GetComponent<Inventory>().OpenActualInventory();
+                        lastChest = _hit.transform.GetComponent<ChestInventory>();
+                        lastChest.OpenChestInventory(GetComponent<CharacterStats>());
+                    }
+                    else if (_hit.transform.GetComponent<CraftingStation>())
+                    {
+                        GetComponent<Inventory>().OpenActualInventory();
+                        lastCratingStation = _hit.transform.GetComponent<CraftingStation>();
+                        lastCratingStation.OpenCratingInventory(GetComponent<CharacterStats>(), GetComponent<Inventory>());
+                    }
+                    else if (_hit.transform.GetComponent<ItemPickUp>())
+                    {
+                        _hit.transform.GetComponent<ItemPickUp>().DropItems();
+                    }
                 }
             }
         }

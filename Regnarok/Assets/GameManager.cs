@@ -28,6 +28,8 @@ public class GameManager : MonoBehaviour
 
     int loopieloop;
 
+    public List<GameObject> playerObjectList;
+
 	private void Start()
 	{
         es = GetComponent<EnemySpawner>();

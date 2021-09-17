@@ -17,6 +17,9 @@ public class Inventory : MonoBehaviour
     [SerializeField] GameObject hotbarIndecator;
     [SerializeField] int allHotbarSlots = 6;
 
+    [SerializeField] GameObject handHolder;
+    GameObject handObject;
+
     bool inventoryEnabled;
     int hotbarLocation;
     private PhotonView pv;
@@ -243,12 +246,28 @@ public class Inventory : MonoBehaviour
         if(hotBarSlots[_location].item != null)
         {
             controller.heldItem = hotBarSlots[_location].item;
+            if(handObject != null)
+            {
+                PhotonNetwork.Destroy(handObject);
+            }
+            ShowItemInHand(controller.heldItem.itemName);
             character.CalculateOffensiveStats();
         }
         else
         {
+            if (handObject != null)
+            {
+                PhotonNetwork.Destroy(handObject);
+            }
             controller.heldItem = null;
         }
+    }
+    void ShowItemInHand(string nameOfItem)
+    {
+        handObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", nameOfItem), handHolder.transform.position, Quaternion.identity);
+        handObject.GetComponent<WorldItem>().enabled = false;
+        handObject.GetComponent<Rigidbody>().useGravity = false;
+        handObject.GetComponent<Collider>().enabled = false;
     }
     void OpenInventory()
     {
