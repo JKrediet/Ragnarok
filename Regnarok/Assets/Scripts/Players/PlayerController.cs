@@ -294,78 +294,81 @@ public class PlayerController : MonoBehaviour
             //check hit things
             foreach (Collider hitObject in thingsHit)
             {
-                RaycastHit _hit;
-                if (Physics.Linecast(attackPos.position, hitObject.ClosestPoint(attackPos.position), out _hit))
+                if (hitObject.gameObject != gameObject)
                 {
-                    Renderer rend = _hit.transform.GetComponent<Renderer>();
-                    MeshCollider meshCollider = _hit.collider as MeshCollider;
-                    GameObject tempObject = Instantiate(testGraph, hitObject.ClosestPoint(attackPos.position), Quaternion.identity);
-                    Destroy(tempObject, 1);
-                    if (rend == null || rend.sharedMaterial == null || rend.sharedMaterial.mainTexture == null || meshCollider == null)
+                    RaycastHit _hit;
+                    if (Physics.Linecast(attackPos.position, hitObject.ClosestPoint(attackPos.position), out _hit))
                     {
-                        tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", Color.black);
-                    }
-                    else
-                    {
-                        Texture2D tex = rend.material.mainTexture as Texture2D;
-                        Vector2 pixelUV = _hit.textureCoord;
-                        pixelUV.x *= tex.width;
-                        pixelUV.y *= tex.height;
-
-                        Color kleurtje = tex.GetPixel((int)pixelUV.x, (int)pixelUV.y);
-
-                        //particle color
-                        tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", kleurtje);
-                    }
-                }
-                //crit
-                float critDamage = 0;
-                bool inflictBleed = false;
-                float roll = Random.Range(0, 100);
-                if (roll < totalCritChance)
-                {
-                    critDamage = totalDamage;
-                }
-                roll = Random.Range(0, 100);
-                if (roll < totalChanceToInflictBleed)
-                {
-                    inflictBleed = true;
-                }
-                //actual hit
-                if (hitObject.GetComponent<HitableObject>())
-                {
-                    //damage
-                    if (heldItem != null)
-                    {
-                        hitObject.GetComponent<HitableObject>().HitByPlayer(totalDamage + critDamage, gameObject, heldItem.equipment);
-                    }
-                    else
-                    {
-                        hitObject.GetComponent<HitableObject>().HitByPlayer(1, gameObject, 0);
-                    }
-                }
-                if (hitObject.GetComponent<EnemieHealth>())
-                {
-                    //damage
-                    if (heldItem != null)
-                    {
-                        hitObject.GetComponent<EnemieHealth>().Health_Damage(totalDamage + critDamage, inflictBleed);
-                        if (totalLifeSteal > 0)
+                        Renderer rend = _hit.transform.GetComponent<Renderer>();
+                        MeshCollider meshCollider = _hit.collider as MeshCollider;
+                        GameObject tempObject = Instantiate(testGraph, hitObject.ClosestPoint(attackPos.position), Quaternion.identity);
+                        Destroy(tempObject, 1);
+                        if (rend == null || rend.sharedMaterial == null || rend.sharedMaterial.mainTexture == null || meshCollider == null)
                         {
-                            float healAmount = (totalDamage + critDamage - hitObject.GetComponent<EnemieHealth>().armor) * (totalLifeSteal / 100);
-                            GetComponent<Health>().Health_Heal(healAmount);
+                            tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", Color.black);
                         }
-                        if (totalHealthOnKill > 0)
+                        else
                         {
-                            if (hitObject.GetComponent<EnemieHealth>().health - (totalDamage + critDamage - hitObject.GetComponent<EnemieHealth>().armor) <= 0)
+                            Texture2D tex = rend.material.mainTexture as Texture2D;
+                            Vector2 pixelUV = _hit.textureCoord;
+                            pixelUV.x *= tex.width;
+                            pixelUV.y *= tex.height;
+
+                            Color kleurtje = tex.GetPixel((int)pixelUV.x, (int)pixelUV.y);
+
+                            //particle color
+                            tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", kleurtje);
+                        }
+                    }
+                    //crit
+                    float critDamage = 0;
+                    bool inflictBleed = false;
+                    float roll = Random.Range(0, 100);
+                    if (roll < totalCritChance)
+                    {
+                        critDamage = totalDamage;
+                    }
+                    roll = Random.Range(0, 100);
+                    if (roll < totalChanceToInflictBleed)
+                    {
+                        inflictBleed = true;
+                    }
+                    //actual hit
+                    if (hitObject.GetComponent<HitableObject>())
+                    {
+                        //damage
+                        if (heldItem != null)
+                        {
+                            hitObject.GetComponent<HitableObject>().HitByPlayer(totalDamage + critDamage, gameObject, heldItem.equipment);
+                        }
+                        else
+                        {
+                            hitObject.GetComponent<HitableObject>().HitByPlayer(1, gameObject, 0);
+                        }
+                    }
+                    if (hitObject.GetComponent<EnemieHealth>())
+                    {
+                        //damage
+                        if (heldItem != null)
+                        {
+                            hitObject.GetComponent<EnemieHealth>().Health_Damage(totalDamage + critDamage, inflictBleed);
+                            if (totalLifeSteal > 0)
                             {
-                                GetComponent<Health>().Health_Heal(totalHealthOnKill);
+                                float healAmount = (totalDamage + critDamage - hitObject.GetComponent<EnemieHealth>().armor) * (totalLifeSteal / 100);
+                                GetComponent<Health>().Health_Heal(healAmount);
+                            }
+                            if (totalHealthOnKill > 0)
+                            {
+                                if (hitObject.GetComponent<EnemieHealth>().health - (totalDamage + critDamage - hitObject.GetComponent<EnemieHealth>().armor) <= 0)
+                                {
+                                    GetComponent<Health>().Health_Heal(totalHealthOnKill);
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        hitObject.GetComponent<EnemieHealth>().Health_Damage(1, false);
+                        else
+                        {
+                            hitObject.GetComponent<EnemieHealth>().Health_Damage(1, false);
+                        }
                     }
                 }
             }
