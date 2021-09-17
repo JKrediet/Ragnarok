@@ -50,14 +50,14 @@ public class GameManager : MonoBehaviour
         isDoingNight = true;
         days++;
         ScalingLeJorn();
-        es.SpawnEnemies(scalingAmount);
+        es.SpawnEnemies(ScalingLeJorn());
         yield return new WaitForSeconds(timeForNightToEnd);
         scalingAmount = 1;
         isDoingNight = false;
     }
-    public void ScalingLeJorn()
+    public float ScalingLeJorn()
 	{
-        scalingAmount = scalingIncreaseAmount * days;
+        return scalingAmount = scalingIncreaseAmount * days;
 	}
     public void SpawnPlayers()
 	{

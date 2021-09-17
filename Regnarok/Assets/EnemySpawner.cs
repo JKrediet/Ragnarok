@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using System.IO;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -12,11 +13,28 @@ public class EnemySpawner : MonoBehaviour
 	public int playerAmount;
 	public Vector3 spawnOffset;
 	public LayerMask groundLayer;
-	public GameObject testEnemie;
+	public EnemyList enemielist;
+	public List<GameObject> enemies;
 	private GameObject[] players;
+	private PhotonView pv;
+	private LightingManager lm;
+	private GameManager gm;
 	private void Start()
 	{
-		Invoke("GetPlayers",4);
+		Invoke("GetPlayers", 4);
+		pv.GetComponent<PhotonView>();
+		lm.GetComponent<LightingManager>();
+		gm.GetComponent<GameManager>();
+	}
+	private void Update()
+	{
+		if (lm.isNight)
+		{
+			if(enemies.Count< enemiesForPlayer * players.Length * gm.days)
+			{
+				SpawnEnemies(gm.ScalingLeJorn());
+			}
+		}
 	}
 	public void GetPlayers()
 	{
@@ -46,10 +64,17 @@ public class EnemySpawner : MonoBehaviour
 				}
 				else
 				{
-					Instantiate(testEnemie,spawnPos, Quaternion.identity);
+					int random = Random.Range(0, enemielist.enemieList.Count - 1);
+					pv.RPC("Spawn", RpcTarget.MasterClient, spawnPos+spawnOffset, random);
 				}
 			}
 		}
+	}
+	[PunRPC]
+	public void Spawn(Vector3 spawnPos,int i)
+	{
+		GameObject spawnedEnemie = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", enemielist.enemieList[i]), spawnPos, Quaternion.identity);
+		enemies.Add(spawnedEnemie);
 	}
 	public bool CheckDistance(float distance)
 	{
