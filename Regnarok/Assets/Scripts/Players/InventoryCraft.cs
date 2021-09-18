@@ -80,40 +80,26 @@ public class InventoryCraft : MonoBehaviour
         {
             for (int i = 0; i < craft.Count; i++)
             {
-                List<int> checkList = new List<int>();
                 for (int z = 0; z < itemsInInventory.Count; z++)
                 {
-                    checkList.Clear();
+                    bool gotItem = false;
                     for (int u = 0; u < craft[i].itemsNeeded.Count; u++)
                     {
-                        checkList.Add(u);
-                        if (itemsInInventory[z].itemName != craft[i].itemsNeeded[u].itemNeeded)
+                        if (!gotItem)
                         {
-                            continue;
-                        }
-                        else if (itemsInInventory[z].itemAmount >= craft[i].itemsNeeded[u].amountNeeded)
-                        {
-                            checkList[u] = u;
-                        }
-                        else
-                        {
-                            checkList[u] = -1;
-                        }
-                        if (checkList[u] != u)
-                        {
-                            continue;
+                            if (itemsInInventory[z].itemName == craft[i].itemsNeeded[u].itemNeeded)
+                            {
+                                craftThis = craft[i];
+
+                                slots[i].recipe = CreateRecipe();
+                                gotItem = true;
+                            }
+                            else
+                            {
+                                slots[i].recipe = null;
+                            }
                         }
                     }
-                }
-                if (checkList[i] == i)
-                {
-                    craftThis = craft[i];
-
-                    slots[i].recipe = CreateRecipe();
-                }
-                else
-                {
-                    slots[i].recipe = null;
                 }
             }
         }
