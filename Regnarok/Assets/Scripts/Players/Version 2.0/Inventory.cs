@@ -13,7 +13,7 @@ public class Inventory : MonoBehaviour
     [SerializeField] Transform itemsParent, hotbarParent;
     public ItemSlot[] itemSlots, hotBarSlots;
     [Space]
-    [SerializeField] GameObject inventoryPanel;
+    [SerializeField] GameObject inventoryPanel, craftPanel;
     [SerializeField] GameObject hotbarIndecator;
     [SerializeField] int allHotbarSlots = 6;
 
@@ -26,6 +26,7 @@ public class Inventory : MonoBehaviour
 
     CharacterStats character;
     PlayerController controller;
+    InventoryCraft craftingthingy;
 
     private KeyCode[] keyCodes = {
          KeyCode.Alpha1,
@@ -42,6 +43,8 @@ public class Inventory : MonoBehaviour
         character = GetComponent<CharacterStats>();
         controller = GetComponent<PlayerController>();
         inventoryPanel.SetActive(false);
+        craftPanel.SetActive(false);
+        craftingthingy = GetComponent<InventoryCraft>();
         if (pv.IsMine)
         {
             return;
@@ -271,13 +274,18 @@ public class Inventory : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            OpenActualInventory();
+            OpenActualInventory(false);
         }
     }
-    public void OpenActualInventory()
+    public void OpenActualInventory(bool closeCraft)
     {
         inventoryEnabled = !inventoryEnabled;
         inventoryPanel.SetActive(inventoryEnabled);
+        craftingthingy.CanCraft();
+        if (!closeCraft)
+        {
+            craftPanel.SetActive(inventoryEnabled);
+        }
         GetComponent<PlayerController>().LockCamera();
         if(GetComponent<PlayerController>().lastChest != null)
         {

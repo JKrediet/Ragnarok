@@ -339,11 +339,11 @@ public class PlayerController : MonoBehaviour
                         //damage
                         if (heldItem != null)
                         {
-                            hitObject.GetComponent<HitableObject>().HitByPlayer(totalDamage + critDamage, heldItem.equipment);
+                            hitObject.GetComponent<HitableObject>().TakeDamage(totalDamage + critDamage, heldItem.equipment);
                         }
                         else
                         {
-                            hitObject.GetComponent<HitableObject>().HitByPlayer(1, 0);
+                            hitObject.GetComponent<HitableObject>().TakeDamage(1, 0);
                         }
                     }
                     if (hitObject.GetComponent<EnemieHealth>())
@@ -355,13 +355,13 @@ public class PlayerController : MonoBehaviour
                             if (totalLifeSteal > 0)
                             {
                                 float healAmount = (totalDamage + critDamage - hitObject.GetComponent<EnemieHealth>().armor) * (totalLifeSteal / 100);
-                                GetComponent<Health>().Health_Heal(healAmount);
+                                GetComponent<Health>().TakeHeal(healAmount);
                             }
                             if (totalHealthOnKill > 0)
                             {
                                 if (hitObject.GetComponent<EnemieHealth>().health - (totalDamage + critDamage - hitObject.GetComponent<EnemieHealth>().armor) <= 0)
                                 {
-                                    GetComponent<Health>().Health_Heal(totalHealthOnKill);
+                                    GetComponent<Health>().TakeHeal(totalHealthOnKill);
                                 }
                             }
                         }
@@ -414,13 +414,13 @@ public class PlayerController : MonoBehaviour
                     }
                     else if (_hit.transform.GetComponent<ChestInventory>())
                     {
-                        GetComponent<Inventory>().OpenActualInventory();
+                        GetComponent<Inventory>().OpenActualInventory(true);
                         lastChest = _hit.transform.GetComponent<ChestInventory>();
                         lastChest.OpenChestInventory(GetComponent<CharacterStats>());
                     }
                     else if (_hit.transform.GetComponent<CraftingStation>())
                     {
-                        GetComponent<Inventory>().OpenActualInventory();
+                        GetComponent<Inventory>().OpenActualInventory(true);
                         lastCratingStation = _hit.transform.GetComponent<CraftingStation>();
                         lastCratingStation.OpenCratingInventory(GetComponent<CharacterStats>(), GetComponent<Inventory>());
                     }

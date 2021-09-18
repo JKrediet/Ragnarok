@@ -12,11 +12,14 @@ public class HitableObject : MonoBehaviour
     [SerializeField] string[] dropItemName;
     protected Rigidbody rb;
 
+    GameManager manager;
+
     protected void Awake()
     {
         rb = GetComponent<Rigidbody>();
         rb.isKinematic = true;
         rb.useGravity = false;
+        manager = FindObjectOfType<GameManager>();
     }
     protected void Start()
     {
@@ -24,33 +27,34 @@ public class HitableObject : MonoBehaviour
         maxHealth = health;
     }
     public virtual void HitByPlayer(float _damage, EquipmentType itemType)
-    { 
-        if (itemType == itemTypeNeeded)
+    {
+        if (health > 0)
         {
-            if (health > 0)
+            if (itemType == itemTypeNeeded)
             {
-                health = Mathf.Clamp(health - _damage, 1, maxHealth);
+
+                health = Mathf.Clamp(health - _damage, 0, maxHealth);
             }
-        }
-        else
-        {
-            health = Mathf.Clamp(health - 1, 1, maxHealth);
-        }
-        if (health == 0)
-        {
-            //items
-            DropItems();
+            else
+            {
+                health = Mathf.Clamp(health - 1, 0, maxHealth);
+            }
+            if (health == 0)
+            {
+                //items
+                DropItems();
+            }
         }
     }
     protected virtual void DropItems()
     {
         for (int i = 0; i < dropItemName.Length; i++)
         {
-            FindObjectOfType<GameManager>().DropItems(dropItemName[i], transform.position, Quaternion.identity, Random.Range((int)minDrop, (int)maxDrop), itemSerialNumber);
+            manager.DropItems(dropItemName[i], transform.position, Quaternion.identity, Random.Range((int)minDrop, (int)maxDrop), itemSerialNumber);
         }
     }
     public void TakeDamage(float _damage, EquipmentType _itemType)
     {
-        FindObjectOfType<GameManager>().SincHealthOfHitableObject(itemSerialNumber, _damage, _itemType);
+        manager.SincHealthOfHitableObject(itemSerialNumber, _damage, _itemType);
     }
 }

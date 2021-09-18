@@ -1,31 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 using UnityEngine.UI;
 
-[Serializable]
-public struct Result
-{
-    public string craftResult;
-    public int craftAmount;
-    public List<ItemAmount> itemsNeeded;
-}
-[Serializable]
-public struct ItemAmount
-{
-    public string itemNeeded;
-    [Range(1, 999)]
-    public int amountNeeded;
-}
-
-public class CraftingStation : MonoBehaviour
+public class InventoryCraft : MonoBehaviour
 {
     public List<Result> craft;
     [Space]
-    [SerializeField] GameObject uipanel, contentHolder;
-    CharacterStats character;
-    Inventory inventory;
+    [SerializeField] GameObject contentHolder;
+    [SerializeField] Inventory inventory;
     [SerializeField] List<Item> itemsInInventory;
     Result craftThis;
     Result selectedCraft;
@@ -34,33 +17,6 @@ public class CraftingStation : MonoBehaviour
 
     public List<RecipeHolder> slots;
 
-    private void OnValidate()
-    {
-        slots.Clear();
-        if (contentHolder != null)
-        {
-            foreach (Transform item in contentHolder.transform)
-            {
-                slots.Add(item.GetComponent<RecipeHolder>());
-            }
-        }
-        else
-        {
-            slots.Clear();
-        }
-        foreach (RecipeHolder holder in slots)
-        {
-            if (holder.recipe == null)
-            {
-                holder.gameObject.SetActive(false);
-            }
-            else
-            {
-                holder.gameObject.SetActive(true);
-                holder.UpdateUi();
-            }
-        }
-    }
     void GetSlots()
     {
         slots.Clear();
@@ -115,40 +71,40 @@ public class CraftingStation : MonoBehaviour
         GetSlots();
         for (int i = 0; i < inventory.itemSlots.Length; i++)
         {
-            if(inventory.itemSlots[i].item != null)
+            if (inventory.itemSlots[i].item != null)
             {
                 itemsInInventory.Add(inventory.itemSlots[i].item);
             }
         }
-        for (int i = 0; i < craft.Count; i++)
+        if(itemsInInventory.Count > 0)
         {
-            List<int> checkList = new List<int>();
-            for (int z = 0; z < itemsInInventory.Count; z++)
+            for (int i = 0; i < craft.Count; i++)
             {
-                checkList.Clear();
-                for (int u = 0; u < craft[i].itemsNeeded.Count; u++)
+                List<int> checkList = new List<int>();
+                for (int z = 0; z < itemsInInventory.Count; z++)
                 {
-                    checkList.Add(u);
-                    if(itemsInInventory[z].itemName != craft[i].itemsNeeded[u].itemNeeded)
+                    checkList.Clear();
+                    for (int u = 0; u < craft[i].itemsNeeded.Count; u++)
                     {
-                        continue;
-                    }
-                    else if(itemsInInventory[z].itemAmount >= craft[i].itemsNeeded[u].amountNeeded)
-                    {
-                        checkList[u] = u;
-                    }
-                    else
-                    {
-                        checkList[u] = -1;
-                    }
-                    if (checkList[u] != u)
-                    {
-                        continue;
+                        checkList.Add(u);
+                        if (itemsInInventory[z].itemName != craft[i].itemsNeeded[u].itemNeeded)
+                        {
+                            continue;
+                        }
+                        else if (itemsInInventory[z].itemAmount >= craft[i].itemsNeeded[u].amountNeeded)
+                        {
+                            checkList[u] = u;
+                        }
+                        else
+                        {
+                            checkList[u] = -1;
+                        }
+                        if (checkList[u] != u)
+                        {
+                            continue;
+                        }
                     }
                 }
-            }
-            if (slots.Count > 0)
-            {
                 if (checkList[i] == i)
                 {
                     craftThis = craft[i];
@@ -163,7 +119,7 @@ public class CraftingStation : MonoBehaviour
         }
         foreach (RecipeHolder holder in slots)
         {
-            if(holder.recipe == null)
+            if (holder.recipe == null)
             {
                 holder.gameObject.SetActive(false);
             }
@@ -187,11 +143,11 @@ public class CraftingStation : MonoBehaviour
                     string neededNameItem = selectedCraft.itemsNeeded[y].itemNeeded;
                     int neededAmountItem = selectedCraft.itemsNeeded[y].amountNeeded;
 
-                    if(inventory.itemSlots[i].item == null)
+                    if (inventory.itemSlots[i].item == null)
                     {
                         continue;
                     }
-                    else if(inventory.itemSlots[i].item.itemName != neededNameItem)
+                    else if (inventory.itemSlots[i].item.itemName != neededNameItem)
                     {
                         continue;
                     }
@@ -202,6 +158,7 @@ public class CraftingStation : MonoBehaviour
                     else
                     {
                         print("not enough items!: " + neededNameItem + " " + neededAmountItem);
+                        return;
                     }
                 }
             }
@@ -211,22 +168,8 @@ public class CraftingStation : MonoBehaviour
     void FinishCrafting()
     {
         inventory.RefreshUI();
-        character.CreateItem(ItemList.SelectItem(selectedCraft.craftResult).name, 1, ItemList.SelectItem(selectedCraft.craftResult).sprite, ItemList.SelectItem(selectedCraft.craftResult).type, ItemList.SelectItem(selectedCraft.craftResult).maxStackSize);
+        GetComponent<CharacterStats>().CreateItem(ItemList.SelectItem(selectedCraft.craftResult).name, 1, ItemList.SelectItem(selectedCraft.craftResult).sprite, ItemList.SelectItem(selectedCraft.craftResult).type, ItemList.SelectItem(selectedCraft.craftResult).maxStackSize);
         inventory.RefreshUI();
         selectedCraft = default;
-    }
-
-    public void OpenCratingInventory(CharacterStats charr, Inventory inv)
-    {
-        uipanel.gameObject.SetActive(true);
-        character = charr;
-        inventory = inv;
-
-        CanCraft();
-    }
-    public void CloseChestInventory()
-    {
-        uipanel.gameObject.SetActive(false);
-        character = null;
     }
 }
