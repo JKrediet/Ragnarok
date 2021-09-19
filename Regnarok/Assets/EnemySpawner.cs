@@ -23,9 +23,16 @@ public class EnemySpawner : MonoBehaviour
 	{
 		if (lm.isNight)
 		{
-			if(enemies.Count< enemiesForPlayer * players.Length * gm.days)
+			if (enemies.Count < enemiesForPlayer * players.Length * gm.days)
 			{
 				SpawnEnemies(gm.ScalingLeJorn());
+			}
+		}
+		else
+		{
+			if (enemies.Count != 0)
+			{
+				enemies = null;
 			}
 		}
 	}
