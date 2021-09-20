@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class HitableObject : MonoBehaviour
 {
@@ -42,7 +43,10 @@ public class HitableObject : MonoBehaviour
             if (health == 0)
             {
                 //items
-                DropItems();
+                if(PhotonNetwork.IsMasterClient)
+                {
+                    DropItems();
+                }
             }
         }
     }

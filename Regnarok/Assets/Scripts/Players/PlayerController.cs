@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine.Experimental.VFX;
 using UnityEngine.VFX;
+using System.IO;
 
 public class PlayerController : MonoBehaviour
 {
@@ -383,7 +384,7 @@ public class PlayerController : MonoBehaviour
             }
             if (spawnThis != default)
             {
-                Instantiate(spawnThis, ghostPosition, ghostRotation);
+                PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "placeAbleItems", "ActualItems", spawnThis.name), ghostPosition, ghostRotation);
             }
             else
             {
