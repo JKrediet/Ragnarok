@@ -17,17 +17,17 @@ public class Item : ScriptableObject
     [Space]
     [SerializeField] public int foodLifeRestore;
     [Space]
-    [HideInInspector] public int damageBonus;
-    [HideInInspector] public int armorBonus;
-    [HideInInspector] public int attackSpeedBonus;
-    [HideInInspector] public int critChanceBonus;
-    [HideInInspector] public int healthBonus;
+    [HideInInspector] public float damageBonus;
+    [HideInInspector] public float armorBonus;
+    [HideInInspector] public float attackSpeedBonus;
+    [HideInInspector] public float critChanceBonus;
+    [HideInInspector] public float healthBonus;
     [Space]
-    [HideInInspector] public int damagePrecentBonus;
-    [HideInInspector] public int armorPrecentBonus;
-    [HideInInspector] public int attackSpeedPrecentBonus;
-    [HideInInspector] public int critChancePrecentBonus;
-    [HideInInspector] public int healthPrecentBonus;
+    [HideInInspector] public float damagePrecentBonus;
+    [HideInInspector] public float armorPrecentBonus;
+    [HideInInspector] public float attackSpeedPrecentBonus;
+    [HideInInspector] public float critChancePrecentBonus;
+    [HideInInspector] public float healthPrecentBonus;
     [Space]
     public EquipmentType equipment;
 

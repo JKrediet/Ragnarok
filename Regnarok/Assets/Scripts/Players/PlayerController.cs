@@ -68,6 +68,7 @@ public class PlayerController : MonoBehaviour
 
     public bool placementCheck;
     float placementRotation;
+    public Vector3 rotationddd;
     GameObject ghostplacement;
     [SerializeField] List<GameObject> ghostList;
     [SerializeField] List<GameObject> actualItemList;
@@ -135,6 +136,7 @@ public class PlayerController : MonoBehaviour
                         {
                             mayAttack = false;
                             Anim_attack();
+                            StartCoroutine("AttackStuckFix");
                         }
                     }
                     else
@@ -349,31 +351,42 @@ public class PlayerController : MonoBehaviour
             {
                 if (Input.GetButtonDown("Fire2"))
                 {
-                    placementRotation = 0;
-                    if (ghostplacement != null)
+                    if(!placementCheck)
                     {
-                        Destroy(ghostplacement);
-                    }
-                    placementCheck = true;
-                    if (placementCheck)
-                    {
-                        GameObject spawnThis = default;
-                        for (int i = 0; i < ghostList.Count; i++)
+                        placementRotation = 0;
+                        if (ghostplacement != null)
                         {
-                            if (heldItem.itemName == ghostList[i].name)
+                            Destroy(ghostplacement);
+                        }
+                        placementCheck = true;
+                        if (placementCheck)
+                        {
+                            GameObject spawnThis = default;
+                            for (int i = 0; i < ghostList.Count; i++)
                             {
-                                spawnThis = ghostList[i];
+                                if (heldItem.itemName == ghostList[i].name)
+                                {
+                                    spawnThis = ghostList[i];
+                                }
+                            }
+                            if (spawnThis != default)
+                            {
+                                ghostplacement = Instantiate(spawnThis);
+                            }
+                            else
+                            {
+                                placementCheck = false;
+                                print("item not found in ghostlist");
+                                return;
                             }
                         }
-                        if (spawnThis != default)
+                    }
+                    else
+                    {
+                        placementCheck = false;
+                        if (ghostplacement != null)
                         {
-                            ghostplacement = Instantiate(spawnThis);
-                        }
-                        else
-                        {
-                            placementCheck = false;
-                            print("item not found in ghostlist");
-                            return;
+                            Destroy(ghostplacement);
                         }
                     }
                 }
@@ -381,13 +394,14 @@ public class PlayerController : MonoBehaviour
                 {
                     if (Input.mouseScrollDelta.y > 0 || Input.mouseScrollDelta.y < 0)
                     {
-                        //placementRotation -= Input.mouseScrollDelta.y * 10;
+                        placementRotation -= Input.mouseScrollDelta.y * 10;
                     }
                     RaycastHit _hit;
+                    rotationddd.y = placementRotation;
                     if (Physics.Raycast(cam.transform.position, cam.transform.forward, out _hit))
                     {
                         ghostplacement.transform.position = _hit.point;
-                        ghostplacement.transform.rotation = Quaternion.LookRotation(_hit.normal + new Vector3(-80, placementRotation, 0));
+                        ghostplacement.transform.rotation = Quaternion.Euler(rotationddd);
                     }
                 }
             }
@@ -408,7 +422,7 @@ public class PlayerController : MonoBehaviour
         if (Physics.Raycast(cam.transform.position, cam.transform.forward, out _hit))
         {
             Vector3 ghostPosition = _hit.point;
-            Quaternion ghostRotation = Quaternion.LookRotation(_hit.normal + new Vector3(-80, placementRotation, 0));
+            Quaternion ghostRotation = Quaternion.Euler(rotationddd);
 
             for (int i = 0; i < actualItemList.Count; i++)
             {
@@ -529,6 +543,12 @@ public class PlayerController : MonoBehaviour
         mayAttack = true;
         animController.SetInteger("Attack", 0);
         animController.speed = 1;
+    }
+    IEnumerator AttackStuckFix()
+    {
+
+        yield return new WaitForSeconds(totalAttackSpeed);
+        mayAttack = true;
     }
     public void LockCamera()
     {

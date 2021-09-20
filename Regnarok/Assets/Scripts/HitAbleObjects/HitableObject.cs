@@ -54,7 +54,7 @@ public class HitableObject : MonoBehaviour
     {
         for (int i = 0; i < dropItemName.Length; i++)
         {
-            manager.DropItems(dropItemName[i], transform.position, Quaternion.identity, Random.Range((int)minDrop, (int)maxDrop), itemSerialNumber);
+            manager.DropItems(dropItemName[i], transform.position, Quaternion.identity, Random.Range((int)minDrop, (int)maxDrop++), itemSerialNumber);
         }
     }
     public void TakeDamage(float _damage, EquipmentType _itemType)

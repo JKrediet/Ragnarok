@@ -120,35 +120,38 @@ public class InventoryCraft : MonoBehaviour
     {
         craftThisSprite.gameObject.SetActive(false);
         //remove needed items
-        if (selectedCraft.craftResult.Length > 0)
+        if (selectedCraft.craftAmount > 0)
         {
-            for (int i = 0; i < inventory.itemSlots.Length; i++)
+            if (selectedCraft.craftResult.Length > 0)
             {
-                for (int y = 0; y < selectedCraft.itemsNeeded.Count; y++)
+                for (int i = 0; i < inventory.itemSlots.Length; i++)
                 {
-                    string neededNameItem = selectedCraft.itemsNeeded[y].itemNeeded;
-                    int neededAmountItem = selectedCraft.itemsNeeded[y].amountNeeded;
+                    for (int y = 0; y < selectedCraft.itemsNeeded.Count; y++)
+                    {
+                        string neededNameItem = selectedCraft.itemsNeeded[y].itemNeeded;
+                        int neededAmountItem = selectedCraft.itemsNeeded[y].amountNeeded;
 
-                    if (inventory.itemSlots[i].item == null)
-                    {
-                        continue;
-                    }
-                    else if (inventory.itemSlots[i].item.itemName != neededNameItem)
-                    {
-                        continue;
-                    }
-                    else if (inventory.itemSlots[i].item.itemAmount >= neededAmountItem)
-                    {
-                        inventory.itemSlots[i].item.itemAmount -= neededAmountItem;
-                    }
-                    else
-                    {
-                        print("not enough items!: " + neededNameItem + " " + neededAmountItem);
-                        return;
+                        if (inventory.itemSlots[i].item == null)
+                        {
+                            continue;
+                        }
+                        else if (inventory.itemSlots[i].item.itemName != neededNameItem)
+                        {
+                            continue;
+                        }
+                        else if (inventory.itemSlots[i].item.itemAmount >= neededAmountItem)
+                        {
+                            inventory.itemSlots[i].item.itemAmount -= neededAmountItem;
+                        }
+                        else
+                        {
+                            print("not enough items!: " + neededNameItem + " " + neededAmountItem);
+                            return;
+                        }
                     }
                 }
+                FinishCrafting();
             }
-            FinishCrafting();
         }
     }
     void FinishCrafting()

@@ -16,8 +16,8 @@ public struct ItemContent
     [Space]
     [Range(1, 100)]
     public int baseDamage;
-    [Range(100, 1000)]
-    public int baseAttackSpeed;
+    [Range(0.5f, 5f)]
+    public float baseAttackSpeed;
     [Range(5, 100)]
     public int baseCritChance;
     [Range(1, 100)]

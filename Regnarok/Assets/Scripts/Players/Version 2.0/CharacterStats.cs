@@ -99,8 +99,8 @@ public class CharacterStats : MonoBehaviour
             if (item.equipment == EquipmentType.axe || item.equipment == EquipmentType.pickaxe || item.equipment == EquipmentType.weapon)
             {
                 endDamage = (BaseDamage + addedDamage + item.damageBonus) * ((precentAddedDamage + item.damagePrecentBonus) / 100 + 1);
-                float tempAttackSpeed = (baseAttackSpeed + addedAttackSpeed + item.attackSpeedBonus) * ((precentAddedAttackSpeed + item.attackSpeedPrecentBonus) / 100 + 1);
-                endAttackSpeed = tempAttackSpeed / (tempAttackSpeed * tempAttackSpeed);
+                endAttackSpeed = (baseAttackSpeed + addedAttackSpeed + item.attackSpeedBonus) * ((precentAddedAttackSpeed + item.attackSpeedPrecentBonus) / 100 + 1);
+                //endAttackSpeed = tempAttackSpeed / (tempAttackSpeed * tempAttackSpeed);
                 endCritChance = (baseCritChance + addedCritChance + item.critChanceBonus) * ((precentAddedCritChance + item.critChancePrecentBonus) / 100 + 1);
             }
             else
