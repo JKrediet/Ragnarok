@@ -40,13 +40,13 @@ public class HitableObject : MonoBehaviour
             {
                 health = Mathf.Clamp(health - 1, 0, maxHealth);
             }
-            if (health == 0)
+        }
+        if (health == 0)
+        {
+            //items
+            if (PhotonNetwork.IsMasterClient)
             {
-                //items
-                if(PhotonNetwork.IsMasterClient)
-                {
-                    DropItems();
-                }
+                DropItems();
             }
         }
     }
@@ -59,7 +59,6 @@ public class HitableObject : MonoBehaviour
     }
     public void TakeDamage(float _damage, EquipmentType _itemType)
     {
-        print(1);
         manager.SincHealthOfHitableObject(itemSerialNumber, _damage, _itemType);
     }
 }

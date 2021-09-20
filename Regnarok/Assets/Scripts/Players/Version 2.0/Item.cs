@@ -15,6 +15,8 @@ public class Item : ScriptableObject
     public int itemAmount, maxStack;
 
     [Space]
+    [SerializeField] public int foodLifeRestore;
+    [Space]
     [HideInInspector] public int damageBonus;
     [HideInInspector] public int armorBonus;
     [HideInInspector] public int attackSpeedBonus;

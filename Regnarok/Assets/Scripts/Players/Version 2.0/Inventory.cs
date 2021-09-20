@@ -68,16 +68,6 @@ public class Inventory : MonoBehaviour
             hotBarSlots[i].inv = this;
         }
     }
-
-    private void OnValidate()
-    {
-        if (itemsParent != null)
-        {
-            itemSlots = itemsParent.GetComponentsInChildren<ItemSlot>();
-            hotBarSlots = hotbarParent.GetComponentsInChildren<ItemSlot>();
-        }
-        RefreshUI();
-    }
     private void Update() //<----------------------------- update
     {
         OpenInventory();
@@ -131,6 +121,7 @@ public class Inventory : MonoBehaviour
                 hotBarSlots[i].stackAmountText.text = "";
             }
         }
+        SelectItemInHotBar(hotbarLocation);
     }
     //for world items
     public void AddItem(Item item)
@@ -282,6 +273,7 @@ public class Inventory : MonoBehaviour
     }
     public void OpenActualInventory(bool closeCraft)
     {
+        SelectItemInHotBar(hotbarLocation);
         inventoryEnabled = !inventoryEnabled;
         inventoryPanel.SetActive(inventoryEnabled);
         craftingthingy.CanCraft();
@@ -323,5 +315,6 @@ public class Inventory : MonoBehaviour
         GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", item.itemName), transform.position + transform.forward * 2, Quaternion.identity);
         droppedItem.GetComponent<Rigidbody>().AddExplosionForce(100, transform.position + transform.forward - transform.up, 2);
         droppedItem.GetComponent<WorldItem>().SetUp(item.itemName, item.itemAmount, ItemList.SelectItem(item.itemName).sprite, ItemList.SelectItem(item.itemName).type, ItemList.SelectItem(item.itemName).maxStackSize);
+        SelectItemInHotBar(hotbarLocation);
     }
 }

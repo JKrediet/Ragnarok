@@ -54,6 +54,7 @@ public class Connection : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         UpdatePlayerList();
+        roomNameUI.text = PhotonNetwork.CurrentRoom.Name;
         startButton.SetActive(PhotonNetwork.IsMasterClient);
     }
     public void UpdatePlayerList()

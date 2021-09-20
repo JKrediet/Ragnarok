@@ -72,6 +72,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] List<GameObject> ghostList;
     [SerializeField] List<GameObject> actualItemList;
 
+    float eatStartTime;
+    public float eatTime;
+
     private void Awake()
     {
         pv = GetComponent<PhotonView>();
@@ -117,6 +120,7 @@ public class PlayerController : MonoBehaviour
             Gravity();
             if (!InventoryIsOpen)
             {
+                EatFood();
                 Rotation();
                 CheckForInfo();
             }
@@ -303,11 +307,45 @@ public class PlayerController : MonoBehaviour
             cam.transform.localEulerAngles = Vector3.right * cameraPitch;
         }
     }
+    void EatFood()
+    {
+        if (heldItem)
+        {
+            if (heldItem.equipment == EquipmentType.food)
+            {
+                if (Input.GetButtonDown("Fire2") || Input.GetButtonUp("Fire2"))
+                {
+                    StartEating();
+                }
+                if (Input.GetButton("Fire2"))
+                {
+                    if(Time.time > eatStartTime)
+                    {
+                        StopEating();
+                    }
+                }
+            }
+        }
+    }
+    void StartEating()
+    {
+        eatStartTime = Time.time + eatTime;
+    }
+    void StopEating()
+    {
+        heldItem.itemAmount--;
+        GetComponent<Health>().TakeHeal(heldItem.foodLifeRestore);
+        if(heldItem.itemAmount == 0)
+        {
+            heldItem = null;
+        }
+        GetComponent<Inventory>().RefreshUI();
+    }
     void CheckPlacement()
     {
         if (heldItem)
         {
-            if (heldItem.equipment == 0)
+            if (heldItem.equipment == EquipmentType.none)
             {
                 if (Input.GetButtonDown("Fire2"))
                 {
@@ -384,7 +422,8 @@ public class PlayerController : MonoBehaviour
             }
             if (spawnThis != default)
             {
-                PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "placeAbleItems", "ActualItems", spawnThis.name), ghostPosition, ghostRotation);
+                print(spawnThis.name);
+                PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Stations", "placeAbleItems", "ActualItems", spawnThis.name), ghostPosition, ghostRotation);
             }
             else
             {
@@ -404,29 +443,30 @@ public class PlayerController : MonoBehaviour
             {
                 if (hitObject.gameObject != gameObject)
                 {
+                    GameObject tempObject = Instantiate(testGraph, hitObject.ClosestPoint(attackPos.position), Quaternion.identity);
+                    Destroy(tempObject, 1);
+
                     RaycastHit _hit;
                     if (Physics.Linecast(attackPos.position, hitObject.ClosestPoint(attackPos.position), out _hit))
                     {
                         Renderer rend = _hit.transform.GetComponent<Renderer>();
                         MeshCollider meshCollider = _hit.collider as MeshCollider;
-                        GameObject tempObject = Instantiate(testGraph, hitObject.ClosestPoint(attackPos.position), Quaternion.identity);
-                        Destroy(tempObject, 1);
-                        if (rend == null || rend.sharedMaterial == null || rend.sharedMaterial.mainTexture == null || meshCollider == null)
-                        {
-                            tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", Color.black);
-                        }
-                        else
-                        {
-                            Texture2D tex = rend.material.mainTexture as Texture2D;
-                            Vector2 pixelUV = _hit.textureCoord;
-                            pixelUV.x *= tex.width;
-                            pixelUV.y *= tex.height;
+                        //if (rend == null || rend.sharedMaterial == null || rend.sharedMaterial.mainTexture == null || meshCollider == null)
+                        //{
+                        //    tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", Color.black);
+                        //}
+                        //else
+                        //{
+                        //    Texture2D tex = rend.material.mainTexture as Texture2D;
+                        //    Vector2 pixelUV = _hit.textureCoord;
+                        //    pixelUV.x *= tex.width;
+                        //    pixelUV.y *= tex.height;
 
-                            Color kleurtje = tex.GetPixel((int)pixelUV.x, (int)pixelUV.y);
+                        //    Color kleurtje = tex.GetPixel((int)pixelUV.x, (int)pixelUV.y);
 
-                            //particle color
-                            tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", kleurtje);
-                        }
+                        //    particle color
+                        //    tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", kleurtje);
+                        //}
                     }
                     #region crits and bleed
                     //crit
@@ -444,7 +484,6 @@ public class PlayerController : MonoBehaviour
                     }
                     #endregion
                     //actual hit
-                    print(hitObject.GetComponent<HitableObject>());
                     if (hitObject.GetComponent<HitableObject>())
                     {
                         //damage
@@ -454,7 +493,6 @@ public class PlayerController : MonoBehaviour
                         }
                         else
                         {
-                            print(1);
                             hitObject.GetComponent<HitableObject>().TakeDamage(1, 0);
                         }
                     }
