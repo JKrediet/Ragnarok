@@ -31,12 +31,13 @@ public class Item : ScriptableObject
     [Space]
     public EquipmentType equipment;
 
-    public virtual void SetUpNewItem(string _itemName, int _itemAmount, Sprite _icon, EquipmentType _type, int _maxStack)
+    public virtual void SetUpNewItem(string _itemName, int _itemAmount, Sprite _icon, EquipmentType _type, int _maxStack, int _heal)
     {
         itemName = _itemName;
         itemAmount = _itemAmount;
         icon = _icon;
         maxStack = _maxStack;
         equipment = _type;
+        foodLifeRestore = _heal;
     }
 }

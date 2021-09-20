@@ -283,7 +283,7 @@ public class CharacterStats : MonoBehaviour
             newItem.attackSpeedBonus = ItemList.SelectItem(name).baseAttackSpeed;
             newItem.critChanceBonus = ItemList.SelectItem(name).baseCritChance;
         }
-        newItem.SetUpNewItem(name, amount, image, type, maxStack);
+        newItem.SetUpNewItem(name, amount, image, type, maxStack, ItemList.SelectItem(name).foodHealAmount);
 
         inventory.AddItem(newItem);
     }

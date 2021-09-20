@@ -20,6 +20,8 @@ public struct ItemContent
     public int baseAttackSpeed;
     [Range(5, 100)]
     public int baseCritChance;
+    [Range(1, 100)]
+    public int foodHealAmount;
 }
 
 public class ItemList : MonoBehaviour
