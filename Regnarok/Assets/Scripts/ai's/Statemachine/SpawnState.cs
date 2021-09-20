@@ -13,6 +13,8 @@ public class SpawnState : State
     public NavMeshAgent agent;
     public GameObject mesh;
     public float jumpSpeed;
+    public bool hasWeapon;
+    public GameObject weapon;
     private bool isSpawning;
 	public override State RunCurrentState()
 	{
@@ -30,12 +32,20 @@ public class SpawnState : State
         rb.AddForce(Vector3.up * jumpSpeed * 3);
         isSpawning = true;
         mesh.SetActive(false);
+		if (hasWeapon)
+		{
+            weapon.SetActive(false);
+        }
     }
     public void StopSpawnForce()
     {
         anim.applyRootMotion = false;
 		agent.enabled = true;
         mesh.SetActive(true);
+        if (hasWeapon)
+        {
+            weapon.SetActive(true);
+        }
         Invoke("TurnOffGravity", 0.5f);
     }
     public void TurnOffGravity()

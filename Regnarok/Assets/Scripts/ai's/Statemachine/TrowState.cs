@@ -1,44 +1,44 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
-public class BasicAttack : AttackState
+
+public class TrowState : AttackState
 {
+    public GameObject trowObject;
+    public TrowObject objectScript;
+    public Rigidbody objectRb;
     public GameObject enemie;
-    public Vector3 lookOffset;
-    public bool StandingAttack;
     public override State RunCurrentState()
     {
         if (sm.isDead)
-		{
-            return this; 
-		}
+        {
+            return this;
+        }
         float dist = Vector3.Distance(transform.position, sm.target.transform.position);
-		if (dist > 0.35)
-		{
+        if (dist > 0.35)
+        {
             FaceTarget(sm.target.transform.position);
-		}
+        }
         if (dist <= sm.triggerRange)
         {
             if (dist <= sm.attackRange)
             {
                 if (!sm.doAttack)
                 {
-
                     Vector3 forward = transform.TransformDirection(Vector3.forward);
                     Vector3 toOther = sm.target.transform.position - transform.position;
-                    if (Vector3.Dot(forward, toOther) >0)
+                    if (Vector3.Dot(forward, toOther) > 0)
                     {
                         int randomI = Random.Range(0, sm.attackStates.Length);
                         DoAttack();
                         return this;
                     }
                 }
-				else
-				{
+                else
+                {
                     sm.doAttack = false;
                     return trigger;
-				}
+                }
             }
             else
             {
@@ -50,7 +50,7 @@ public class BasicAttack : AttackState
                         {
                             agent.speed = sm.movementSpeed;
                             sm.idleRange = 1000f;
-                            return trigger;                   
+                            return trigger;
                         }
                     }
                 }
@@ -71,21 +71,30 @@ public class BasicAttack : AttackState
     {
         Vector3 lookPos = destination - enemie.transform.position;
         lookPos.y = 0;
-        Quaternion rotation = Quaternion.LookRotation(lookPos+lookOffset);
+        Quaternion rotation = Quaternion.LookRotation(lookPos);
         enemie.transform.rotation = Quaternion.Slerp(transform.rotation, rotation, sm.AttrotationSpeed);
     }
     public void DoAttack()
-	{
-		if (StandingAttack)
-		{
-            agent.destination = enemie.transform.position;
-		}
-		else
-		{
-            agent.destination = sm.target.transform.position;
-		}
-        sm.ResetAnim();
+    {
+        agent.destination = enemie.transform.position;
         sm.anim.SetBool(animationName, true);
-        agent.speed=sm.attackMovementSpeed;
+        agent.speed = sm.attackMovementSpeed;
+    }
+    public void Trow()
+	{
+        GameObject newobj= Instantiate(trowObject, trowObject.transform, trowObject.transform.parent);
+        newobj.SetActive(false);
+        trowObject.transform.parent = null;
+        objectRb.isKinematic = false;
+        objectRb.useGravity = true;
+        objectScript.activated = true;
+        objectRb = newobj.transform.GetComponent<Rigidbody>();
+        objectScript = newobj.transform.GetComponent<TrowObject>();
+        trowObject = newobj;
+        Invoke("SetActive",1);
+    }
+    public void SetActive()
+	{
+        trowObject.SetActive(true);
     }
 }

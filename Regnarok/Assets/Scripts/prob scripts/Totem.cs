@@ -35,13 +35,13 @@ public class Totem : MonoBehaviour
 					if (allEnemiesDied)
 					{
 
-						StartCoroutine(CheckEnemiesHp());
+						StartCoroutine(CheckEnemies());
 					}
 				}
 			}
 		}
 	}
-	public IEnumerator CheckEnemiesHp()
+	public IEnumerator CheckEnemies()
 	{
 		isChecking = true;
 		for (var i = enemies.Count - 1; i > -1; i--)
@@ -161,7 +161,7 @@ public class Totem : MonoBehaviour
 	}
 	void SpawnEnemies()
 	{
-		int randomNum = Random.Range(0, enemielist.enemieList.Count-1);
+		int randomNum = Random.Range(0, enemielist.enemieList.Count);
 		Ray ray = new Ray(GetPos(), -transform.up);
 		RaycastHit hitInfo;
 		if (Physics.Raycast(ray, out hitInfo))

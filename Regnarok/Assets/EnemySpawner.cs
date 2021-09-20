@@ -87,7 +87,7 @@ public class EnemySpawner : MonoBehaviour
 				}
 				else
 				{
-					int random = Random.Range(0, enemielist.enemieList.Count - 1);
+					int random = Random.Range(0, enemielist.enemieList.Count);
 					pv.RPC("Spawn", RpcTarget.MasterClient, spawnPos + spawnOffset, random);
 				}
 			}
@@ -119,7 +119,7 @@ public class EnemySpawner : MonoBehaviour
 					}
 					else
 					{
-						int random = Random.Range(0, enemielist.enemieList.Count - 1);
+						int random = Random.Range(0, enemielist.enemieList.Count);
 						pv.RPC("Spawn", RpcTarget.MasterClient, spawnPos + spawnOffset, random);
 					}
 				}
