@@ -55,6 +55,7 @@ public class HitableObject : MonoBehaviour
     }
     public void TakeDamage(float _damage, EquipmentType _itemType)
     {
+        print(1);
         manager.SincHealthOfHitableObject(itemSerialNumber, _damage, _itemType);
     }
 }

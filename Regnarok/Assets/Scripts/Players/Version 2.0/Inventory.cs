@@ -21,7 +21,7 @@ public class Inventory : MonoBehaviour
     GameObject handObject;
 
     bool inventoryEnabled;
-    int hotbarLocation;
+    public int hotbarLocation;
     private PhotonView pv;
 
     CharacterStats character;
@@ -220,26 +220,29 @@ public class Inventory : MonoBehaviour
 
     void ScrollHotbar()
     {
-        //scroll in hotbar
-        if (Input.mouseScrollDelta.y > 0 || Input.mouseScrollDelta.y < 0)
+        if (!controller.placementCheck)
         {
-            hotbarLocation -= (int)Input.mouseScrollDelta.y;
-            if (hotbarLocation > allHotbarSlots - 1)
+            //scroll in hotbar
+            if (Input.mouseScrollDelta.y > 0 || Input.mouseScrollDelta.y < 0)
             {
-                hotbarLocation = 0;
-            }
-            else if (hotbarLocation < 0)
-            {
-                hotbarLocation = allHotbarSlots - 1;
-            }
-            SelectItemInHotBar(hotbarLocation);
-        }
-        for (int i = 0; i < keyCodes.Length; i++)
-        {
-            if (Input.GetKeyDown(keyCodes[i]))
-            {
-                hotbarLocation = i;
+                hotbarLocation -= (int)Input.mouseScrollDelta.y;
+                if (hotbarLocation > allHotbarSlots - 1)
+                {
+                    hotbarLocation = 0;
+                }
+                else if (hotbarLocation < 0)
+                {
+                    hotbarLocation = allHotbarSlots - 1;
+                }
                 SelectItemInHotBar(hotbarLocation);
+            }
+            for (int i = 0; i < keyCodes.Length; i++)
+            {
+                if (Input.GetKeyDown(keyCodes[i]))
+                {
+                    hotbarLocation = i;
+                    SelectItemInHotBar(hotbarLocation);
+                }
             }
         }
     }
@@ -304,6 +307,7 @@ public class Inventory : MonoBehaviour
             {
                 DropItem(character.draggableItem.item);
                 character.draggableItem.item = null;
+                character.draggableItem.stackAmountText.text = "";
                 character.draggableItem.gameObject.GetComponent<Image>().color = character.disabledColor;
             }
         }

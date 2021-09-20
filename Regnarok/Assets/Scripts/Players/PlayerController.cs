@@ -65,6 +65,12 @@ public class PlayerController : MonoBehaviour
     public GameObject nameOfPlayer;
     GameObject localplayerObject;
 
+    public bool placementCheck;
+    float placementRotation;
+    GameObject ghostplacement;
+    [SerializeField] List<GameObject> ghostList;
+    [SerializeField] List<GameObject> actualItemList;
+
     private void Awake()
     {
         pv = GetComponent<PhotonView>();
@@ -118,10 +124,17 @@ public class PlayerController : MonoBehaviour
             {
                 if (!InventoryIsOpen)
                 {
-                    if (mayAttack)
+                    if (!placementCheck)
                     {
-                        mayAttack = false;
-                        Anim_attack();
+                        if (mayAttack)
+                        {
+                            mayAttack = false;
+                            Anim_attack();
+                        }
+                    }
+                    else
+                    {
+                        PlaceItem();
                     }
                 }
             }
@@ -169,6 +182,10 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+    }
+    private void LateUpdate()
+    {
+        CheckPlacement();
     }
     //apply movement to character
     private void FixedUpdate()
@@ -285,6 +302,96 @@ public class PlayerController : MonoBehaviour
             cam.transform.localEulerAngles = Vector3.right * cameraPitch;
         }
     }
+    void CheckPlacement()
+    {
+        if (heldItem)
+        {
+            if (heldItem.equipment == 0)
+            {
+                if (Input.GetButtonDown("Fire2"))
+                {
+                    placementRotation = 0;
+                    if (ghostplacement != null)
+                    {
+                        Destroy(ghostplacement);
+                    }
+                    placementCheck = true;
+                    if (placementCheck)
+                    {
+                        GameObject spawnThis = default;
+                        for (int i = 0; i < ghostList.Count; i++)
+                        {
+                            if (heldItem.itemName == ghostList[i].name)
+                            {
+                                spawnThis = ghostList[i];
+                            }
+                        }
+                        if (spawnThis != default)
+                        {
+                            ghostplacement = Instantiate(spawnThis);
+                        }
+                        else
+                        {
+                            placementCheck = false;
+                            print("item not found in ghostlist");
+                            return;
+                        }
+                    }
+                }
+                if (placementCheck)
+                {
+                    if (Input.mouseScrollDelta.y > 0 || Input.mouseScrollDelta.y < 0)
+                    {
+                        //placementRotation -= Input.mouseScrollDelta.y * 10;
+                    }
+                    RaycastHit _hit;
+                    if (Physics.Raycast(cam.transform.position, cam.transform.forward, out _hit))
+                    {
+                        ghostplacement.transform.position = _hit.point;
+                        ghostplacement.transform.rotation = Quaternion.LookRotation(_hit.normal + new Vector3(-80, placementRotation, 0));
+                    }
+                }
+            }
+        }
+        else
+        {
+            placementCheck = false;
+        }
+    }
+    void PlaceItem()
+    {
+        placementCheck = false;
+        Destroy(ghostplacement);
+
+        GameObject spawnThis = default;
+
+        RaycastHit _hit;
+        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out _hit))
+        {
+            Vector3 ghostPosition = _hit.point;
+            Quaternion ghostRotation = Quaternion.LookRotation(_hit.normal + new Vector3(-80, placementRotation, 0));
+
+            for (int i = 0; i < actualItemList.Count; i++)
+            {
+                if(actualItemList[i].name == heldItem.itemName)
+                {
+                    spawnThis = actualItemList[i];
+                    GetComponent<Inventory>().hotBarSlots[GetComponent<Inventory>().hotbarLocation].item = null;
+                    heldItem = null;
+                    GetComponent<Inventory>().RefreshUI();
+                }
+            }
+            if (spawnThis != default)
+            {
+                Instantiate(spawnThis, ghostPosition, ghostRotation);
+            }
+            else
+            {
+                print("item not found in actualItemList");
+                return;
+            }
+        }
+    }
     public void Attack()
     {
         if (pv.IsMine)
@@ -320,6 +427,7 @@ public class PlayerController : MonoBehaviour
                             tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", kleurtje);
                         }
                     }
+                    #region crits and bleed
                     //crit
                     float critDamage = 0;
                     bool inflictBleed = false;
@@ -333,7 +441,9 @@ public class PlayerController : MonoBehaviour
                     {
                         inflictBleed = true;
                     }
+                    #endregion
                     //actual hit
+                    print(hitObject.GetComponent<HitableObject>());
                     if (hitObject.GetComponent<HitableObject>())
                     {
                         //damage
@@ -343,6 +453,7 @@ public class PlayerController : MonoBehaviour
                         }
                         else
                         {
+                            print(1);
                             hitObject.GetComponent<HitableObject>().TakeDamage(1, 0);
                         }
                     }

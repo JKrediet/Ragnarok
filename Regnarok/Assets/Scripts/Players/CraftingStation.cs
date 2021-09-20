@@ -120,11 +120,11 @@ public class CraftingStation : MonoBehaviour
                 itemsInInventory.Add(inventory.itemSlots[i].item);
             }
         }
+        bool gotItem = false;
         for (int i = 0; i < craft.Count; i++)
         {
             for (int z = 0; z < itemsInInventory.Count; z++)
             {
-                bool gotItem = false;
                 for (int u = 0; u < craft[i].itemsNeeded.Count; u++)
                 {
                     if (!gotItem)
@@ -185,6 +185,7 @@ public class CraftingStation : MonoBehaviour
                     else
                     {
                         print("not enough items!: " + neededNameItem + " " + neededAmountItem);
+                        return;
                     }
                 }
             }

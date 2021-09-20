@@ -130,11 +130,13 @@ public class GameManager : MonoBehaviour
     #region sincHealth
     public void SincHealthOfHitableObject(int _serialNumber, float _healthAmount, EquipmentType _type)
     {
+        print(3);
         GetComponent<PhotonView>().RPC("SincHealthOnMaster", RpcTarget.MasterClient, _serialNumber, _healthAmount, _type);
     }
     [PunRPC]
     public void SincHealthOnMaster(int _serialNumber, float _healthAmount, EquipmentType _type)
     {
+        print(4);
         GetComponent<PhotonView>().RPC("SetHealth", RpcTarget.All, _serialNumber, _healthAmount, _type);
     }
     [PunRPC]
@@ -145,6 +147,7 @@ public class GameManager : MonoBehaviour
         {
             if (objectsFound[i].itemSerialNumber == _serialNumber)
             {
+                print(5);
                 objectsFound[i].HitByPlayer(_healthAmount, _type);
                 return;
             }
