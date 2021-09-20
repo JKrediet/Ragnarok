@@ -53,7 +53,9 @@ public class EnemySpawner : MonoBehaviour
 		for (var i = enemies.Count - 1; i > -1; i--)
 		{
 			if (enemies[i] == null)
+			{
 				enemies.RemoveAt(i);
+			}
 		}
 		yield return new WaitForSeconds(CheckTime);
 		isChecking = false;

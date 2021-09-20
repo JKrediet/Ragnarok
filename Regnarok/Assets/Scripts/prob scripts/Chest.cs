@@ -5,10 +5,11 @@ using UnityEngine;
 
 public class Chest : ProbScript
 {
-    private GameObject listHolder;
+    public ItemList itemList;
     public enum ChestType { small=0,medium =1, big =2, golden =3}
     public ChestType type;
     public int chestRarity;
+    private GameObject listHolder;
     
     public void Awake()
     {
