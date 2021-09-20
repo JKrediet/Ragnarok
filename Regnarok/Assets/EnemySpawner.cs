@@ -6,6 +6,7 @@ using System.IO;
 
 public class EnemySpawner : MonoBehaviour
 {
+	public float CheckTime;
 	public float maxrangeFromPlayer=15;
 	public float toCloseDis=5;
 	public float startRaycastHeight;
@@ -19,22 +20,43 @@ public class EnemySpawner : MonoBehaviour
 	public PhotonView pv;
 	public LightingManager lm;
 	public GameManager gm;
+	private bool isChecking;
 	private void Update()
 	{
 		if (lm.isNight)
 		{
-			if (enemies.Count < enemiesForPlayer * players.Length * gm.days)
+			int amount = (enemiesForPlayer * gm.days);
+			if (enemies.Count < amount * players.Length)
 			{
-				SpawnEnemies(gm.ScalingLeJorn());
+				int newAmount = amount - enemies.Count / players.Length;
+				spawnExtraEnemies(newAmount);
+			}
+			else
+			{
+				if (!isChecking)
+				{
+					StartCoroutine(CheckList());
+				}
 			}
 		}
 		else
 		{
 			if (enemies.Count != 0)
 			{
-				enemies = null;
+				enemies.Clear();
 			}
 		}
+	}
+	public IEnumerator CheckList()
+	{
+		isChecking = true;
+		for (var i = enemies.Count - 1; i > -1; i--)
+		{
+			if (enemies[i] == null)
+				enemies.RemoveAt(i);
+		}
+		yield return new WaitForSeconds(CheckTime);
+		isChecking = false;
 	}
 	public void ClearPlayers()
 	{
@@ -44,21 +66,16 @@ public class EnemySpawner : MonoBehaviour
 	{
 		players = GameObject.FindGameObjectsWithTag("Player");
 	}
-	public void SpawnEnemies(float scaling)
+	public void spawnExtraEnemies(int amount)
 	{
-		playerAmount = 0;
-		for (int i = 0; i < players.Length; i++)
+		for (int i = 0; i < amount; i++)
 		{
-			playerAmount++;//doe hier nog health check van players of ze levend zijn zo niet doe geen ++
-		}
-		for (int i = 0; i < enemiesForPlayer; i++)
-		{
-			for (int i_i = 0; i_i < playerAmount; i_i++)
+			for (int i_i = 0; i_i < players.Length; i_i++)
 			{
 				Vector3 spawnPos = GetSpawnPos(i_i);
 
 				float dis = Vector3.Distance(spawnPos, players[i_i].transform.position);
-				if(CheckDistance(dis))
+				if (CheckDistance(dis))
 				{
 					spawnPos = GetSpawnPos(i_i);
 					if (CheckDistance(dis))
@@ -69,7 +86,40 @@ public class EnemySpawner : MonoBehaviour
 				else
 				{
 					int random = Random.Range(0, enemielist.enemieList.Count - 1);
-					pv.RPC("Spawn", RpcTarget.MasterClient, spawnPos+spawnOffset, random);
+					pv.RPC("Spawn", RpcTarget.MasterClient, spawnPos + spawnOffset, random);
+				}
+			}
+		}
+	}
+	public void SpawnEnemies(float scaling)
+	{
+		playerAmount = 0;
+		for (int i = 0; i < players.Length; i++)
+		{
+			playerAmount++;//doe hier nog health check van players of ze levend zijn zo niet doe geen ++
+		}
+		for (int u = 0; u < gm.days; u++)
+		{
+			for (int i = 0; i < enemiesForPlayer; i++)
+			{
+				for (int i_i = 0; i_i < playerAmount; i_i++)
+				{
+					Vector3 spawnPos = GetSpawnPos(i_i);
+
+					float dis = Vector3.Distance(spawnPos, players[i_i].transform.position);
+					if (CheckDistance(dis))
+					{
+						spawnPos = GetSpawnPos(i_i);
+						if (CheckDistance(dis))
+						{
+							spawnPos = GetSpawnPos(i_i);
+						}
+					}
+					else
+					{
+						int random = Random.Range(0, enemielist.enemieList.Count - 1);
+						pv.RPC("Spawn", RpcTarget.MasterClient, spawnPos + spawnOffset, random);
+					}
 				}
 			}
 		}
@@ -79,6 +129,7 @@ public class EnemySpawner : MonoBehaviour
 	{
 		GameObject spawnedEnemie = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", enemielist.enemieList[i]), spawnPos, Quaternion.identity);
 		enemies.Add(spawnedEnemie);
+		print(spawnedEnemie.name);
 	}
 	public bool CheckDistance(float distance)
 	{
