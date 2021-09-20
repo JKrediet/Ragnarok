@@ -21,8 +21,8 @@ public class Totem : MonoBehaviour
 	private int type;
 	private void Start()
 	{
-		type = Random.Range(1, 4);
-		amountOfEnemies *=type;
+		type = Random.Range(0, 4);
+		amountOfEnemies *= type;
 	}
 	private void Update()
 	{
@@ -78,7 +78,6 @@ public class Totem : MonoBehaviour
 		{
 			int random = Random.Range(0, itemlist.common.Count);
 			prefabName = itemlist.common[random].name;
-
 			Ray ray = new Ray(GetPos(), -transform.up);
 			RaycastHit hitInfo;
 			if (Physics.Raycast(ray, out hitInfo))
