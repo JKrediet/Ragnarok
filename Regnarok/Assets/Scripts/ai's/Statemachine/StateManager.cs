@@ -18,6 +18,7 @@ public class StateManager : MonoBehaviour
 	public float idleRange=2f;
 	public float attackMovementSpeed;
 	public float movementSpeed;
+	public float AttrotationSpeed;
 	public int currentAttack;
 	public bool doAttack;
 	public bool spawned;

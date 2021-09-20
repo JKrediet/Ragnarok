@@ -4,12 +4,15 @@ using UnityEngine;
 using UnityEngine.AI;
 public class BasicAttack : AttackState
 {
+    public GameObject shark;
+    public bool StandingAttack;
     public override State RunCurrentState()
     {
-		if (sm.isDead)
+        if (sm.isDead)
 		{
             return this; 
 		}
+        FaceTarget(sm.target.transform.position);
         float dist = Vector3.Distance(transform.position, sm.target.transform.position);
         if (dist <= sm.triggerRange)
         {
@@ -60,8 +63,23 @@ public class BasicAttack : AttackState
         }
         return this;
     }
+    private void FaceTarget(Vector3 destination)
+    {
+        Vector3 lookPos = destination - shark.transform.position;
+        lookPos.y = 0;
+        Quaternion rotation = Quaternion.LookRotation(lookPos);
+        shark.transform.rotation = Quaternion.Slerp(transform.rotation, rotation, sm.AttrotationSpeed);
+    }
     public void DoAttack()
 	{
+		if (StandingAttack)
+		{
+            agent.destination = shark.transform.position;
+		}
+		else
+		{
+            agent.destination = sm.target.transform.position;
+		}
         sm.ResetAnim();
         sm.anim.SetBool(animationName, true);
         agent.speed=sm.attackMovementSpeed;
