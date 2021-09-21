@@ -14,6 +14,7 @@ public class HitableObject : MonoBehaviour
     protected Rigidbody rb;
 
     GameManager manager;
+    Wiggle wiggle;
 
     protected void Awake()
     {
@@ -21,6 +22,7 @@ public class HitableObject : MonoBehaviour
         rb.isKinematic = true;
         rb.useGravity = false;
         manager = FindObjectOfType<GameManager>();
+        wiggle = GetComponentInChildren<Wiggle>();
     }
     protected void Start()
     {
@@ -29,6 +31,7 @@ public class HitableObject : MonoBehaviour
     }
     public virtual void HitByPlayer(float _damage, EquipmentType itemType)
     {
+        wiggle.StartWiggle();
         if (health > 0)
         {
             if (itemType == itemTypeNeeded)

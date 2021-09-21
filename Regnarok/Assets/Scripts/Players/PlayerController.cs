@@ -150,6 +150,7 @@ public class PlayerController : MonoBehaviour
                 if (groundCheck)
                 {
                     Jump();
+                    Anim_Jump();
                 }
             }
             //check for chestDistance
@@ -619,6 +620,10 @@ public class PlayerController : MonoBehaviour
     {
         animController.SetInteger("Attack", 1);
         animController.speed = totalAttackSpeed;
+    }
+    void Anim_Jump()
+    {
+        animController.SetInteger("State", 3);
     }
     #endregion
 }
