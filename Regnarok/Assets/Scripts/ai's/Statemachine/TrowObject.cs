@@ -8,6 +8,7 @@ public class TrowObject : MonoBehaviour
 	public float damage;
 	public bool activated;
 	private bool doingDamage;
+	public GameObject target;
 	public void LookAtPlayer(Vector3 pos)
 	{
 		transform.LookAt(pos);
@@ -17,6 +18,9 @@ public class TrowObject : MonoBehaviour
 		if (activated)
 		{
 			gameObject.GetComponent<Rigidbody>().AddForce(transform.forward * throwPower + transform.up * 4, ForceMode.Impulse);
+			Vector3 delayedPos= target.transform.position;
+			new WaitForSeconds(1);
+			LookAtPlayer(delayedPos);
 		}
 	}
 	private void OnCollisionEnter(Collision collision)

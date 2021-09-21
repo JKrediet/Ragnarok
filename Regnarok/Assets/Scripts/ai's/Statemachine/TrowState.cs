@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using System.IO;
 
 public class TrowState : AttackState
 {
@@ -8,6 +10,9 @@ public class TrowState : AttackState
     public TrowObject objectScript;
     public Rigidbody objectRb;
     public GameObject enemie;
+    public string trowObjectName;
+    public float trowCooldownTime;
+    private GameObject newTrowable;
     public override State RunCurrentState()
     {
         if (sm.isDead)
@@ -21,7 +26,7 @@ public class TrowState : AttackState
         }
         if (dist <= sm.triggerRange)
         {
-            if (dist <= sm.attackRange)
+            if (sm.hasRangedAtt && dist <= sm.attackRange * 3.5f && !sm.trowCoolDown)
             {
                 if (!sm.doAttack)
                 {
@@ -30,7 +35,10 @@ public class TrowState : AttackState
                     if (Vector3.Dot(forward, toOther) > 0)
                     {
                         int randomI = Random.Range(0, sm.attackStates.Length);
-                        DoAttack();
+                        if (!sm.trowCoolDown)
+                        {
+                            DoAttack();
+                        }
                         return this;
                     }
                 }
@@ -76,21 +84,38 @@ public class TrowState : AttackState
     }
     public void DoAttack()
     {
-        agent.destination = enemie.transform.position;
-        sm.anim.SetBool(animationName, true);
-        agent.speed = sm.attackMovementSpeed;
+        if (sm.trowCoolDown)
+        {
+            sm.ResetAnim();
+        }
+        else
+        {
+            sm.StartCoroutine(sm.CoolDownTrow(trowCooldownTime));
+            agent.destination = enemie.transform.position;
+            sm.anim.SetBool(animationName, true);
+            agent.speed = sm.attackMovementSpeed;
+            sm.trowCoolDown = true;
+        }
+    }
+    [PunRPC]
+    public void SpawnNewHamer()
+    {
+        newTrowable = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", trowObjectName), trowObject.transform.position, trowObject.transform.rotation);
+        newTrowable.transform.parent = trowObject.transform.parent;
     }
     public void Trow()
 	{
-        GameObject newobj= Instantiate(trowObject, trowObject.transform, trowObject.transform.parent);
-        newobj.SetActive(false);
-        trowObject.transform.parent = null;
+        GetComponent<PhotonView>().RPC("SpawnNewHamer", RpcTarget.MasterClient);
+        newTrowable.SetActive(false);
+        objectScript.target = sm.target;
         objectRb.isKinematic = false;
         objectRb.useGravity = true;
         objectScript.activated = true;
-        objectRb = newobj.transform.GetComponent<Rigidbody>();
-        objectScript = newobj.transform.GetComponent<TrowObject>();
-        trowObject = newobj;
+        objectRb = newTrowable.transform.GetComponent<Rigidbody>();
+        objectScript = newTrowable.transform.GetComponent<TrowObject>();
+        trowObject.transform.parent = null;
+        trowObject = newTrowable;
+        newTrowable = null;
         Invoke("SetActive",1);
     }
     public void SetActive()

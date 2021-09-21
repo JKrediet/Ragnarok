@@ -9,6 +9,7 @@ public class StateManager : MonoBehaviour
 	public GameObject hitboxPos;
 	public GameObject target;
 	public AttackState[] attackStates;
+	public AttackState[] rangedStates;
 	public Animator anim;
 	public Vector3 delayedPos;
 	public float targetUpdateTime;
@@ -23,6 +24,9 @@ public class StateManager : MonoBehaviour
 	public bool doAttack;
 	public bool spawned;
 	public bool isDead;
+	[Header("ranged")]
+	public bool hasRangedAtt;
+	public bool trowCoolDown;
 	private bool gettingTarget;
 	private bool hitboxActive;
 	private bool doingDamage;
@@ -122,5 +126,11 @@ public class StateManager : MonoBehaviour
 	public void Spawned()
 	{
 		spawned = true;
+	}
+	public IEnumerator CoolDownTrow(float timeToWait)
+	{
+		trowCoolDown = true;
+		yield return new WaitForSeconds(timeToWait);
+		trowCoolDown = false;
 	}
 }

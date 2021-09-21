@@ -21,7 +21,7 @@ public class Totem : MonoBehaviour
 	private int type;
 	private void Start()
 	{
-		type = Random.Range(0, 4);
+		type = Random.Range(1, 4);
 		amountOfEnemies *= type;
 	}
 	private void Update()
