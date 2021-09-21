@@ -67,6 +67,7 @@ public class Inventory : MonoBehaviour
             hotBarSlots[i].slotID = i + 25;
             hotBarSlots[i].inv = this;
         }
+        SelectItemInHotBar(0);
     }
     private void Update() //<----------------------------- update
     {

@@ -30,8 +30,11 @@ public class Item : ScriptableObject
     [HideInInspector] public float healthPrecentBonus;
     [Space]
     public EquipmentType equipment;
+    [Space]
+    [HideInInspector] public float smeltTime;
+    public string smeltResult;
 
-    public virtual void SetUpNewItem(string _itemName, int _itemAmount, Sprite _icon, EquipmentType _type, int _maxStack, int _heal)
+    public virtual void SetUpNewItem(string _itemName, int _itemAmount, Sprite _icon, EquipmentType _type, int _maxStack, int _heal, float _smeltTime)
     {
         itemName = _itemName;
         itemAmount = _itemAmount;
@@ -39,5 +42,6 @@ public class Item : ScriptableObject
         maxStack = _maxStack;
         equipment = _type;
         foodLifeRestore = _heal;
+        smeltTime = _smeltTime;
     }
 }

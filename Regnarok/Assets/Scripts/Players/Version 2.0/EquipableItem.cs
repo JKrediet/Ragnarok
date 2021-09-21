@@ -13,13 +13,11 @@ public enum EquipmentType
     pickaxe,
     weapon,
     food,
+    smeltable,
+    fuel,
 }
 [CreateAssetMenu]
 public class EquipableItem : Item
 {
-    public override void SetUpNewItem(string _itemName, int _itemAmount, Sprite _icon, EquipmentType _type, int _maxStack, int _heal)
-    {
-        base.SetUpNewItem(_itemName, _itemAmount, _icon, _type, _maxStack, _heal);
-        equipment = _type;
-    }
+    
 }

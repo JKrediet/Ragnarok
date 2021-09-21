@@ -193,12 +193,29 @@ public class CharacterStats : MonoBehaviour
                 //empty slot
                 if (itemslot.item == null)
                 {
-                    itemslot.item = draggableItem.item;
-                    draggableItem.item = null;
-                    draggableItem.gameObject.GetComponent<Image>().color = disabledColor;
+                    if (itemslot is EquipmentSlots)
+                    {
+                        EquipmentSlots quipSlot = itemslot as EquipmentSlots;
+                        if (quipSlot.EquipmentType == draggableItem.item.equipment)
+                        {
+                            draggableItem.item = itemslot.item;
+                            itemslot.item = null;
+                            draggableItem.gameObject.GetComponent<Image>().color = normalColor;
+                            draggableItem.gameObject.GetComponent<Image>().sprite = draggableItem.item.icon;
 
-                    //toggle
-                    itemIsBeingDragged = !itemIsBeingDragged;
+                            //toggle
+                            itemIsBeingDragged = !itemIsBeingDragged;
+                        }
+                    }
+                    else
+                    {
+                        itemslot.item = draggableItem.item;
+                        draggableItem.item = null;
+                        draggableItem.gameObject.GetComponent<Image>().color = disabledColor;
+
+                        //toggle
+                        itemIsBeingDragged = !itemIsBeingDragged;
+                    }
                 }
                 //slot with item in it
                 else if (itemslot.item != null)
@@ -217,8 +234,20 @@ public class CharacterStats : MonoBehaviour
                         //more than stack size
                         else
                         {
-                            draggableItem.item.itemAmount = itemslot.item.itemAmount + draggableItem.item.itemAmount - itemslot.item.maxStack;
-                            itemslot.item.itemAmount = itemslot.item.maxStack;
+                            if (itemslot is EquipmentSlots)
+                            {
+                                EquipmentSlots quipSlot = itemslot as EquipmentSlots;
+                                if (quipSlot.EquipmentType == draggableItem.item.equipment)
+                                {
+                                    draggableItem.item.itemAmount = itemslot.item.itemAmount + draggableItem.item.itemAmount - itemslot.item.maxStack;
+                                    itemslot.item.itemAmount = itemslot.item.maxStack;
+                                }
+                            }
+                            else
+                            {
+                                draggableItem.item.itemAmount = itemslot.item.itemAmount + draggableItem.item.itemAmount - itemslot.item.maxStack;
+                                itemslot.item.itemAmount = itemslot.item.maxStack;
+                            }
                         }
                     }
                     //different item
@@ -283,7 +312,7 @@ public class CharacterStats : MonoBehaviour
             newItem.attackSpeedBonus = ItemList.SelectItem(name).baseAttackSpeed;
             newItem.critChanceBonus = ItemList.SelectItem(name).baseCritChance;
         }
-        newItem.SetUpNewItem(name, amount, image, type, maxStack, ItemList.SelectItem(name).foodHealAmount);
+        newItem.SetUpNewItem(name, amount, image, type, maxStack, ItemList.SelectItem(name).foodHealAmount, ItemList.SelectItem(name).smeltTime);
 
         inventory.AddItem(newItem);
     }
