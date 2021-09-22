@@ -5,7 +5,7 @@ using UnityEngine;
 public class StateManager : MonoBehaviour
 {
 	public State curentState;
-	public GameObject[] players;
+	public List<GameObject> players;
 	public GameObject hitboxPos;
 	public GameObject target;
 	public AttackState[] attackStates;
@@ -35,7 +35,7 @@ public class StateManager : MonoBehaviour
 	private float hitboxRadius;
 	private void Start()
 	{
-		players = GameObject.FindGameObjectsWithTag("Player");
+		players = new List<GameObject>(GameObject.FindGameObjectsWithTag("Player"));
 		target = players[0];
 	}
 	private void Update()
@@ -90,8 +90,12 @@ public class StateManager : MonoBehaviour
 	{
 		gettingTarget = true;
 
-		for (int i = 0; i < players.Length; i++)
+		for (int i = 0; i < players.Count; i++)
 		{
+			if (players[i] == null)
+			{
+				players.Remove(players[i]);
+			}
 			float dis = Vector3.Distance(transform.position, players[i].transform.position);
 			float targetDis = Vector3.Distance(transform.position, target.transform.position);
 			if (dis < targetDis)
