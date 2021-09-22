@@ -13,7 +13,7 @@ public class PlayerHealth : Health
     public float respawnTime=15;
     public GameObject mainCam;
 	public GameObject deathCam;
-    private List<GameObject> players;
+    public List<GameObject> players;
 	public bool isDeath;
     private int camIndex;
     private void Start()
