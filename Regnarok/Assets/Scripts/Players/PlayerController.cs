@@ -73,8 +73,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] List<GameObject> ghostList;
     [SerializeField] List<GameObject> actualItemList;
 
-    float eatStartTime;
+    float eatCooldown;
     public float eatTime;
+    bool eatingOnCooldown;
+    [SerializeField] Slider foodCooldownSlider;
+    float foodCooldownTimeSteps;
 
     private void Awake()
     {
@@ -316,33 +319,42 @@ public class PlayerController : MonoBehaviour
         {
             if (heldItem.equipment == EquipmentType.food)
             {
-                if (Input.GetButtonDown("Fire2") || Input.GetButtonUp("Fire2"))
+                if (Input.GetButtonDown("Fire2"))
                 {
                     StartEating();
                 }
-                if (Input.GetButton("Fire2"))
-                {
-                    if(Time.time > eatStartTime)
-                    {
-                        StopEating();
-                    }
-                }
+            }
+        }
+        if(eatingOnCooldown)
+        {
+            if (Time.time > foodCooldownTimeSteps)
+            {
+                foodCooldownTimeSteps = Time.time + 0.5f;
+                foodCooldownSlider.value -= 0.5f;
+            }
+            if (Time.time > eatCooldown)
+            {
+                StopEating();
             }
         }
     }
     void StartEating()
     {
-        eatStartTime = Time.time + eatTime;
-    }
-    void StopEating()
-    {
+        eatingOnCooldown = true;
+        foodCooldownSlider.value = eatTime;
+        //particle here
+        eatCooldown = Time.time + eatTime;
         heldItem.itemAmount--;
         GetComponent<Health>().TakeHeal(heldItem.foodLifeRestore);
-        if(heldItem.itemAmount == 0)
+        if (heldItem.itemAmount == 0)
         {
             heldItem = null;
         }
         GetComponent<Inventory>().RefreshUI();
+    }
+    void StopEating()
+    {
+        eatingOnCooldown = false;
     }
     void CheckPlacement()
     {
