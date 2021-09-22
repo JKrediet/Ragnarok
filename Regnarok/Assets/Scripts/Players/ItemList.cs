@@ -20,7 +20,7 @@ public struct ItemContent
     public float baseAttackSpeed;
     [Range(5, 100)]
     public int baseCritChance;
-    [Range(1, 100)]
+    [Range(0, 100)]
     public int foodHealAmount;
     [Range(60, 600)]
     public int smeltTime;
