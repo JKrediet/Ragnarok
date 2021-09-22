@@ -43,6 +43,6 @@ public class TrowObject : MonoBehaviour
 	public void DoDamage(Transform trans)
 	{
 		doingDamage = true;
-		trans.GetComponent<PlayerHealth>().Health_Damage(damage, false);
+		trans.GetComponent<PlayerHealth>().Health_Damage(damage, false, trans.transform.position);
 	}
 }

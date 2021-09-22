@@ -13,6 +13,7 @@ public class Wiggle : MonoBehaviour
     }
     public void StopWiggle()
     {
+        print("wiggle STOP!");
         anim.SetInteger("State", 0);
     }
     public void StartWiggle()

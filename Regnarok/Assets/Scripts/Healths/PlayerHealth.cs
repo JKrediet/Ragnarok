@@ -31,9 +31,9 @@ public class PlayerHealth : Health
 			}
         }
     }
-	public override void Health_Damage(float damageValue, bool bleed)
+	public override void Health_Damage(float damageValue, bool bleed, Vector3 hitlocation)
     {
-        base.Health_Damage(damageValue, bleed);
+        base.Health_Damage(damageValue, bleed, hitlocation);
         if(HealthSlider)
         {
             HealthSlider.value = health;

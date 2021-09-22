@@ -15,6 +15,8 @@ public class HitableObject : MonoBehaviour
 
     GameManager manager;
     Wiggle wiggle;
+    public GameObject damageNumber;
+    Vector3 lastHitLocation;
 
     protected void Awake()
     {
@@ -29,18 +31,28 @@ public class HitableObject : MonoBehaviour
         health *= Random.Range(0.7f, 1.3f);
         maxHealth = health;
     }
-    public virtual void HitByPlayer(float _damage, EquipmentType itemType)
+    public virtual void HitByPlayer(float _damage, EquipmentType itemType, Vector3 hitlocation)
     {
         wiggle.StartWiggle();
+        lastHitLocation = hitlocation;
         if (health > 0)
         {
             if (itemType == itemTypeNeeded)
             {
-
+                if (damageNumber != null)
+                {
+                    GameObject damageNum = Instantiate(damageNumber, hitlocation, Quaternion.identity);
+                    damageNum.GetComponent<DamageNumbers>().damageAmount = _damage;
+                }
                 health = Mathf.Clamp(health - _damage, 0, maxHealth);
             }
             else
             {
+                if (damageNumber != null)
+                {
+                    GameObject damageNum = Instantiate(damageNumber, hitlocation, Quaternion.identity);
+                    damageNum.GetComponent<DamageNumbers>().damageAmount = 1;
+                }
                 health = Mathf.Clamp(health - 1, 0, maxHealth);
             }
         }
@@ -57,11 +69,11 @@ public class HitableObject : MonoBehaviour
     {
         for (int i = 0; i < dropItemName.Length; i++)
         {
-            manager.DropItems(dropItemName[i], transform.position, Quaternion.identity, Random.Range((int)minDrop, (int)maxDrop++), itemSerialNumber);
+            manager.DropItems(dropItemName[i], lastHitLocation, Quaternion.identity, Random.Range((int)minDrop, (int)maxDrop++), itemSerialNumber);
         }
     }
-    public void TakeDamage(float _damage, EquipmentType _itemType)
+    public void TakeDamage(float _damage, EquipmentType _itemType, Vector3 hitlocation)
     {
-        manager.SincHealthOfHitableObject(itemSerialNumber, _damage, _itemType);
+        manager.SincHealthOfHitableObject(itemSerialNumber, _damage, _itemType, hitlocation);
     }
 }

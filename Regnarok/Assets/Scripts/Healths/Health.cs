@@ -10,6 +10,8 @@ public class Health : MonoBehaviour
 {
     [SerializeField] protected float maxHealth;
     [HideInInspector] public float health;
+    public GameObject damageNumber;
+    protected Vector3 lastHitLocation;
 
     public PhotonView PV;
 
@@ -28,14 +30,20 @@ public class Health : MonoBehaviour
         }
         health = maxHealth;
     }
-    public virtual void Health_Damage(float damageValue, bool bleed)
+    public virtual void Health_Damage(float damageValue, bool bleed, Vector3 hitlocation)
     {
         if (PV.IsMine)
         {
+            lastHitLocation = hitlocation;
             damageValue = Mathf.Clamp(damageValue - armor, 1, maxHealth);
             if (health > 0)
             {
                 health = Mathf.Clamp(health - damageValue, 0, maxHealth);
+                if(damageNumber != null)
+                {
+                    GameObject damageNum = Instantiate(damageNumber, hitlocation, Quaternion.identity);
+                    damageNum.GetComponent<DamageNumbers>().damageAmount = damageValue;
+                }
                 if (health == 0)
                 {
                     Health_Dead();
@@ -85,7 +93,7 @@ public class Health : MonoBehaviour
         if(BleedTicks > 0)
         {
             BleedTicks--;
-            Health_Damage(bleedDamage, false);
+            Health_Damage(bleedDamage, false, lastHitLocation);
             StartCoroutine("Bleed");
         }
         else if (BleedTicks == 0)
@@ -96,9 +104,9 @@ public class Health : MonoBehaviour
 
     #region sinc
     //damage
-    public void TakeDamage(float damageValue, bool _bleed)
+    public void TakeDamage(float damageValue, bool _bleed, Vector3 _hitlocation)
     {
-        PV.RPC("SincHealthOnMAster", RpcTarget.MasterClient, damageValue, _bleed);
+        PV.RPC("SincHealthOnMAster", RpcTarget.MasterClient, damageValue, _bleed, _hitlocation);
     }
     //heal
     public void TakeHeal(float damageValue)
@@ -108,14 +116,14 @@ public class Health : MonoBehaviour
 
     //damage
     [PunRPC]
-    public void SincHealthOnMAster(float _health, bool _bleed)
+    public void SincHealthOnMAster(float _health, bool _bleed, Vector3 _hitlocation)
     {
-         PV.RPC("SincHealth", RpcTarget.All, _health, _bleed);
+         PV.RPC("SincHealth", RpcTarget.All, _health, _bleed, _hitlocation);
     }
     [PunRPC]
-    public void SincHealth(float _health, bool _bleed)
+    public void SincHealth(float _health, bool _bleed, Vector3 _hitlocation)
     {
-        Health_Damage(_health, _bleed);
+        Health_Damage(_health, _bleed, _hitlocation);
     }
     //heal
     [PunRPC]

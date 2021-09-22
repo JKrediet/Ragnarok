@@ -6,7 +6,7 @@ public class Tree : HitableObject
 {
     [SerializeField] float fallPower;
     [SerializeField] protected GameObject treeparticle;
-    public override void HitByPlayer(float _damage, EquipmentType itemType)
+    public override void HitByPlayer(float _damage, EquipmentType itemType, Vector3 hitlocation)
     {
         if (itemType == itemTypeNeeded)
         {

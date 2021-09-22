@@ -140,24 +140,24 @@ public class GameManager : MonoBehaviour
 	#endregion
 
 	#region sincHealth
-	public void SincHealthOfHitableObject(int _serialNumber, float _healthAmount, EquipmentType _type)
+	public void SincHealthOfHitableObject(int _serialNumber, float _healthAmount, EquipmentType _type, Vector3 _hitlocation)
     {
-        GetComponent<PhotonView>().RPC("SincHealthOnMaster", RpcTarget.MasterClient, _serialNumber, _healthAmount, _type);
+        GetComponent<PhotonView>().RPC("SincHealthOnMaster", RpcTarget.MasterClient, _serialNumber, _healthAmount, _type, _hitlocation);
     }
     [PunRPC]
-    public void SincHealthOnMaster(int _serialNumber, float _healthAmount, EquipmentType _type)
+    public void SincHealthOnMaster(int _serialNumber, float _healthAmount, EquipmentType _type, Vector3 _hitlocation)
     {
-        GetComponent<PhotonView>().RPC("SetHealth", RpcTarget.All, _serialNumber, _healthAmount, _type);
+        GetComponent<PhotonView>().RPC("SetHealth", RpcTarget.All, _serialNumber, _healthAmount, _type, _hitlocation);
     }
     [PunRPC]
-    public void SetHealth(int _serialNumber, float _healthAmount, EquipmentType _type)
+    public void SetHealth(int _serialNumber, float _healthAmount, EquipmentType _type, Vector3 _hitlocation)
     {
         HitableObject[] objectsFound = FindObjectsOfType<HitableObject>();
         for (int i = 0; i < objectsFound.Length; i++)
         {
             if (objectsFound[i].itemSerialNumber == _serialNumber)
             {
-                objectsFound[i].HitByPlayer(_healthAmount, _type);
+                objectsFound[i].HitByPlayer(_healthAmount, _type, _hitlocation);
                 return;
             }
         }

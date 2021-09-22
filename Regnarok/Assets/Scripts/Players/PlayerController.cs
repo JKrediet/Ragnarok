@@ -516,11 +516,11 @@ public class PlayerController : MonoBehaviour
                         //damage
                         if (heldItem != null)
                         {
-                            hitObject.GetComponent<HitableObject>().TakeDamage(totalDamage + critDamage, heldItem.equipment);
+                            hitObject.GetComponent<HitableObject>().TakeDamage(totalDamage + critDamage, heldItem.equipment, hitObject.ClosestPoint(attackPos.position));
                         }
                         else
                         {
-                            hitObject.GetComponent<HitableObject>().TakeDamage(1, 0);
+                            hitObject.GetComponent<HitableObject>().TakeDamage(1, 0, hitObject.ClosestPoint(attackPos.position));
                         }
                     }
                     if (hitObject.GetComponent<EnemieHealth>())
@@ -528,7 +528,7 @@ public class PlayerController : MonoBehaviour
                         //damage
                         if (heldItem != null)
                         {
-                            hitObject.GetComponent<EnemieHealth>().TakeDamage(totalDamage + critDamage, inflictBleed);
+                            hitObject.GetComponent<EnemieHealth>().TakeDamage(totalDamage + critDamage, inflictBleed, hitObject.ClosestPoint(attackPos.position));
                             if (totalLifeSteal > 0)
                             {
                                 float healAmount = (totalDamage + critDamage - hitObject.GetComponent<EnemieHealth>().armor) * (totalLifeSteal / 100);
@@ -544,7 +544,7 @@ public class PlayerController : MonoBehaviour
                         }
                         else
                         {
-                            hitObject.GetComponent<EnemieHealth>().TakeDamage(1, false);
+                            hitObject.GetComponent<EnemieHealth>().TakeDamage(1, false, hitObject.ClosestPoint(attackPos.position));
                         }
                     }
                 }

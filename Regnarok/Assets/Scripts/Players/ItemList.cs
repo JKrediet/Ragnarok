@@ -22,7 +22,7 @@ public struct ItemContent
     public int baseCritChance;
     [Range(0, 100)]
     public int foodHealAmount;
-    [Range(60, 600)]
+    [Range(0, 600)]
     public int smeltTime;
 }
 
