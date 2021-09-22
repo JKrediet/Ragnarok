@@ -1,4 +1,5 @@
 using UnityEngine;
+using Photon.Pun;
 
 [ExecuteAlways]
 public class LightingManager : MonoBehaviour
@@ -35,7 +36,10 @@ public class LightingManager : MonoBehaviour
                     RenderSettings.fog = true;
                     if (!gm.isDoingNight)
 					{
-                        gm.StartCoroutine("IsNight");
+                        if (PhotonNetwork.IsMasterClient)
+                        {
+                            gm.StartCoroutine("IsNight");
+						}
 					}
                 }
 			}

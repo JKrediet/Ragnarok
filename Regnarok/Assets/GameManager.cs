@@ -24,7 +24,8 @@ public class GameManager : MonoBehaviour
     public PlayerManager playerManager;
     public VideoClip[] videos;
     public GameObject loadingScreen, canvas;
-    public VideoPlayer videoplayer;
+	public VideoPlayer videoplayer;
+
 
     public List<GameObject> playerObjectList;
 
@@ -126,9 +127,20 @@ public class GameManager : MonoBehaviour
             return false;
         }
     }
+	#region everyoneDeath
+    public void EveryOneDead()
+	{
+        GetComponent<PhotonView>().RPC("SyncPanelLoss", RpcTarget.All);
+    }
+    [PunRPC]
+    public void SyncPanelLoss()
+	{
+        
+	}
+	#endregion
 
-    #region sincHealth
-    public void SincHealthOfHitableObject(int _serialNumber, float _healthAmount, EquipmentType _type)
+	#region sincHealth
+	public void SincHealthOfHitableObject(int _serialNumber, float _healthAmount, EquipmentType _type)
     {
         GetComponent<PhotonView>().RPC("SincHealthOnMaster", RpcTarget.MasterClient, _serialNumber, _healthAmount, _type);
     }

@@ -23,6 +23,10 @@ public class EnemySpawner : MonoBehaviour
 	private bool isChecking;
 	private void Update()
 	{
+		if (!PhotonNetwork.IsMasterClient)
+		{
+			return;
+		}
 		if (lm.isNight)
 		{
 			int amount = (enemiesForPlayer * gm.days);
@@ -70,6 +74,10 @@ public class EnemySpawner : MonoBehaviour
 	}
 	public void spawnExtraEnemies(int amount)
 	{
+		if (!PhotonNetwork.IsMasterClient)
+		{
+			return;
+		}
 		for (int i = 0; i < amount; i++)
 		{
 			for (int i_i = 0; i_i < players.Length; i_i++)
@@ -95,6 +103,10 @@ public class EnemySpawner : MonoBehaviour
 	}
 	public void SpawnEnemies(float scaling)
 	{
+		if (!PhotonNetwork.IsMasterClient)
+		{
+			return;
+		}
 		playerAmount = 0;
 		for (int i = 0; i < players.Length; i++)
 		{
@@ -131,7 +143,6 @@ public class EnemySpawner : MonoBehaviour
 	{
 		GameObject spawnedEnemie = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", enemielist.enemieList[i]), spawnPos, Quaternion.identity);
 		enemies.Add(spawnedEnemie);
-		print(spawnedEnemie.name);
 	}
 	public bool CheckDistance(float distance)
 	{
