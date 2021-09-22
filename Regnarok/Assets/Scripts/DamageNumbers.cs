@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Photon.Pun;
 
 public class DamageNumbers : MonoBehaviour
 {
@@ -12,20 +13,35 @@ public class DamageNumbers : MonoBehaviour
     public TextMeshProUGUI textMesh;
     private float disappearTime;
     private Color textColor;
-    private Transform player;
+    public List<GameObject> players;
+    private Transform target;
 
     private void Start()
     {
-        player = FindObjectOfType<PlayerHealth>().transform;
-        textMesh = GetComponent<TextMeshProUGUI>();
+        players = new List<GameObject>(GameObject.FindGameObjectsWithTag("Player"));
+		for (int i = 0; i < players.Count; i++)
+		{
+			if (!players[i].GetComponent<PhotonView>().IsMine)
+			{
+                players.Remove(players[i]);
+			}
+			else
+			{
+                target = players[i].transform;
+			}
+		}
         textMesh.SetText(damageAmount.ToString());
         textColor = textMesh.color;
         disappearTime = 1f;
     }
     void Update()
     {
-        transform.LookAt(player);
-        transform.rotation = Quaternion.LookRotation(player.transform.forward);
+		if (!target )
+		{
+            return;
+		}
+        transform.LookAt(target);
+        transform.rotation = Quaternion.LookRotation(target.forward);
         float moveYSpeed = 4;
         transform.position += new Vector3(0, moveYSpeed, 0) * Time.deltaTime;
 
