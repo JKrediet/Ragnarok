@@ -100,7 +100,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            cam.gameObject.SetActive(false);
+            cam.gameObject.GetComponent<Camera>().enabled = false;
             nameOfPlayer.SetActive(true);
             nameOfPlayer.GetComponentInChildren<TextMeshProUGUI>().text = PhotonNetwork.LocalPlayer.NickName;
         }

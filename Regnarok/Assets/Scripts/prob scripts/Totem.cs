@@ -147,7 +147,7 @@ public class Totem : MonoBehaviour
 			{
 				SpawnEnemies();
 			}
-			GetComponent<PhotonView>().RPC("SyncActivated", RpcTarget.MasterClient);
+			GetComponent<PhotonView>().RPC("SyncActivated", RpcTarget.All);
 		}
 	}
 	public Vector3 GetPos()

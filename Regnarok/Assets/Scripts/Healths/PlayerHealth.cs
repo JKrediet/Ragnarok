@@ -23,12 +23,12 @@ public class PlayerHealth : Health
             StartCoroutine("HealthRegen");
             otherPlayersCam = new List<GameObject>(GameObject.FindGameObjectsWithTag("MainCamera"));
             for (int i = 0; i < otherPlayersCam.Count; i++)
-			{
-				if (otherPlayersCam[i] == mainCam)
-				{
+            {
+                if (otherPlayersCam[i] == mainCam)
+                {
                     otherPlayersCam.Remove(otherPlayersCam[i]);
-				}
-			}
+                }
+            }
         }
     }
 	public override void Health_Damage(float damageValue, bool bleed, Vector3 hitlocation)
@@ -71,11 +71,20 @@ public class PlayerHealth : Health
     }
     IEnumerator RespawnPlayer()
 	{
+        otherPlayersCam = new List<GameObject>(GameObject.FindGameObjectsWithTag("MainCamera"));
+        for (int i = 0; i < otherPlayersCam.Count; i++)
+        {
+            if (otherPlayersCam[i] == mainCam)
+            {
+                otherPlayersCam.Remove(otherPlayersCam[i]);
+            }
+        }
         mainCam.SetActive(false);
         mesh.SetActive(false);
-        otherPlayersCam[index].SetActive(true);
+        otherPlayersCam[index].GetComponent<Camera>().enabled = true;
         yield return new WaitForSeconds(respawnTime);
-        otherPlayersCam[index].SetActive(false);
+        SincHeal(100);
+        otherPlayersCam[index].GetComponent<Camera>().enabled = false;
         mainCam.SetActive(true);
         mesh.SetActive(true);
     }
