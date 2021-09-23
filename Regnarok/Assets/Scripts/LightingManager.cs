@@ -18,7 +18,7 @@ public class LightingManager : MonoBehaviour
 	private void Start()
 	{
         gm = GetComponent<GameManager>();
-        RenderSettings.fog = false;
+        RenderSettings.fog = true;
     }
 	private void Update()
     {
@@ -32,8 +32,7 @@ public class LightingManager : MonoBehaviour
                 TimeOfDay += Time.deltaTime/ devideNight;
 				if (!isNight)
 				{
-					isNight = true;
-                    RenderSettings.fog = true;
+                    isNight = true;
                     if (!gm.isDoingNight)
 					{
                         if (PhotonNetwork.IsMasterClient)
@@ -48,7 +47,6 @@ public class LightingManager : MonoBehaviour
                 TimeOfDay += Time.deltaTime / devideDay;
                 if (isNight)
                 {
-                    RenderSettings.fog = false;
                     isNight = false;
                     gm.isDoingNight = false;
                 }

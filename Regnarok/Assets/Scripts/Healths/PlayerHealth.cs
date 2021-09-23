@@ -89,6 +89,7 @@ public class PlayerHealth : Health
         }
         mainCam.SetActive(false);
         mesh.SetActive(false);
+        GetComponent<PlayerController>().isDead = true;
         otherPlayersCam[index].GetComponent<Camera>().enabled = true;
         yield return new WaitForSeconds(respawnTime);
         SincHeal(100);
@@ -96,5 +97,6 @@ public class PlayerHealth : Health
         otherPlayersCam.Clear();
         mainCam.SetActive(true);
         mesh.SetActive(true);
+        GetComponent<PlayerController>().isDead = false;
     }
 }

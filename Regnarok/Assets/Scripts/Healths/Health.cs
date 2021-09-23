@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class Health : MonoBehaviour
 {
-    [SerializeField] protected float maxHealth;
+    [SerializeField] public float maxHealth;
     [HideInInspector] public float health;
     public GameObject damageNumber;
     protected Vector3 lastHitLocation;
