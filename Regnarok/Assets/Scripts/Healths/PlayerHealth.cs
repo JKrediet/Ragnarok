@@ -28,6 +28,10 @@ public class PlayerHealth : Health
                 {
                     otherPlayersCam.Remove(otherPlayersCam[i]);
                 }
+                else if (otherPlayersCam[i].transform.parent.transform.GetComponent<PlayerHealth>().health <= 0)
+				{
+                    otherPlayersCam.Remove(otherPlayersCam[i]);
+                }
             }
         }
     }
@@ -78,6 +82,10 @@ public class PlayerHealth : Health
             {
                 otherPlayersCam.Remove(otherPlayersCam[i]);
             }
+            else if (otherPlayersCam[i].transform.parent.transform.GetComponent<PlayerHealth>().health <= 0)
+            {
+                otherPlayersCam.Remove(otherPlayersCam[i]);
+            }
         }
         mainCam.SetActive(false);
         mesh.SetActive(false);
@@ -85,6 +93,7 @@ public class PlayerHealth : Health
         yield return new WaitForSeconds(respawnTime);
         SincHeal(100);
         otherPlayersCam[index].GetComponent<Camera>().enabled = false;
+        otherPlayersCam.Clear();
         mainCam.SetActive(true);
         mesh.SetActive(true);
     }
