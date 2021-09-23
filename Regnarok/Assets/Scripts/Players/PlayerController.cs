@@ -79,6 +79,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Slider foodCooldownSlider;
     float foodCooldownTimeSteps;
 
+    public bool isDead;
+
     private void Awake()
     {
         pv = GetComponent<PhotonView>();
@@ -120,6 +122,10 @@ public class PlayerController : MonoBehaviour
     {
         if (pv.IsMine)
         {
+            if(isDead)
+            {
+                return;
+            }
             Movement();
             Gravity();
             if (!InventoryIsOpen)
@@ -203,6 +209,10 @@ public class PlayerController : MonoBehaviour
     {
         if (pv.IsMine)
         {
+            if (isDead)
+            {
+                return;
+            }
             ApplyMovement();
         }
     }
@@ -553,13 +563,12 @@ public class PlayerController : MonoBehaviour
     }
     public void DoneAttacking()
     {
-        mayAttack = true;
         animController.SetInteger("Attack", 0);
         animController.speed = 1;
     }
     IEnumerator AttackStuckFix()
     {
-
+        mayAttack = false;
         yield return new WaitForSeconds(totalAttackSpeed);
         mayAttack = true;
     }

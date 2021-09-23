@@ -190,7 +190,6 @@ public class EnviromentSpawner : MonoBehaviour
                 tempObject.GetComponent<ItemPickUp>().itemSerialNumber = serialNumberForHitableObjectsl;
                 serialNumberForHitableObjectsl++;
             }
-            print(serialNumberForHitableObjectsl);
         }
     }
     public void BuildNavMesh()
