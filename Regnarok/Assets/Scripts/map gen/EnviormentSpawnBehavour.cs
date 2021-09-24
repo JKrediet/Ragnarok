@@ -10,10 +10,10 @@ public class EnviormentSpawnBehavour : MonoBehaviour
     public float heightOffset = 1f;
     public float turnOffRb=1f;
     public bool usesRbFall;
+    
     void Start()
     {
         FindLand();
-        
     }
     public void FindLand()
     {
