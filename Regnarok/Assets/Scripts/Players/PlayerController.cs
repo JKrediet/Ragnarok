@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
     Vector3 movementSpeed, movementDirection;
     [HideInInspector] public ChestInventory lastChest;
     [HideInInspector] public CraftingStation lastCratingStation;
+    [HideInInspector] public OvenStation lastOvenStation;
     //CraftStation craftStation;
 
     //camera
@@ -59,8 +60,6 @@ public class PlayerController : MonoBehaviour
 
     public Animator animController;
 
-    public LayerMask chestLayer;
-
     public int playerBalance;
 
     public GameObject nameOfPlayer;
@@ -72,6 +71,7 @@ public class PlayerController : MonoBehaviour
     GameObject ghostplacement;
     [SerializeField] List<GameObject> ghostList;
     [SerializeField] List<GameObject> actualItemList;
+    int selectedplacement;
 
     float eatCooldown;
     public float eatTime;
@@ -179,6 +179,15 @@ public class PlayerController : MonoBehaviour
                 {
                     lastCratingStation.CloseChestInventory();
                     lastCratingStation = null;
+                }
+            }
+            if (lastOvenStation != null)
+            {
+                float distance = Vector3.Distance(transform.position, lastOvenStation.transform.position);
+                if (distance > 5)
+                {
+                    lastOvenStation.CloseChestInventory();
+                    lastOvenStation = null;
                 }
             }
         }
@@ -388,9 +397,14 @@ public class PlayerController : MonoBehaviour
                             GameObject spawnThis = default;
                             for (int i = 0; i < ghostList.Count; i++)
                             {
+                                if(spawnThis != default)
+                                {
+                                    continue;
+                                }
                                 if (heldItem.itemName == ghostList[i].name)
                                 {
                                     spawnThis = ghostList[i];
+                                    selectedplacement = i;
                                 }
                             }
                             if (spawnThis != default)
@@ -448,19 +462,12 @@ public class PlayerController : MonoBehaviour
             Vector3 ghostPosition = _hit.point;
             Quaternion ghostRotation = Quaternion.Euler(rotationddd);
 
-            for (int i = 0; i < actualItemList.Count; i++)
-            {
-                if(actualItemList[i].name == heldItem.itemName)
-                {
-                    spawnThis = actualItemList[i];
-                    GetComponent<Inventory>().hotBarSlots[GetComponent<Inventory>().hotbarLocation].item = null;
-                    heldItem = null;
-                    GetComponent<Inventory>().RefreshUI();
-                }
-            }
+            spawnThis = actualItemList[selectedplacement];
+            GetComponent<Inventory>().hotBarSlots[GetComponent<Inventory>().hotbarLocation].item = null;
+            heldItem = null;
+            GetComponent<Inventory>().RefreshUI();
             if (spawnThis != default)
             {
-                print(spawnThis.name);
                 PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Stations", "placeAbleItems", "ActualItems", spawnThis.name), ghostPosition, ghostRotation);
             }
             else
@@ -474,7 +481,7 @@ public class PlayerController : MonoBehaviour
     {
         if (pv.IsMine)
         {
-            Collider[] thingsHit = Physics.OverlapSphere(attackPos.position, attackRadius);
+            Collider[] thingsHit = Physics.OverlapSphere(attackPos.position, attackRadius, playerAimMask);
 
             //check hit things
             foreach (Collider hitObject in thingsHit)
@@ -616,6 +623,12 @@ public class PlayerController : MonoBehaviour
                         GetComponent<Inventory>().OpenActualInventory(true);
                         lastCratingStation = _hit.transform.GetComponent<CraftingStation>();
                         lastCratingStation.OpenCratingInventory(GetComponent<CharacterStats>(), GetComponent<Inventory>());
+                    }
+                    else if (_hit.transform.GetComponent<OvenStation>())
+                    {
+                        GetComponent<Inventory>().OpenActualInventory(true);
+                        lastOvenStation = _hit.transform.GetComponent<OvenStation>();
+                        lastOvenStation.OpenCratingInventory(GetComponent<CharacterStats>(), GetComponent<Inventory>());
                     }
                     else if (_hit.transform.GetComponent<ItemPickUp>())
                     {

@@ -38,7 +38,7 @@ public class OvenStation : MonoBehaviour
         }
         if (finishedSlot.item != null)
         {
-            if (finishedSlot.item.itemName != smeltSlot.item.itemName)
+            if (finishedSlot.item.itemName != ItemList.SelectItem(smeltSlot.item.itemName).smeltResult)
             {
                 canSmelt = false;
                 return;
@@ -57,18 +57,20 @@ public class OvenStation : MonoBehaviour
     }
     void BeginSmelt()
     {
-        smeltSlot.item.itemAmount--;
-        if (smeltSlot.item.itemAmount == 0)
-        {
-            smeltSlot.item = null;
-        }
         UpdateSlots();
         canSmelt = true;
     }
     void FinishSmelt()
     {
-        CreateItem(smeltSlot.item.itemName, 1, ItemList.SelectItem(smeltSlot.item.itemName).sprite, EquipmentType.none, ItemList.SelectItem(smeltSlot.item.itemName).maxStackSize);
+        ItemContent meltedItem = ItemList.SelectItem(ItemList.SelectItem(smeltSlot.item.itemName).smeltResult);
+        CreateItem(meltedItem.name, 1 + GetFinishedSlotAmount(), meltedItem.sprite, EquipmentType.none, meltedItem.maxStackSize);
+        smeltSlot.item.itemAmount--;
+        if (smeltSlot.item.itemAmount == 0)
+        {
+            smeltSlot.item = null;
+        }
         CheckSlots();
+        UpdateSlots();
     }
     public void CreateItem(string name, int amount, Sprite image, EquipmentType type, int maxStack)
     {
@@ -77,6 +79,17 @@ public class OvenStation : MonoBehaviour
 
         finishedSlot.item = newItem;
         UpdateSlots();
+    }
+    int GetFinishedSlotAmount()
+    {
+        if(finishedSlot.item != null)
+        {
+            return finishedSlot.item.itemAmount;
+        }
+        else
+        {
+            return 0;
+        }
     }
     void UpdateSlots()
     {
@@ -111,6 +124,13 @@ public class OvenStation : MonoBehaviour
         {
             if(fuelTime > 0)
             {
+                if(smeltSlot.item == null)
+                {
+                    smeltProgress = 0;
+                    canSmelt = false;
+                    fuelSlider.value = 0;
+                    return;
+                }
                 if(Time.time > smeltTime)
                 {
                     smeltTime = Time.time + 0.5f;
@@ -158,5 +178,6 @@ public class OvenStation : MonoBehaviour
     public void MoveItem(ItemSlot slot)
     {
         character.MoveItem(slot);
+        UpdateSlots();
     }
 }

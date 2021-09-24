@@ -287,15 +287,21 @@ public class Inventory : MonoBehaviour
             craftPanel.SetActive(inventoryEnabled);
         }
         GetComponent<PlayerController>().LockCamera();
-        if(GetComponent<PlayerController>().lastChest != null)
+        PlayerController con = GetComponent<PlayerController>();
+        if (con.lastChest != null)
         {
-            GetComponent<PlayerController>().lastChest.CloseChestInventory();
-            GetComponent<PlayerController>().lastChest = null;
+            con.lastChest.CloseChestInventory();
+            con.lastChest = null;
         }
-        if (GetComponent<PlayerController>().lastCratingStation != null)
+        if (con.lastCratingStation != null)
         {
-            GetComponent<PlayerController>().lastCratingStation.CloseChestInventory();
-            GetComponent<PlayerController>().lastCratingStation = null;
+            con.lastCratingStation.CloseChestInventory();
+            con.lastCratingStation = null;
+        }
+        if (con.lastOvenStation != null)
+        {
+            con.lastOvenStation.CloseChestInventory();
+            con.lastOvenStation = null;
         }
         if (!inventoryEnabled)
         {
@@ -306,6 +312,7 @@ public class Inventory : MonoBehaviour
                 character.draggableItem.item = null;
                 character.draggableItem.stackAmountText.text = "";
                 character.draggableItem.gameObject.GetComponent<Image>().color = character.disabledColor;
+                character.itemIsBeingDragged = false;
             }
         }
         else
@@ -317,7 +324,7 @@ public class Inventory : MonoBehaviour
     public void DropItem(Item item)
     {
         //master client needs to do this!
-        GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", item.itemName), transform.position + transform.forward * 2, Quaternion.identity);
+        GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", item.itemName), transform.position + transform.forward, Quaternion.identity);
         droppedItem.GetComponent<Rigidbody>().AddExplosionForce(100, transform.position + transform.forward - transform.up, 2);
         droppedItem.GetComponent<WorldItem>().SetUp(item.itemName, item.itemAmount, ItemList.SelectItem(item.itemName).sprite, ItemList.SelectItem(item.itemName).type, ItemList.SelectItem(item.itemName).maxStackSize);
         SelectItemInHotBar(hotbarLocation);

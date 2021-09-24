@@ -24,6 +24,7 @@ public struct ItemContent
     public int foodHealAmount;
     [Range(0, 600)]
     public int smeltTime;
+    public string smeltResult;
 }
 
 public class ItemList : MonoBehaviour

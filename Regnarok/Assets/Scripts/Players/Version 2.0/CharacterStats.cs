@@ -9,7 +9,7 @@ public class CharacterStats : MonoBehaviour
     [SerializeField] EquipmentPanel EquipmentPanel;
     public ItemSlot draggableItem;
     public Items[] itemList;//list of items
-    bool itemIsBeingDragged;
+    public bool itemIsBeingDragged;
     PlayerController playercontroller;
 
     //color
@@ -124,7 +124,15 @@ public class CharacterStats : MonoBehaviour
     }
     public void MoveItem(ItemSlot itemslot)
     {
-        if(Input.GetKey(KeyCode.Q))
+        if(GetComponent<PlayerController>().lastCratingStation != null)
+        {
+            GetComponent<PlayerController>().lastCratingStation.CanCraft();
+        }
+        else
+        {
+            GetComponent<InventoryCraft>().CanCraft();
+        }
+        if (Input.GetKey(KeyCode.Q))
         {
             inventory.DropItem(itemslot.item);
             itemslot.item = null;
@@ -198,10 +206,9 @@ public class CharacterStats : MonoBehaviour
                         EquipmentSlots quipSlot = itemslot as EquipmentSlots;
                         if (quipSlot.EquipmentType == draggableItem.item.equipment)
                         {
-                            draggableItem.item = itemslot.item;
-                            itemslot.item = null;
-                            draggableItem.gameObject.GetComponent<Image>().color = normalColor;
-                            draggableItem.gameObject.GetComponent<Image>().sprite = draggableItem.item.icon;
+                            itemslot.item = draggableItem.item;
+                            draggableItem.item = null;
+                            draggableItem.gameObject.GetComponent<Image>().color = disabledColor;
 
                             //toggle
                             itemIsBeingDragged = !itemIsBeingDragged;
@@ -321,6 +328,5 @@ public class CharacterStats : MonoBehaviour
     {
         public int id;
         public int amount;
-        
     }
 }
