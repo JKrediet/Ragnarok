@@ -6,6 +6,7 @@ using Photon.Pun;
 using System.IO;
 public class EnviromentSpawner : MonoBehaviour
 {
+    public float timeBetweenSpawns;
     public float spawnCoolDownForEachSpawn=0.00001f;
     public bool canBakeNav;
     public Objects[] spawnItems;
@@ -164,8 +165,9 @@ public class EnviromentSpawner : MonoBehaviour
                     }
                 }
             }
-            yield return new WaitForSeconds(spawnCoolDownForEachSpawn);
+        yield return new WaitForSeconds(spawnCoolDownForEachSpawn);
 		}
+        
 
         Invoke("BuildNavMesh", 0.5f);
     }
@@ -191,14 +193,17 @@ public class EnviromentSpawner : MonoBehaviour
                 serialNumberForHitableObjectsl++;
             }
         }
+        new WaitForSeconds(timeBetweenSpawns);
     }
     public void BuildNavMesh()
-    {
+	{
 		if (canBakeNav)
-        {
-            mesh.GetComponent<NavMeshSurface>().BuildNavMesh();
-        }
-        Invoke("SpawnPlayers", 1);
+		{
+			mesh.GetComponent<NavMeshSurface>().BuildNavMesh();
+		}
+
+        new WaitForSeconds(1.5f);
+        SpawnPlayers();
     }
     public void SpawnPlayers()
 	{
