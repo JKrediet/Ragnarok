@@ -32,8 +32,6 @@ struct GeometryOutput {
 float rand(float3 seed) {
 	return frac(sin(dot(seed.xyz, float3(12.9898, 78.233, 53.539))) * 43758.5453);
 }
-
-// https://gist.github.com/keijiro/ee439d5e7388f3aafc5296005c8c3f33
 float3x3 AngleAxis3x3(float angle, float3 axis) {
 	float c, s;
 	sincos(angle, s, c);
@@ -139,38 +137,7 @@ void geom(uint primitiveID : SV_PrimitiveID, triangle Varyings input[3], inout T
 	// Normal Mesh
 	// -----------------------
 
-	float v = 1 - saturate(bladeSegments);
-
-	output.positionWS = input[0].positionWS;
-	output.normalWS = input[0].normal;
-	output.positionCS = WorldToHClip(output.positionWS, output.normalWS);
-	output.uv = float2(0, v);
-	triStream.Append(output);
-
-	output.positionWS = input[1].positionWS;
-	output.normalWS = input[1].normal;
-	output.positionCS = WorldToHClip(output.positionWS, output.normalWS);
-	output.uv = float2(0, v);
-	triStream.Append(output);
-
-	output.positionWS = input[2].positionWS;
-	output.normalWS = input[2].normal;
-	output.positionCS = WorldToHClip(output.positionWS, output.normalWS);
-	output.uv = float2(0, v);
-	triStream.Append(output);
-
-	triStream.RestartStrip();
-
-	if (bladeSegments <= 0){
-		// Too far away, don't render grass blades (should only really be used for first person camera)
-		return;
-	}
-
-	// Only render grass blades infront of camera (nothing behind)
-	if (input[0].positionVS.z > 0){
-		return;
-	}
-
+	
 	// -----------------------
 	// Construct World -> Tangent Matrix (for aligning grass with mesh normals)
 	// -----------------------

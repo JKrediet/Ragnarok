@@ -4,10 +4,12 @@ using UnityEngine.EventSystems;
 using UnityEngine.AI;
 using Photon.Pun;
 using System.IO;
+using System.Collections.Generic;
+
 public class EnviromentSpawner : MonoBehaviour
 {
     public float timeBetweenSpawns;
-    public float spawnCoolDownForEachSpawn=0.00001f;
+    public float spawnCoolDownForEachSpawn = 0.00001f;
     public bool canBakeNav;
     public Objects[] spawnItems;
     [Header("Height Values")]
@@ -21,14 +23,15 @@ public class EnviromentSpawner : MonoBehaviour
     public Transform grassHolder;
     [Space(2)]
     public GameObject mesh;
+    public GameObject grassMesh;
     public MapGenerator mapGen;
     private Vector3 spawnPoint;
     int serialNumberForHitableObjectsl = 0;
 
     public void StartGenerating()
-	{
+    {
         StartCoroutine(Generate());
-	}
+    }
     public IEnumerator Generate()
     {
 
@@ -36,20 +39,20 @@ public class EnviromentSpawner : MonoBehaviour
         mesh.AddComponent<MeshCollider>();
         new WaitForSeconds(1);
         for (int i = 0; i < spawnItems.Length; i++)
-		{
-			for (int i_ = 0; i_ < spawnItems[i].amountToSpawn; i_++)
-			{
+        {
+            for (int i_ = 0; i_ < spawnItems[i].amountToSpawn; i_++)
+            {
                 if (spawnItems[i].spawnItem)
                 {
                     if (Chance())
                     {
                         Transform parent;
-						if (spawnItems[i].isGrass)
-						{
+                        if (spawnItems[i].isGrass)
+                        {
                             parent = grassHolder;
-						}
-						else
-						{
+                        }
+                        else
+                        {
                             parent = transform;
 
                         }
@@ -74,7 +77,7 @@ public class EnviromentSpawner : MonoBehaviour
                             {
 
                             }
-                            else if(hitInfo.transform.tag == "Mesh")
+                            else if (hitInfo.transform.tag == "Mesh")
                             {
                                 if (spawnItems[i].canSpawnOnSand)
                                 {
@@ -155,7 +158,7 @@ public class EnviromentSpawner : MonoBehaviour
                                             }
                                             else
                                             {
-                                                InstatiateEnviorment(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, parent,i);
+                                                InstatiateEnviorment(spawnItems[i].toSpawn, spawnPoint, Quaternion.identity, parent, i);
                                             }
                                         }
                                     }
@@ -165,17 +168,17 @@ public class EnviromentSpawner : MonoBehaviour
                     }
                 }
             }
-        yield return new WaitForSeconds(spawnCoolDownForEachSpawn);
-		}
-        
+            yield return new WaitForSeconds(spawnCoolDownForEachSpawn);
+        }
+
 
         Invoke("BuildNavMesh", 0.5f);
     }
-    public void InstatiateEnviorment(GameObject toSpawn, Vector3 location, Quaternion rotation, Transform parent,int i)
+    public void InstatiateEnviorment(GameObject toSpawn, Vector3 location, Quaternion rotation, Transform parent, int i)
     {
         if (spawnItems[i].spawnWithPhoton)
         {
-            GameObject tempObject= PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs",spawnItems[i].name), location, rotation);
+            GameObject tempObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", spawnItems[i].name), location, rotation);
             tempObject.transform.parent = parent;
         }
         else
@@ -196,16 +199,77 @@ public class EnviromentSpawner : MonoBehaviour
         new WaitForSeconds(timeBetweenSpawns);
     }
     public void BuildNavMesh()
-	{
-		if (canBakeNav)
-		{
-			mesh.GetComponent<NavMeshSurface>().BuildNavMesh();
-		}
-
+    {
+        if (canBakeNav)
+        {
+            mesh.GetComponent<NavMeshSurface>().BuildNavMesh();
+        }
+        grassMesh.GetComponent<MeshFilter>().mesh = mesh.GetComponent<MeshFilter>().mesh;
         new WaitForSeconds(1.5f);
+        DeleteLowMeshGras();
+    }
+    public void DeleteLowMeshGras()
+    {
+        for (int i = 0; i < grassMesh.GetComponent<MeshFilter>().mesh.vertexCount; i++)
+        {
+            if (grassMesh.GetComponent<MeshFilter>().mesh.vertices[i].y <= maxSandHeight)
+            {
+                grassMesh.GetComponent<MeshFilter>().mesh.vertices[i].y = -100;
+            }
+
+        }
+        new WaitForSeconds(0.5f);
+        AddGrass();
+    }
+    public void AddGrass()
+    {
+        Mesh mesh = grassMesh.GetComponent<MeshFilter>().mesh;
+        int[] triangles = mesh.triangles;
+        Vector3[] vertices = mesh.vertices;
+        Vector2[] uv = mesh.uv;
+        Vector3[] normals = mesh.normals;
+        List<Vector3> vertList = new List<Vector3>();
+        List<Vector2> uvList = new List<Vector2>();
+        List<Vector3> normalsList = new List<Vector3>();
+        List<int> trianglesList = new List<int>();
+
+        
+        int i = 0;
+        while (i < grassMesh.GetComponent<MeshFilter>().mesh.vertices.Length)
+        {
+            vertList.Add(vertices[i]);
+            uvList.Add(uv[i]);
+            normalsList.Add(normals[i]);
+            i++;
+        }
+        for (int triCount = 0; triCount < triangles.Length; triCount += 3)
+        {
+            if ((transform.TransformPoint(vertices[triangles[triCount]]).y > .7f ) &&
+                (transform.TransformPoint(vertices[triangles[triCount + 1]]).y > .7f) &&
+                (transform.TransformPoint(vertices[triangles[triCount + 2]]).y > .7f))
+            {
+
+                trianglesList.Add(triangles[triCount]);
+                trianglesList.Add(triangles[triCount + 1]);
+                trianglesList.Add(triangles[triCount + 2]);
+            }
+        }
+
+
+        triangles = trianglesList.ToArray();
+        vertices = vertList.ToArray();
+        uv = uvList.ToArray();
+        normals = normalsList.ToArray();
+        //mesh.Clear();
+        grassMesh.GetComponent<MeshFilter>().mesh.triangles = triangles;
+        grassMesh.GetComponent<MeshFilter>().mesh.vertices = vertices;
+        grassMesh.GetComponent<MeshFilter>().mesh.uv = uv;
+		grassMesh.GetComponent<MeshFilter>().mesh.normals = normals;
+
+
         SpawnPlayers();
     }
-    public void SpawnPlayers()
+	public void SpawnPlayers()
 	{
         FindObjectOfType<GameManager>().SpawnPlayers();
 	}
