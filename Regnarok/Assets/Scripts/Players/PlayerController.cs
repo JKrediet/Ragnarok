@@ -350,15 +350,16 @@ public class PlayerController : MonoBehaviour
     }
     void StartEating()
     {
+        Inventory inv = GetComponent<Inventory>();
         eatingOnCooldown = true;
         foodCooldownSlider.value = eatTime;
         //particle here
         eatCooldown = Time.time + eatTime;
-        heldItem.itemAmount--;
-        GetComponent<Health>().TakeHeal(heldItem.foodLifeRestore);
-        if (heldItem.itemAmount == 0)
+        inv.hotBarSlots[inv.hotbarLocation].item.itemAmount--;
+        GetComponent<Health>().TakeHeal(inv.hotBarSlots[inv.hotbarLocation].item.foodLifeRestore);
+        if (inv.hotBarSlots[inv.hotbarLocation].item.itemAmount == 0)
         {
-            heldItem = null;
+            inv.hotBarSlots[inv.hotbarLocation].item = null;
         }
         GetComponent<Inventory>().RefreshUI();
     }
@@ -530,7 +531,7 @@ public class PlayerController : MonoBehaviour
                         }
                         else
                         {
-                            hitObject.GetComponent<HitableObject>().TakeDamage(1, 0, hitObject.ClosestPoint(attackPos.position));
+                            hitObject.GetComponent<HitableObject>().TakeDamage(totalDamage + critDamage, EquipmentType.none, hitObject.ClosestPoint(attackPos.position));
                         }
                     }
                     if (hitObject.GetComponent<EnemieHealth>())
@@ -554,7 +555,7 @@ public class PlayerController : MonoBehaviour
                         }
                         else
                         {
-                            hitObject.GetComponent<EnemieHealth>().TakeDamage(1, false, hitObject.ClosestPoint(attackPos.position));
+                            hitObject.GetComponent<EnemieHealth>().TakeDamage(totalDamage + critDamage, false, hitObject.ClosestPoint(attackPos.position));
                         }
                     }
                 }
@@ -569,7 +570,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator AttackStuckFix()
     {
         mayAttack = false;
-        yield return new WaitForSeconds(totalAttackSpeed);
+        yield return new WaitForSeconds(totalAttackSpeed * 1.1f);
         mayAttack = true;
     }
     public void LockCamera()
