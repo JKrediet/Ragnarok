@@ -210,8 +210,8 @@ public class EnviromentSpawner : MonoBehaviour
     }
     public void DeleteLowMeshGras()
     {
-        FindObjectOfType<GameManager>().SpawnPlayers();
-        Invoke("AddGrass", 0.5f);
+        AddGrass();
+        Invoke("SpawnPlayers", 0.1f);
     }
     public void AddGrass()
     {
@@ -238,7 +238,7 @@ public class EnviromentSpawner : MonoBehaviour
         {
             if ((transform.TransformPoint(vertices[triangles[triCount]]).y > .8f ) &&
                 (transform.TransformPoint(vertices[triangles[triCount + 1]]).y > .8f) &&
-                (transform.TransformPoint(vertices[triangles[triCount + 2]]).y > .8f))
+                (transform.TransformPoint(vertices[triangles[triCount + 2]]).y > .8f    ))
             {
                 if ((transform.TransformPoint(vertices[triangles[triCount]]).y < 20) &&
                 (transform.TransformPoint(vertices[triangles[triCount + 1]]).y < 20) &&
@@ -263,6 +263,10 @@ public class EnviromentSpawner : MonoBehaviour
 
         new WaitForSeconds(1);
         grassMesh.SetActive(true);
+    }
+    public void SpawnPlayers()
+	{
+        FindObjectOfType<GameManager>().SpawnPlayers();
     }
     public bool Chance()
     {
