@@ -210,18 +210,8 @@ public class EnviromentSpawner : MonoBehaviour
     }
     public void DeleteLowMeshGras()
     {
-        for (int i = 0; i < grassMesh.GetComponent<MeshFilter>().mesh.vertexCount; i++)
-        {
-            if (grassMesh.GetComponent<MeshFilter>().mesh.vertices[i].y <= maxSandHeight)
-            {
-                grassMesh.GetComponent<MeshFilter>().mesh.vertices[i].y = -100;
-            }
-
-        }
-        new WaitForSeconds(0.5f);
-        SpawnPlayers();
-        new WaitForSeconds(0.5f);
-        //AddGrass();
+        FindObjectOfType<GameManager>().SpawnPlayers();
+        Invoke("AddGrass", 0.5f);
     }
     public void AddGrass()
     {
@@ -246,14 +236,18 @@ public class EnviromentSpawner : MonoBehaviour
         }
         for (int triCount = 0; triCount < triangles.Length; triCount += 3)
         {
-            if ((transform.TransformPoint(vertices[triangles[triCount]]).y > .7f ) &&
-                (transform.TransformPoint(vertices[triangles[triCount + 1]]).y > .7f) &&
-                (transform.TransformPoint(vertices[triangles[triCount + 2]]).y > .7f))
+            if ((transform.TransformPoint(vertices[triangles[triCount]]).y > .8f ) &&
+                (transform.TransformPoint(vertices[triangles[triCount + 1]]).y > .8f) &&
+                (transform.TransformPoint(vertices[triangles[triCount + 2]]).y > .8f))
             {
-
-                trianglesList.Add(triangles[triCount]);
-                trianglesList.Add(triangles[triCount + 1]);
-                trianglesList.Add(triangles[triCount + 2]);
+                if ((transform.TransformPoint(vertices[triangles[triCount]]).y < 20) &&
+                (transform.TransformPoint(vertices[triangles[triCount + 1]]).y < 20) &&
+                (transform.TransformPoint(vertices[triangles[triCount + 2]]).y < 20))
+                {
+                    trianglesList.Add(triangles[triCount]);
+                    trianglesList.Add(triangles[triCount + 1]);
+                    trianglesList.Add(triangles[triCount + 2]);
+                }
             }
         }
 
@@ -262,7 +256,6 @@ public class EnviromentSpawner : MonoBehaviour
         vertices = vertList.ToArray();
         uv = uvList.ToArray();
         normals = normalsList.ToArray();
-        //mesh.Clear();
         grassMesh.GetComponent<MeshFilter>().mesh.triangles = triangles;
         grassMesh.GetComponent<MeshFilter>().mesh.vertices = vertices;
         grassMesh.GetComponent<MeshFilter>().mesh.uv = uv;
@@ -270,11 +263,6 @@ public class EnviromentSpawner : MonoBehaviour
 
         new WaitForSeconds(1);
         grassMesh.SetActive(true);
-    }
-	public void SpawnPlayers()
-	{
-        FindObjectOfType<GameManager>().SpawnPlayers();
-        print("2");
     }
     public bool Chance()
     {
