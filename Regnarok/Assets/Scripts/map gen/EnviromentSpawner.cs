@@ -219,7 +219,9 @@ public class EnviromentSpawner : MonoBehaviour
 
         }
         new WaitForSeconds(0.5f);
-        AddGrass();
+        SpawnPlayers();
+        new WaitForSeconds(0.5f);
+        //AddGrass();
     }
     public void AddGrass()
     {
@@ -266,13 +268,14 @@ public class EnviromentSpawner : MonoBehaviour
         grassMesh.GetComponent<MeshFilter>().mesh.uv = uv;
 		grassMesh.GetComponent<MeshFilter>().mesh.normals = normals;
 
-
-        SpawnPlayers();
+        new WaitForSeconds(1);
+        grassMesh.SetActive(true);
     }
 	public void SpawnPlayers()
 	{
         FindObjectOfType<GameManager>().SpawnPlayers();
-	}
+        print("2");
+    }
     public bool Chance()
     {
         if (Random.Range(0.00f,5.00f) <= 4.00f)
