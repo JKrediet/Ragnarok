@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour
             {
                 spawnpos.y = hitInfo.point.y+spawnHeightOffset;
             }
-            if (playerManager.pv.Owner == PhotonNetwork.PlayerList[i])
+            if (playerManager.pv.IsMine)
             {
                 playerManager.SpawnPlayer(spawnpos);
             }

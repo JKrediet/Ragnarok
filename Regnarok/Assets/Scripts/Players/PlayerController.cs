@@ -104,7 +104,7 @@ public class PlayerController : MonoBehaviour
         {
             cam.gameObject.GetComponent<Camera>().enabled = false;
             nameOfPlayer.SetActive(true);
-            nameOfPlayer.GetComponentInChildren<TextMeshProUGUI>().text = PhotonNetwork.LocalPlayer.NickName;
+            nameOfPlayer.GetComponentInChildren<TextMeshProUGUI>().text = pv.Owner.NickName;
         }
         FindObjectOfType<GameManager>().playerObjectList.Add(gameObject);
     }
