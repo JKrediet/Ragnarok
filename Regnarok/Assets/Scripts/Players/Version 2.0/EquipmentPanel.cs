@@ -8,11 +8,6 @@ public class EquipmentPanel : MonoBehaviour
     [SerializeField] Transform equipmentSlotsParent;
     [SerializeField] EquipmentSlots[] equipmentSlots;
 
-    private void OnValidate()
-    {
-        equipmentSlots = equipmentSlotsParent.GetComponentsInChildren<EquipmentSlots>();
-    }
-
     public bool AddItem(EquipableItem item, out EquipableItem previousItem)
     {
         for (int i = 0; i < equipmentSlots.Length; i++)

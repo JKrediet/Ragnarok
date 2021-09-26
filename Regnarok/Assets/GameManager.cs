@@ -36,11 +36,11 @@ public class GameManager : MonoBehaviour
     }
     void Reroll()
     {
-        int roll = Random.Range(0, videos.Length);
-        videoplayer.clip = videos[roll];
-        videoplayer.Play();
-        if(loadingScreen.activeSelf)
+        if (loadingScreen.activeSelf)
         {
+            int roll = Random.Range(0, videos.Length);
+            videoplayer.clip = videos[roll];
+            videoplayer.Play();
             Invoke("Reroll", 5);
         }
     }

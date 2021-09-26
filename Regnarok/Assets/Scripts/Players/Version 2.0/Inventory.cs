@@ -57,6 +57,11 @@ public class Inventory : MonoBehaviour
     }
     private void Start()
     {
+        Invoke("FixHotbarLocation", 0.1f);
+    }
+    void FixHotbarLocation()
+    {
+        SelectItemInHotBar(0);
         for (int i = 0; i < itemSlots.Length; i++)
         {
             itemSlots[i].slotID = i;
@@ -67,11 +72,6 @@ public class Inventory : MonoBehaviour
             hotBarSlots[i].slotID = i + 25;
             hotBarSlots[i].inv = this;
         }
-        Invoke("FixHotbarLocation", 1);
-    }
-    void FixHotbarLocation()
-    {
-        SelectItemInHotBar(0);
     }
     private void Update() //<----------------------------- update
     {
