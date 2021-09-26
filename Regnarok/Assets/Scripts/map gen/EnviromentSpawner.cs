@@ -205,13 +205,12 @@ public class EnviromentSpawner : MonoBehaviour
             mesh.GetComponent<NavMeshSurface>().BuildNavMesh();
         }
         grassMesh.GetComponent<MeshFilter>().mesh = mesh.GetComponent<MeshFilter>().mesh;
+        Invoke("SpawnPlayers", 3);
         new WaitForSeconds(1.5f);
-        DeleteLowMeshGras();
     }
     public void DeleteLowMeshGras()
     {
         AddGrass();
-        Invoke("SpawnPlayers", 0.1f);
     }
     public void AddGrass()
     {
@@ -260,13 +259,14 @@ public class EnviromentSpawner : MonoBehaviour
         grassMesh.GetComponent<MeshFilter>().mesh.vertices = vertices;
         grassMesh.GetComponent<MeshFilter>().mesh.uv = uv;
 		grassMesh.GetComponent<MeshFilter>().mesh.normals = normals;
-
-        new WaitForSeconds(1);
-        grassMesh.SetActive(true);
+        SpawnPlayers();
     }
     public void SpawnPlayers()
 	{
+        new WaitForSeconds(3.5f);
+        grassMesh.SetActive(true);
         FindObjectOfType<GameManager>().SpawnPlayers();
+        print("Spawnerd");
     }
     public bool Chance()
     {
