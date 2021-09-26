@@ -82,6 +82,7 @@ public class EnviromentSpawner : MonoBehaviour
                             }
                             else if (hitInfo.transform.tag == "Mesh")
                             {
+                                new WaitForSeconds(0.005f);
                                 if (spawnItems[i].canSpawnOnSand)
                                 {
                                     if (hitInfo.point.y <= minMountenHeight)
@@ -147,6 +148,7 @@ public class EnviromentSpawner : MonoBehaviour
                                 }
                                 else
                                 {
+                                    new WaitForSeconds(0.005f);
                                     if (hitInfo.point.y >= maxSandHeight && hitInfo.point.y <= minMountenHeight)
                                     {
                                         if (spawnItems[i].randomRot)
@@ -205,6 +207,7 @@ public class EnviromentSpawner : MonoBehaviour
         {
             mesh.GetComponent<NavMeshSurface>().BuildNavMesh();
         }
+        new WaitForSeconds(1);
         SpawnPlayers();
     }
     public void AddGrass()
