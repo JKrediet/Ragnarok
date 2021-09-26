@@ -82,7 +82,6 @@ public class EnviromentSpawner : MonoBehaviour
                             }
                             else if (hitInfo.transform.tag == "Mesh")
                             {
-                                new WaitForSeconds(0.005f);
                                 if (spawnItems[i].canSpawnOnSand)
                                 {
                                     if (hitInfo.point.y <= minMountenHeight)
@@ -148,7 +147,6 @@ public class EnviromentSpawner : MonoBehaviour
                                 }
                                 else
                                 {
-                                    new WaitForSeconds(0.005f);
                                     if (hitInfo.point.y >= maxSandHeight && hitInfo.point.y <= minMountenHeight)
                                     {
                                         if (spawnItems[i].randomRot)
@@ -171,10 +169,9 @@ public class EnviromentSpawner : MonoBehaviour
                             }
                         }
                     }
-                    new WaitForSeconds(timeBetweenSpawns);
                 }
             }
-            yield return new WaitForSeconds(spawnCoolDownForEachSpawn);
+            yield return new WaitForSecondsRealtime(1);
         }
         Invoke("BuildNavMesh", 0.5f);
     }
@@ -205,7 +202,10 @@ public class EnviromentSpawner : MonoBehaviour
     {
         if (canBakeNav)
         {
-            mesh.GetComponent<NavMeshSurface>().BuildNavMesh();
+            if(PhotonNetwork.IsMasterClient)
+            {
+                mesh.GetComponent<NavMeshSurface>().BuildNavMesh();
+            }
         }
         new WaitForSeconds(1);
         SpawnPlayers();

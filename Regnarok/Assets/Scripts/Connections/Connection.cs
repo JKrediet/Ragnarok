@@ -43,19 +43,9 @@ public class Connection : MonoBehaviourPunCallbacks
     public void CreateRoom()
     {
         PhotonNetwork.CreateRoom(roomName);
-        print(PhotonNetwork.CountOfRooms);
-        //if()
-        //{
-
-        //}
-        //else
-        //{
-        //    PhotonNetwork.CreateRoom(roomName + Random.Range(0, 1000));
-        //}
     }
     public override void OnJoinedRoom()
     {
-        print(PhotonNetwork.CurrentRoom);
         UpdatePlayerList();
         roomNameUI.text = PhotonNetwork.CurrentRoom.Name;
         startButton.SetActive(PhotonNetwork.IsMasterClient);
