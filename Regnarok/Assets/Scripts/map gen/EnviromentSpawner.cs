@@ -22,8 +22,8 @@ public class EnviromentSpawner : MonoBehaviour
     public Transform secondPosInner;
     public Transform grassHolder;
     [Space(2)]
-    public MeshCutter cutter;
     public GameObject mesh;
+    public GameObject grassMesh;
     public MapGenerator mapGen;
     [Space(5)]
     public float minGrassHeight=1.5f;
@@ -173,8 +173,6 @@ public class EnviromentSpawner : MonoBehaviour
             }
             yield return new WaitForSeconds(spawnCoolDownForEachSpawn);
         }
-
-
         Invoke("BuildNavMesh", 0.5f);
     }
     public void InstatiateEnviorment(GameObject toSpawn, Vector3 location, Quaternion rotation, Transform parent, int i)
@@ -207,13 +205,62 @@ public class EnviromentSpawner : MonoBehaviour
         {
             mesh.GetComponent<NavMeshSurface>().BuildNavMesh();
         }
-        Invoke("SpawnPlayers", 3);
-        new WaitForSeconds(1.5f);
-        cutter.CutMesh(mesh);
+        grassMesh.GetComponent<MeshFilter>().mesh = mesh.GetComponent<MeshFilter>().mesh;
+        SpawnPlayers();
+        AddGrass();
+    }
+    public void AddGrass()
+    {
+        Mesh mesh = grassMesh.GetComponent<MeshFilter>().mesh;
+        int[] triangles = mesh.triangles;
+        Vector3[] vertices = mesh.vertices;
+        Vector2[] uv = mesh.uv;
+        Vector3[] normals = mesh.normals;
+        List<Vector3> vertList = new List<Vector3>();
+        List<Vector2> uvList = new List<Vector2>();
+        List<Vector3> normalsList = new List<Vector3>();
+        List<int> trianglesList = new List<int>();
+
+        
+        int i = 0;
+        while (i < grassMesh.GetComponent<MeshFilter>().mesh.vertices.Length)
+        {
+            vertList.Add(vertices[i]);
+            uvList.Add(uv[i]);
+            normalsList.Add(normals[i]);
+            i++;
+        }
+        for (int triCount = 0; triCount < triangles.Length; triCount += 3)
+        {
+            if ((transform.TransformPoint(vertices[triangles[triCount]]).y > minGrassHeight) &&
+                (transform.TransformPoint(vertices[triangles[triCount + 1]]).y > minGrassHeight) &&
+                (transform.TransformPoint(vertices[triangles[triCount + 2]]).y > minGrassHeight))
+            {
+                if ((transform.TransformPoint(vertices[triangles[triCount]]).y < maxGrassHeight) &&
+                (transform.TransformPoint(vertices[triangles[triCount + 1]]).y < maxGrassHeight) &&
+                (transform.TransformPoint(vertices[triangles[triCount + 2]]).y < maxGrassHeight))
+                {
+                    trianglesList.Add(triangles[triCount]);
+                    trianglesList.Add(triangles[triCount + 1]);
+                    trianglesList.Add(triangles[triCount + 2]);
+                }
+            }
+        }
+
+
+        triangles = trianglesList.ToArray();
+        vertices = vertList.ToArray();
+        uv = uvList.ToArray();
+        normals = normalsList.ToArray();
+        grassMesh.GetComponent<MeshFilter>().mesh.triangles = triangles;
+        grassMesh.GetComponent<MeshFilter>().mesh.vertices = vertices;
+        grassMesh.GetComponent<MeshFilter>().mesh.uv = uv;
+		grassMesh.GetComponent<MeshFilter>().mesh.normals = normals;
+        grassMesh.SetActive(true);
     }
     public void SpawnPlayers()
 	{
-        new WaitForSeconds(3.5f);
+        new WaitForSeconds(5);
         FindObjectOfType<GameManager>().SpawnPlayers();
         print("Spawnerd");
     }
