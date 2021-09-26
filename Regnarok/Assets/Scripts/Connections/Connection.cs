@@ -42,14 +42,16 @@ public class Connection : MonoBehaviourPunCallbacks
     #endregion
     public void CreateRoom()
     {
-        if(PhotonNetwork.CreateRoom(roomName))
-        {
+        PhotonNetwork.CreateRoom(roomName);
+        print(PhotonNetwork.CountOfRooms);
+        //if()
+        //{
 
-        }
-        else
-        {
-            PhotonNetwork.CreateRoom(roomName + Random.Range(0, 1000));
-        }
+        //}
+        //else
+        //{
+        //    PhotonNetwork.CreateRoom(roomName + Random.Range(0, 1000));
+        //}
     }
     public override void OnJoinedRoom()
     {
