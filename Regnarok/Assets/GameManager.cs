@@ -33,7 +33,15 @@ public class GameManager : MonoBehaviour
 	{
         es = GetComponent<EnemySpawner>();
         Reroll();
+        Invoke("CheckPlayers", 10);
     }
+    public void CheckPlayers()
+	{
+        if(GameObject.Find("Player") != null)
+		{
+            SpawnPlayers();
+		}
+	}
     void Reroll()
     {
         if (loadingScreen.activeSelf)
