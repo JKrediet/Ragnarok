@@ -340,7 +340,10 @@ public class PlayerController : MonoBehaviour
             {
                 if (Input.GetButtonDown("Fire2"))
                 {
-                    StartEating();
+                    if(!eatingOnCooldown)
+                    {
+                        StartEating();
+                    }
                 }
             }
         }
