@@ -108,6 +108,8 @@ public class MapGenerator : MonoBehaviour
 		if (generateEnviroment)
 		{
             envSpawn.StartGenerating();
-		}
+            envSpawn.AddGrass();
+
+        }
     }
 }

@@ -205,17 +205,16 @@ public class EnviromentSpawner : MonoBehaviour
         {
             mesh.GetComponent<NavMeshSurface>().BuildNavMesh();
         }
-        grassMesh.GetComponent<MeshFilter>().mesh = mesh.GetComponent<MeshFilter>().mesh;
         SpawnPlayers();
-        AddGrass();
     }
     public void AddGrass()
     {
-        Mesh mesh = grassMesh.GetComponent<MeshFilter>().mesh;
-        int[] triangles = mesh.triangles;
-        Vector3[] vertices = mesh.vertices;
-        Vector2[] uv = mesh.uv;
-        Vector3[] normals = mesh.normals;
+        grassMesh.GetComponent<MeshFilter>().mesh = mesh.GetComponent<MeshFilter>().mesh;
+        Mesh meshGrass = grassMesh.GetComponent<MeshFilter>().mesh;
+        int[] triangles = meshGrass.triangles;
+        Vector3[] vertices = meshGrass.vertices;
+        Vector2[] uv = meshGrass.uv;
+        Vector3[] normals = meshGrass.normals;
         List<Vector3> vertList = new List<Vector3>();
         List<Vector2> uvList = new List<Vector2>();
         List<Vector3> normalsList = new List<Vector3>();
@@ -243,6 +242,8 @@ public class EnviromentSpawner : MonoBehaviour
                     trianglesList.Add(triangles[triCount]);
                     trianglesList.Add(triangles[triCount + 1]);
                     trianglesList.Add(triangles[triCount + 2]);
+
+                    new WaitForSeconds(0.0001f);
                 }
             }
         }
