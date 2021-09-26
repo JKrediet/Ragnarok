@@ -173,7 +173,6 @@ public class EnviromentSpawner : MonoBehaviour
             }
             yield return new WaitForSecondsRealtime(1);
         }
-        Invoke("BuildNavMesh", 0.5f);
     }
     public void InstatiateEnviorment(GameObject toSpawn, Vector3 location, Quaternion rotation, Transform parent, int i)
     {
