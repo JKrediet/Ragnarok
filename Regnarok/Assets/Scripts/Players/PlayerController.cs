@@ -96,6 +96,7 @@ public class PlayerController : MonoBehaviour
             staminaLossPerSec = baseStaminaLossPerSec;
             staminaGainedPerSec = baseStaminaGainedPerSec;
             nameOfPlayer.SetActive(false);
+            head.SetActive(false);
 
             mayAttack = true;
             camOriginpos.position = cam.transform.position;

@@ -21,14 +21,10 @@ public class DamageNumbers : MonoBehaviour
         players = new List<GameObject>(GameObject.FindGameObjectsWithTag("Player"));
 		for (int i = 0; i < players.Count; i++)
 		{
-			if (!players[i].GetComponent<PhotonView>().IsMine)
-			{
-                players.Remove(players[i]);
-			}
-			else
+			if (players[i].GetComponent<PhotonView>().IsMine)
 			{
                 target = players[i].transform;
-			}
+            }
 		}
         textMesh.SetText(damageAmount.ToString());
         textColor = textMesh.color;
