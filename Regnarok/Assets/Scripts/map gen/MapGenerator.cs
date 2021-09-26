@@ -94,6 +94,7 @@ public class MapGenerator : MonoBehaviour
             SetMinMaxHeights(vertices[i].y);
             float height = Mathf.InverseLerp(minTerrainheight, maxTerrainheight, vertices[i].y);
             colors[i] = gradient.Evaluate(height);
+            new WaitForSeconds(0.001f);
         }
         mesh.colors = colors;
 		if (!generatedEnv)

@@ -169,6 +169,7 @@ public class EnviromentSpawner : MonoBehaviour
                             }
                         }
                     }
+                    new WaitForSeconds(timeBetweenSpawns);
                 }
             }
             yield return new WaitForSeconds(spawnCoolDownForEachSpawn);
@@ -197,7 +198,6 @@ public class EnviromentSpawner : MonoBehaviour
                 serialNumberForHitableObjectsl++;
             }
         }
-        new WaitForSeconds(timeBetweenSpawns);
     }
     public void BuildNavMesh()
     {
@@ -228,7 +228,8 @@ public class EnviromentSpawner : MonoBehaviour
 			uvList.Add(uv[i]);
 			normalsList.Add(normals[i]);
 			i++;
-		}
+            new WaitForSeconds(0.01f);
+        }
 		for (int triCount = 0; triCount < triangles.Length; triCount += 3)
 		{
 			if ((transform.TransformPoint(vertices[triangles[triCount]]).y > minGrassHeight) &&
@@ -243,12 +244,12 @@ public class EnviromentSpawner : MonoBehaviour
 					trianglesList.Add(triangles[triCount + 1]);
 					trianglesList.Add(triangles[triCount + 2]);
 
-					new WaitForSeconds(0.0001f);
+					new WaitForSeconds(0.45f);
 				}
 			}
 		}
 
-
+            
 		triangles = trianglesList.ToArray();
 		vertices = vertList.ToArray();
 		uv = uvList.ToArray();

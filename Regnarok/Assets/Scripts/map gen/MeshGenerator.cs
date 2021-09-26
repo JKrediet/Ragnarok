@@ -145,6 +145,7 @@ public class MeshData
 			flatShadedUvs[i] = uvs[triangles[i]];
 			flatShadedVertices[i] = vertices[triangles[i]];
 			triangles[i] = i;
+			new WaitForSeconds(0.001f);
 		}
 		vertices = flatShadedVertices;
 		uvs = flatShadedUvs;
