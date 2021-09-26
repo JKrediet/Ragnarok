@@ -18,7 +18,7 @@ public class LightingManager : MonoBehaviour
 	private void Start()
 	{
         gm = GetComponent<GameManager>();
-        RenderSettings.fog = true;
+        GetComponent<PhotonView>().RPC("SyncTime", RpcTarget.All, false, TimeOfDay);
     }
 	private void Update()
     {
@@ -38,7 +38,8 @@ public class LightingManager : MonoBehaviour
                         if (PhotonNetwork.IsMasterClient)
                         {
                             gm.StartCoroutine("IsNight");
-						}
+                            GetComponent<PhotonView>().RPC("SyncTime", RpcTarget.All, true, TimeOfDay);
+                        }
 					}
                 }
 			}
@@ -49,6 +50,7 @@ public class LightingManager : MonoBehaviour
                 {
                     isNight = false;
                     gm.isDoingNight = false;
+                    RenderSettings.fog = false;
                 }
             }
             TimeOfDay %= 24; //Modulus to ensure always between 0-24
@@ -99,5 +101,18 @@ public class LightingManager : MonoBehaviour
                 }
             }
         }
+    }
+    [PunRPC]
+    public void SyncTime(bool b,float f)
+	{
+		if (b)
+		{
+            RenderSettings.fog = true;
+        }
+		else
+		{
+            RenderSettings.fog = false;
+        }
+        TimeOfDay = f;
     }
 }
