@@ -25,6 +25,9 @@ public class EnviromentSpawner : MonoBehaviour
     public GameObject mesh;
     public GameObject grassMesh;
     public MapGenerator mapGen;
+    [Space(5)]
+    public float minGrassHeight=1.5f;
+    public float maxGrassHeight = 8f;
     private Vector3 spawnPoint;
     int serialNumberForHitableObjectsl = 0;
 
@@ -235,13 +238,13 @@ public class EnviromentSpawner : MonoBehaviour
         }
         for (int triCount = 0; triCount < triangles.Length; triCount += 3)
         {
-            if ((transform.TransformPoint(vertices[triangles[triCount]]).y > .8f ) &&
-                (transform.TransformPoint(vertices[triangles[triCount + 1]]).y > .8f) &&
-                (transform.TransformPoint(vertices[triangles[triCount + 2]]).y > .8f    ))
+            if ((transform.TransformPoint(vertices[triangles[triCount]]).y > minGrassHeight) &&
+                (transform.TransformPoint(vertices[triangles[triCount + 1]]).y > minGrassHeight) &&
+                (transform.TransformPoint(vertices[triangles[triCount + 2]]).y > minGrassHeight))
             {
-                if ((transform.TransformPoint(vertices[triangles[triCount]]).y < 20) &&
-                (transform.TransformPoint(vertices[triangles[triCount + 1]]).y < 20) &&
-                (transform.TransformPoint(vertices[triangles[triCount + 2]]).y < 20))
+                if ((transform.TransformPoint(vertices[triangles[triCount]]).y < maxGrassHeight) &&
+                (transform.TransformPoint(vertices[triangles[triCount + 1]]).y < maxGrassHeight) &&
+                (transform.TransformPoint(vertices[triangles[triCount + 2]]).y < maxGrassHeight))
                 {
                     trianglesList.Add(triangles[triCount]);
                     trianglesList.Add(triangles[triCount + 1]);
