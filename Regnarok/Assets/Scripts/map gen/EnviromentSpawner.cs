@@ -209,7 +209,7 @@ public class EnviromentSpawner : MonoBehaviour
     }
     public void AddGrass()
     {
-        grassMesh.GetComponent<MeshFilter>().mesh = mesh.GetComponent<MeshFilter>().mesh;
+      //  grassMesh.GetComponent<MeshFilter>().mesh = mesh.GetComponent<MeshFilter>().mesh;
   //      Mesh meshGrass = grassMesh.GetComponent<MeshFilter>().mesh;
   //      int[] triangles = meshGrass.triangles;
   //      Vector3[] vertices = meshGrass.vertices;
@@ -257,7 +257,7 @@ public class EnviromentSpawner : MonoBehaviour
   //      grassMesh.GetComponent<MeshFilter>().mesh.vertices = vertices;
   //      grassMesh.GetComponent<MeshFilter>().mesh.uv = uv;
 		//grassMesh.GetComponent<MeshFilter>().mesh.normals = normals;
-         grassMesh.SetActive(true);
+       //  grassMesh.SetActive(true);
     }
     public void SpawnPlayers()
 	{
