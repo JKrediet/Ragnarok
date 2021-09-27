@@ -36,7 +36,7 @@ public class EnviromentSpawner : MonoBehaviour
 
     public void StartGenerating()
     {
-        RemoveVerts();
+        mesh.AddComponent<MeshCollider>();
         StartCoroutine(Generate());
     }
     public IEnumerator Generate()
