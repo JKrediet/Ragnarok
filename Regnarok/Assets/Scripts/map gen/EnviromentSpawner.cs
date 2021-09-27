@@ -28,18 +28,20 @@ public class EnviromentSpawner : MonoBehaviour
     [Space(5)]
     public float minGrassHeight=1.5f;
     public float maxGrassHeight = 8f;
+    [Space(4)]
+    public float minTerrainHeight = 0.6f;
+
     private Vector3 spawnPoint;
     int serialNumberForHitableObjectsl = 0;
 
     public void StartGenerating()
     {
+        RemoveVerts();
         StartCoroutine(Generate());
     }
     public IEnumerator Generate()
     {
-
         Random.InitState(mapGen.mapSeed);
-        mesh.AddComponent<MeshCollider>();
         new WaitForSeconds(1);
         for (int i = 0; i < spawnItems.Length; i++)
         {
@@ -173,6 +175,7 @@ public class EnviromentSpawner : MonoBehaviour
             }
             yield return new WaitForSecondsRealtime(1);
         }
+        BuildNavMesh();
     }
     public void InstatiateEnviorment(GameObject toSpawn, Vector3 location, Quaternion rotation, Transform parent, int i)
     {
@@ -208,6 +211,54 @@ public class EnviromentSpawner : MonoBehaviour
         }
         new WaitForSeconds(1);
         SpawnPlayers();
+    }
+    public void RemoveVerts()
+	{        
+        Mesh meshNew = mesh.GetComponent<MeshFilter>().mesh;
+        int[] triangles = meshNew.triangles;
+        Vector3[] vertices = meshNew.vertices;
+        Vector2[] uv = meshNew.uv;
+        Vector3[] normals = meshNew.normals;
+        List<Vector3> vertList = new List<Vector3>();
+        List<Vector2> uvList = new List<Vector2>();
+        List<Vector3> normalsList = new List<Vector3>();
+        List<int> trianglesList = new List<int>();
+
+
+        int i = 0;
+        while (i < mesh.GetComponent<MeshFilter>().mesh.vertices.Length)
+        {
+            vertList.Add(vertices[i]);
+            uvList.Add(uv[i]);
+            normalsList.Add(normals[i]);
+            i++;
+            new WaitForSeconds(0.01f);
+        }
+        for (int triCount = 0; triCount < triangles.Length; triCount += 3)
+        {
+            if ((transform.TransformPoint(vertices[triangles[triCount]]).y > minGrassHeight) &&
+                (transform.TransformPoint(vertices[triangles[triCount + 1]]).y > minTerrainHeight) &&
+                (transform.TransformPoint(vertices[triangles[triCount + 2]]).y > minTerrainHeight))
+            {
+                    trianglesList.Add(triangles[triCount]);
+                    trianglesList.Add(triangles[triCount + 1]);
+                    trianglesList.Add(triangles[triCount + 2]);
+
+                    new WaitForSeconds(0.45f);
+                
+            }
+        }
+
+
+        triangles = trianglesList.ToArray();
+        vertices = vertList.ToArray();
+        uv = uvList.ToArray();
+        normals = normalsList.ToArray();
+        mesh.GetComponent<MeshFilter>().mesh.triangles = triangles;
+        mesh.GetComponent<MeshFilter>().mesh.vertices = vertices;
+        mesh.GetComponent<MeshFilter>().mesh.uv = uv;
+        mesh.GetComponent<MeshFilter>().mesh.normals = normals;
+        mesh.AddComponent<MeshCollider>();
     }
     public void AddGrass()
     {

@@ -37,7 +37,6 @@ public class MapGenerator : MonoBehaviour
         mapSeed = seed;
         loadAmount = 0;
         GenerateMap();
-        envSpawn.BuildNavMesh();
     }
     public void GenerateMap()
     {
