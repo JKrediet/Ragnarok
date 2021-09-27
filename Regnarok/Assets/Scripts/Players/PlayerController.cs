@@ -81,6 +81,8 @@ public class PlayerController : MonoBehaviour
 
     public bool isDead;
 
+    public List<GameObject> hats;
+
     private void Awake()
     {
         pv = GetComponent<PhotonView>();
@@ -106,6 +108,8 @@ public class PlayerController : MonoBehaviour
             cam.gameObject.GetComponent<Camera>().enabled = false;
             nameOfPlayer.SetActive(true);
             nameOfPlayer.GetComponentInChildren<TextMeshProUGUI>().text = pv.Owner.NickName;
+            int roll = Random.Range(0, hats.Count);
+            hats[roll].SetActive(true);
         }
         FindObjectOfType<GameManager>().playerObjectList.Add(gameObject);
     }
