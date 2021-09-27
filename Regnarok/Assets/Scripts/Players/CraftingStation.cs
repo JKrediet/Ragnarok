@@ -34,33 +34,6 @@ public class CraftingStation : MonoBehaviour
 
     public List<RecipeHolder> slots;
 
-    private void OnValidate()
-    {
-        slots.Clear();
-        if (contentHolder != null)
-        {
-            foreach (Transform item in contentHolder.transform)
-            {
-                slots.Add(item.GetComponent<RecipeHolder>());
-            }
-        }
-        else
-        {
-            slots.Clear();
-        }
-        foreach (RecipeHolder holder in slots)
-        {
-            if (holder.recipe == null)
-            {
-                holder.gameObject.SetActive(false);
-            }
-            else
-            {
-                holder.gameObject.SetActive(true);
-                holder.UpdateUi();
-            }
-        }
-    }
     void GetSlots()
     {
         slots.Clear();

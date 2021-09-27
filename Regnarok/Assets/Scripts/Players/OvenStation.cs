@@ -120,15 +120,6 @@ public class OvenStation : MonoBehaviour
     }
     private void Update()
     {
-        if (Time.time > smeltTime)
-        {
-            if (fuelTime > 0)
-            {
-                smeltTime = Time.time + 0.5f;
-                fuelTime -= 0.5f;
-                fuelSlider.value = fuelTime;
-            }
-        }
         if (canSmelt)
         {
             if(fuelTime > 0)
@@ -141,6 +132,9 @@ public class OvenStation : MonoBehaviour
                 }
                 if(Time.time > smeltTime)
                 {
+                    smeltTime = Time.time + 0.5f;
+                    fuelTime -= 0.5f;
+                    fuelSlider.value = fuelTime;
                     smeltProgress += 0.5f;
                     if (smeltProgress == 10)
                     {

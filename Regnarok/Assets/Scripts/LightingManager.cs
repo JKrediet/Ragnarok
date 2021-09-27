@@ -18,6 +18,7 @@ public class LightingManager : MonoBehaviour
 	private void Start()
 	{
         gm = GetComponent<GameManager>();
+        RenderSettings.fog = false;
         //GetComponent<PhotonView>().RPC("SyncTime", RpcTarget.All, false, TimeOfDay);
     }
 	private void Update()

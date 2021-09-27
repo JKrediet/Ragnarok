@@ -585,7 +585,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator AttackStuckFix()
     {
         mayAttack = false;
-        yield return new WaitForSeconds(totalAttackSpeed * 1.1f);
+        yield return new WaitForSeconds(0.1f);
         mayAttack = true;
     }
     public void LockCamera()
