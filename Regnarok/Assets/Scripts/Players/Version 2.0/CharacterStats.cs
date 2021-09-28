@@ -93,9 +93,10 @@ public class CharacterStats : MonoBehaviour
     public void CalculateOffensiveStats()
     {
         //nog geen accesory stats
-        Item item = GetComponent<PlayerController>().heldItem;
-        if (item != null)
+
+        if (GetComponent<PlayerController>().heldItem)
         {
+            Item item = GetComponent<PlayerController>().heldItem;
             if (item.equipment == EquipmentType.axe || item.equipment == EquipmentType.pickaxe || item.equipment == EquipmentType.weapon)
             {
                 endDamage = (BaseDamage + addedDamage + item.damageBonus) * ((precentAddedDamage + item.damagePrecentBonus) / 100 + 1);
@@ -109,6 +110,12 @@ public class CharacterStats : MonoBehaviour
                 endAttackSpeed = 1;
                 endCritChance = 5;
             }
+        }
+        else
+        {
+            endDamage = 1;
+            endAttackSpeed = 1;
+            endCritChance = 5;
         }
 
         //give stats/ offensive
@@ -124,14 +131,6 @@ public class CharacterStats : MonoBehaviour
     }
     public void MoveItem(ItemSlot itemslot)
     {
-        if(GetComponent<PlayerController>().lastCratingStation != null)
-        {
-            GetComponent<PlayerController>().lastCratingStation.CanCraft();
-        }
-        else
-        {
-            GetComponent<InventoryCraft>().CanCraft();
-        }
         if (Input.GetKey(KeyCode.Q))
         {
             inventory.DropItem(itemslot.item);
@@ -308,6 +307,14 @@ public class CharacterStats : MonoBehaviour
         else
         {
             draggableItem.stackAmountText.text = "";
+        }
+        if (GetComponent<PlayerController>().lastCratingStation != null)
+        {
+            GetComponent<PlayerController>().lastCratingStation.CanCraft();
+        }
+        else
+        {
+            GetComponent<InventoryCraft>().CanCraft();
         }
     }
     public void CreateItem(string name, int amount, Sprite image, EquipmentType type, int maxStack)

@@ -1,20 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+
+
 
 public class ItemPickUp : MonoBehaviour
 {
     public int itemSerialNumber;
-    [SerializeField] string[] dropItemName;
-    [SerializeField] protected float minDrop, maxDrop;
     [SerializeField] Vector3 dropOffset;
+    [SerializeField] List<StructDropItemsList> dropItems;
+
+    [Serializable]
+    public struct StructDropItemsList
+    {
+        public string dropItemName;
+        public Vector2 dropAmounts;
+    }
 
     //destory
     public virtual void DropItems()
     {
-        for (int i = 0; i < dropItemName.Length; i++)
+        for (int i = 0; i < dropItems.Count; i++)
         {
-            FindObjectOfType<GameManager>().DropItems(dropItemName[i], transform.position + dropOffset, Quaternion.identity, Random.Range((int)minDrop, (int)maxDrop), itemSerialNumber);
+            FindObjectOfType<GameManager>().DropItems(dropItems[i].dropItemName, transform.position + dropOffset, Quaternion.identity, UnityEngine.Random.Range((int)dropItems[i].dropAmounts.x, (int)dropItems[i].dropAmounts.y), itemSerialNumber);
         }
     }
 }

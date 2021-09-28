@@ -253,7 +253,6 @@ public class Inventory : MonoBehaviour
                 PhotonNetwork.Destroy(handObject);
             }
             ShowItemInHand(controller.heldItem.itemName);
-            character.CalculateOffensiveStats();
         }
         else
         {
@@ -263,6 +262,7 @@ public class Inventory : MonoBehaviour
             }
             controller.heldItem = null;
         }
+        character.CalculateOffensiveStats();
     }
     void ShowItemInHand(string nameOfItem)
     {

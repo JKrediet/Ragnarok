@@ -126,16 +126,16 @@ public class InventoryCraft : MonoBehaviour
             {
                 for (int i = 0; i < inventory.itemSlots.Length; i++)
                 {
+                    if (inventory.itemSlots[i].item == null)
+                    {
+                        continue;
+                    }
                     for (int y = 0; y < selectedCraft.itemsNeeded.Count; y++)
                     {
                         string neededNameItem = selectedCraft.itemsNeeded[y].itemNeeded;
                         int neededAmountItem = selectedCraft.itemsNeeded[y].amountNeeded;
 
-                        if (inventory.itemSlots[i].item == null)
-                        {
-                            continue;
-                        }
-                        else if (inventory.itemSlots[i].item.itemName != neededNameItem)
+                        if (inventory.itemSlots[i].item.itemName != neededNameItem)
                         {
                             continue;
                         }
@@ -160,5 +160,6 @@ public class InventoryCraft : MonoBehaviour
         GetComponent<CharacterStats>().CreateItem(ItemList.SelectItem(selectedCraft.craftResult).name, 1, ItemList.SelectItem(selectedCraft.craftResult).sprite, ItemList.SelectItem(selectedCraft.craftResult).type, ItemList.SelectItem(selectedCraft.craftResult).maxStackSize);
         inventory.RefreshUI();
         selectedCraft = default;
+        CanCraft();
     }
 }

@@ -14,7 +14,7 @@ public class OvenStation : MonoBehaviour
     float fuelTime, smeltTime, smeltProgress;
     bool canSmelt;
 
-    [SerializeField] Slider fuelSlider;
+    [SerializeField] Slider fuelSlider, progressSlider;
 
     public void OpenCratingInventory(CharacterStats charr, Inventory inv)
     {
@@ -122,34 +122,48 @@ public class OvenStation : MonoBehaviour
     {
         if (canSmelt)
         {
-            if(fuelTime > 0)
+            if (fuelTime > 0)
             {
-                if(smeltSlot.item == null)
+                if (smeltSlot.item == null)
                 {
                     smeltProgress = 0;
                     canSmelt = false;
                     return;
                 }
-                if(Time.time > smeltTime)
+                if (Time.time > smeltTime)
                 {
                     smeltTime = Time.time + 0.5f;
                     fuelTime -= 0.5f;
                     fuelSlider.value = fuelTime;
                     smeltProgress += 0.5f;
+                    progressSlider.value = smeltProgress;
                     if (smeltProgress == 10)
                     {
                         smeltProgress = 0;
+                        progressSlider.value = smeltProgress;
                         FinishSmelt();
                     }
                 }
             }
             else
             {
-                if(!NeedFuel())
+                if (!NeedFuel())
                 {
                     smeltProgress = 0;
                     canSmelt = false;
                     return; //stops here: no more fuel
+                }
+            }
+        }
+        else
+        {
+            if(fuelTime > 0)
+            {
+                if (Time.time > smeltTime)
+                {
+                    smeltTime = Time.time + 0.5f;
+                    fuelTime -= 0.5f;
+                    fuelSlider.value = fuelTime;
                 }
             }
         }

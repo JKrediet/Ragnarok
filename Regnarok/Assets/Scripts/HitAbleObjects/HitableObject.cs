@@ -2,21 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using System;
 
 public class HitableObject : MonoBehaviour
 {
     public int itemSerialNumber;
-    [SerializeField] protected float health, minDrop, maxDrop;
+    [SerializeField] protected float health;
     [SerializeField] protected EquipmentType itemTypeNeeded;
     protected float maxHealth;
     [Space]
-    [SerializeField] string[] dropItemName;
     protected Rigidbody rb;
 
     GameManager manager;
     Wiggle wiggle;
     public GameObject damageNumber;
     Vector3 lastHitLocation;
+
+    [SerializeField] List<StructDropItemsList> droppedItems;
+
+    [Serializable]
+    public struct StructDropItemsList
+    {
+        public string dropItemName;
+        public Vector2 dropAmounts;
+    }
 
     protected void Awake()
     {
@@ -28,7 +37,7 @@ public class HitableObject : MonoBehaviour
     }
     protected void Start()
     {
-        health *= Random.Range(0.7f, 1.3f);
+        health *= UnityEngine.Random.Range(0.7f, 1.3f);
         maxHealth = health;
     }
     public virtual void HitByPlayer(float _damage, EquipmentType itemType, Vector3 hitlocation)
@@ -67,9 +76,9 @@ public class HitableObject : MonoBehaviour
     }
     protected virtual void DropItems()
     {
-        for (int i = 0; i < dropItemName.Length; i++)
+        for (int i = 0; i < droppedItems.Count; i++)
         {
-            manager.DropItems(dropItemName[i], lastHitLocation, Quaternion.identity, Random.Range((int)minDrop, (int)maxDrop++), itemSerialNumber);
+            manager.DropItems(droppedItems[i].dropItemName, lastHitLocation, Quaternion.identity, UnityEngine.Random.Range((int)droppedItems[i].dropAmounts.x, (int)droppedItems[i].dropAmounts.y), itemSerialNumber);
         }
     }
     public void TakeDamage(float _damage, EquipmentType _itemType, Vector3 hitlocation)
