@@ -3,23 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class Chest : ProbScript
+public class ChestScript : ProbScript
 {
+    public int cost;
     public ItemList itemList;
     public enum ChestType { small=0,medium =1, big =2, golden =3}
     public ChestType type;
     public int chestRarity;
+    public int chestId;
+    public Animator anim;
     private GameObject listHolder;
     
     public void Awake()
     {
         //pak hier de list holder
     }
-    public override void Interaction()
-    {
-        GetRandomItem();
-    }
-    public void GetRandomItem()
+	public override void Interaction()
+	{
+		
+	}
+	public void GetRandomItem()
     {
         CheckSpawnItem();
     }
@@ -107,4 +110,8 @@ public class Chest : ProbScript
             return roll;}
         return 0;
     }
+    public void OpenChest()
+	{
+        anim.SetBool("OpenChest", true);
+	}
 }

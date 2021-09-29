@@ -608,7 +608,7 @@ public class PlayerController : MonoBehaviour
                             if (playerBalance >= _hit.transform.GetComponent<ChestScript>().cost)
                             {
                                 playerBalance -= _hit.transform.GetComponent<ChestScript>().cost;
-                                _hit.transform.GetComponent<ChestScript>().Interact();
+                                _hit.transform.GetComponent<ChestScript>().Interaction();
                             }
                         }
                     }

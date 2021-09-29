@@ -197,6 +197,10 @@ public class EnviromentSpawner : MonoBehaviour
                 tempObject.GetComponent<ItemPickUp>().itemSerialNumber = serialNumberForHitableObjectsl;
                 serialNumberForHitableObjectsl++;
             }
+            else if (tempObject.GetComponent<ChestScript>())
+			{
+                tempObject.GetComponent<ChestScript>().chestId = i;
+            }
         }
     }
     [PunRPC]
