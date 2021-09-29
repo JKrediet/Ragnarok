@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
+using Photon.Realtime;
 
 public class OvenStation : MonoBehaviour
 {
@@ -71,6 +73,9 @@ public class OvenStation : MonoBehaviour
         }
         CheckSlots();
         UpdateSlots();
+        SincSlots(smeltSlot);
+        SincSlots(fuelSlot);
+        SincSlots(finishedSlot);
     }
     public void CreateItem(string name, int amount, Sprite image, EquipmentType type, int maxStack)
     {
@@ -192,5 +197,62 @@ public class OvenStation : MonoBehaviour
     {
         character.MoveItem(slot);
         UpdateSlots();
+        SincSlots(slot);
+    }
+    void SincSlots(ItemSlot slot)
+    {
+        GameManager gam = FindObjectOfType<GameManager>();
+        if (slot == smeltSlot)
+        {
+            if (smeltSlot.item == null)
+            {
+                gam.Rpc_sincSlotsFurnace(0, default, this);
+            }
+            else
+            {
+                gam.Rpc_sincSlotsFurnace(0, smeltSlot.item, this);
+            }
+        }
+        else if (slot == fuelSlot)
+        {
+            if (fuelSlot.item == null)
+            {
+                gam.Rpc_sincSlotsFurnace(1, default, this);
+            }
+            else
+            {
+                gam.Rpc_sincSlotsFurnace(1, fuelSlot.item, this);
+            }
+        }
+        else if (slot == finishedSlot)
+        {
+            if (finishedSlot.item == null)
+            {
+                gam.Rpc_sincSlotsFurnace(2, default, this);
+            }
+            else
+            {
+                gam.Rpc_sincSlotsFurnace(2, finishedSlot.item, this);
+            }
+        }
+        else
+        {
+            print("furnace sinc broke man");
+        }
+    }
+    public void GetItemInSlot(int slotNumber, Item givenItem)
+    {
+        if(slotNumber == 0)
+        {
+            smeltSlot.item = givenItem;
+        }
+        else if (slotNumber == 1)
+        {
+            fuelSlot.item = givenItem;
+        }
+        else if (slotNumber == 2)
+        {
+            finishedSlot.item = givenItem;
+        }
     }
 }

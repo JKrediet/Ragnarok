@@ -161,4 +161,20 @@ public class GameManager : MonoBehaviour
         }
     }
     #endregion
+    #region sinc funcace slots
+    public void SincSlots(int slotNumber, Item givenItem, OvenStation originFurnace)
+    {
+        GetComponent<PhotonView>().RPC("SincSlotsOmMaster", RpcTarget.MasterClient, slotNumber, givenItem, originFurnace);
+    }
+    public void SincSlotsOmMaster(int slotNumber, Item givenItem, OvenStation originFurnace)
+    {
+        GetComponent<PhotonView>().RPC("Rpc_sincSlotsFurnace", RpcTarget.All, slotNumber, givenItem, originFurnace);
+    }
+    [PunRPC]
+    public void Rpc_sincSlotsFurnace(int slotNumber, Item givenItem, OvenStation originFurnace)
+    {
+        //smelt slot = 0, fuel slot = 1, result slot = 2
+        originFurnace.GetItemInSlot(slotNumber, givenItem);
+    }
+    #endregion
 }
