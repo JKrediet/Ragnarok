@@ -330,6 +330,18 @@ public class CharacterStats : MonoBehaviour
 
         inventory.AddItem(newItem);
     }
+    public Item CreateItemForChest(string name, int amount, Sprite image, EquipmentType type, int maxStack)
+    {
+        Item newItem = ScriptableObject.CreateInstance<Item>();
+        if (type != EquipmentType.none)
+        {
+            newItem.damageBonus = ItemList.SelectItem(name).baseDamage;
+            newItem.attackSpeedBonus = ItemList.SelectItem(name).baseAttackSpeed;
+            newItem.critChanceBonus = ItemList.SelectItem(name).baseCritChance;
+        }
+        newItem.SetUpNewItem(name, amount, image, type, maxStack, ItemList.SelectItem(name).foodHealAmount, ItemList.SelectItem(name).smeltTime);
+        return newItem;
+    }
     [System.Serializable]
     public struct Items
     {

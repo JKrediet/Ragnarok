@@ -162,19 +162,50 @@ public class GameManager : MonoBehaviour
     }
     #endregion
     #region sinc funcace slots
-    public void SincSlots(int slotNumber, Item givenItem, OvenStation originFurnace)
+    public void SincSlots(int slotNumber, string givenItem, int amount, int originFurnace)
     {
-        GetComponent<PhotonView>().RPC("SincSlotsOmMaster", RpcTarget.MasterClient, slotNumber, givenItem, originFurnace);
+        GetComponent<PhotonView>().RPC("SincSlotsOmMaster", RpcTarget.MasterClient, slotNumber, givenItem, amount, originFurnace);
     }
-    public void SincSlotsOmMaster(int slotNumber, Item givenItem, OvenStation originFurnace)
+    public void SincSlotsOmMaster(int slotNumber, string givenItem, int amount, int originFurnace)
     {
-        GetComponent<PhotonView>().RPC("Rpc_sincSlotsFurnace", RpcTarget.All, slotNumber, givenItem, originFurnace);
+        GetComponent<PhotonView>().RPC("Rpc_sincSlotsFurnace", RpcTarget.All, slotNumber, givenItem, amount, originFurnace);
     }
     [PunRPC]
-    public void Rpc_sincSlotsFurnace(int slotNumber, Item givenItem, OvenStation originFurnace)
+    public void Rpc_sincSlotsFurnace(int slotNumber, string givenItem, int amount, int originFurnace)
     {
-        //smelt slot = 0, fuel slot = 1, result slot = 2
-        originFurnace.GetItemInSlot(slotNumber, givenItem);
+        PlaceAbleItemId[] objectsFound = FindObjectsOfType<PlaceAbleItemId>();
+        for (int i = 0; i < objectsFound.Length; i++)
+        {
+            if (objectsFound[i].placeabelItemID == originFurnace)
+            {
+                objectsFound[i].GetComponent<OvenStation>().GetItemInSlot(slotNumber, givenItem, amount);
+                return;
+            }
+        }
+    }
+    #endregion
+    #region sinc chestincentory
+    public void SincChestOnMaster(int slotId, string itemId, int itemAmount, int originChest)
+    {
+        GetComponent<PhotonView>().RPC("Rpc_SincChestOnMaster", RpcTarget.MasterClient, slotId, itemId, itemAmount, originChest);
+    }
+    [PunRPC]
+    public void Rpc_SincChestOnMaster(int slotId, string itemId, int itemAmount, int originChest)
+    {
+        GetComponent<PhotonView>().RPC("Rpc_SincChestOnClients", RpcTarget.All, slotId, itemId, itemAmount, originChest);
+    }
+    [PunRPC]
+    public void Rpc_SincChestOnClients(int slotId, string itemId, int itemAmount, int originChest)
+    {
+        PlaceAbleItemId[] objectsFound = FindObjectsOfType<PlaceAbleItemId>();
+        for (int i = 0; i < objectsFound.Length; i++)
+        {
+            if (objectsFound[i].placeabelItemID == originChest)
+            {
+                objectsFound[i].GetComponent<ChestInventory>().SincSlots(slotId, itemId, itemAmount);
+                return;
+            }
+        }
     }
     #endregion
 }

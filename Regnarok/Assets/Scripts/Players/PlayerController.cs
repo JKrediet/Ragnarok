@@ -81,6 +81,8 @@ public class PlayerController : MonoBehaviour
 
     public bool isDead;
 
+    private int itemSpawnedIn;
+
     private void Awake()
     {
         pv = GetComponent<PhotonView>();
@@ -472,7 +474,9 @@ public class PlayerController : MonoBehaviour
             GetComponent<Inventory>().RefreshUI();
             if (spawnThis != default)
             {
-                PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Stations", "placeAbleItems", "ActualItems", spawnThis.name), ghostPosition, ghostRotation);
+                itemSpawnedIn++;
+                GameObject spawnInObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Stations", "placeAbleItems", "ActualItems", spawnThis.name), ghostPosition, ghostRotation);
+                spawnInObject.GetComponent<PlaceAbleItemId>().placeabelItemID = itemSpawnedIn;
             }
             else
             {

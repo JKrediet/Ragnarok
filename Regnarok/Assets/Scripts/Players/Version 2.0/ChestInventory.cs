@@ -11,15 +11,6 @@ public class ChestInventory : MonoBehaviour
     [SerializeField] Transform itemsParent;
     CharacterStats character;
 
-    private void OnValidate()
-    {
-        if (itemsParent != null)
-        {
-            itemSlots = itemsParent.GetComponentsInChildren<ItemSlot>();
-        }
-        ChestRefreshUI();
-    }
-
     private void Start()
     {
         for (int i = 0; i < itemSlots.Length; i++)
@@ -39,6 +30,7 @@ public class ChestInventory : MonoBehaviour
                 if (itemSlots[i].item.itemAmount > 1)
                 {
                     itemSlots[i].stackAmountText.text = itemSlots[i].item.itemAmount.ToString();
+                    SincSlotWithMaster(i, itemSlots[i].item.itemName, itemSlots[i].item.itemAmount);
                 }
                 else
                 {
@@ -65,5 +57,14 @@ public class ChestInventory : MonoBehaviour
     {
         itemsParent.gameObject.SetActive(false);
         character = null;
+    }
+    void SincSlotWithMaster(int slotId, string itemId, int itemAmount)
+    {
+        FindObjectOfType<GameManager>().SincChestOnMaster(slotId, itemId, itemAmount, GetComponent<PlaceAbleItemId>().placeabelItemID);
+    }
+    public void SincSlots(int slotId, string itemId, int itemAmount)
+    {
+        itemSlots[slotId].item = character.CreateItemForChest(itemId, itemAmount, ItemList.SelectItem(itemId).sprite, ItemList.SelectItem(itemId).type, ItemList.SelectItem(itemId).maxStackSize);
+        itemSlots[slotId].stackAmountText.text = itemSlots[slotId].item.itemAmount.ToString();
     }
 }

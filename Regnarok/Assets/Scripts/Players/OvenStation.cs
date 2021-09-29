@@ -36,6 +36,7 @@ public class OvenStation : MonoBehaviour
         if(smeltSlot.item == null)
         {
             canSmelt = false;
+            progressSlider.value = 0;
             return;
         }
         if (finishedSlot.item != null)
@@ -202,37 +203,38 @@ public class OvenStation : MonoBehaviour
     void SincSlots(ItemSlot slot)
     {
         GameManager gam = FindObjectOfType<GameManager>();
+        int objectId = GetComponent<PlaceAbleItemId>().placeabelItemID;
         if (slot == smeltSlot)
         {
             if (smeltSlot.item == null)
             {
-                gam.Rpc_sincSlotsFurnace(0, default, this);
+                gam.Rpc_sincSlotsFurnace(0, default, 0, objectId);
             }
             else
             {
-                gam.Rpc_sincSlotsFurnace(0, smeltSlot.item, this);
+                gam.Rpc_sincSlotsFurnace(0, smeltSlot.item.itemName, smeltSlot.item.itemAmount, objectId);
             }
         }
         else if (slot == fuelSlot)
         {
             if (fuelSlot.item == null)
             {
-                gam.Rpc_sincSlotsFurnace(1, default, this);
+                gam.Rpc_sincSlotsFurnace(1, default, 0, objectId);
             }
             else
             {
-                gam.Rpc_sincSlotsFurnace(1, fuelSlot.item, this);
+                gam.Rpc_sincSlotsFurnace(1, fuelSlot.item.itemName, fuelSlot.item.itemAmount, objectId);
             }
         }
         else if (slot == finishedSlot)
         {
             if (finishedSlot.item == null)
             {
-                gam.Rpc_sincSlotsFurnace(2, default, this);
+                gam.Rpc_sincSlotsFurnace(2, default, 0, objectId);
             }
             else
             {
-                gam.Rpc_sincSlotsFurnace(2, finishedSlot.item, this);
+                gam.Rpc_sincSlotsFurnace(2, finishedSlot.item.itemName, finishedSlot.item.itemAmount, objectId);
             }
         }
         else
@@ -240,19 +242,19 @@ public class OvenStation : MonoBehaviour
             print("furnace sinc broke man");
         }
     }
-    public void GetItemInSlot(int slotNumber, Item givenItem)
+    public void GetItemInSlot(int slotNumber, string givenItem, int amount)
     {
         if(slotNumber == 0)
         {
-            smeltSlot.item = givenItem;
+            smeltSlot.item = character.CreateItemForChest(givenItem, amount, ItemList.SelectItem(givenItem).sprite, ItemList.SelectItem(givenItem).type, ItemList.SelectItem(givenItem).maxStackSize); ;
         }
         else if (slotNumber == 1)
         {
-            fuelSlot.item = givenItem;
+            fuelSlot.item = character.CreateItemForChest(givenItem, amount, ItemList.SelectItem(givenItem).sprite, ItemList.SelectItem(givenItem).type, ItemList.SelectItem(givenItem).maxStackSize); ;
         }
         else if (slotNumber == 2)
         {
-            finishedSlot.item = givenItem;
+            finishedSlot.item = character.CreateItemForChest(givenItem, amount, ItemList.SelectItem(givenItem).sprite, ItemList.SelectItem(givenItem).type, ItemList.SelectItem(givenItem).maxStackSize); ;
         }
     }
 }
