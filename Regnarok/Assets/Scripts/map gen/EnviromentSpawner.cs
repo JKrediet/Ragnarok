@@ -181,8 +181,7 @@ public class EnviromentSpawner : MonoBehaviour
     {
         if (spawnItems[i].spawnWithPhoton)
         {
-            GameObject tempObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", spawnItems[i].name), location, rotation);
-            tempObject.transform.parent = parent;
+            GetComponent<PhotonView>().RPC("SpawnPhoton", RpcTarget.MasterClient, location, rotation, parent, i);
         }
         else
         {
@@ -199,6 +198,12 @@ public class EnviromentSpawner : MonoBehaviour
                 serialNumberForHitableObjectsl++;
             }
         }
+    }
+    [PunRPC]
+    public void SpawnPhoton(Vector3 location, Quaternion rotation, Transform parent, int i)
+	{
+        GameObject tempObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", spawnItems[i].name), location, rotation);
+        tempObject.transform.parent = parent;
     }
     public void BuildNavMesh()
     {

@@ -33,7 +33,7 @@ public class EnemySpawner : MonoBehaviour
 			if (enemies.Count < amount * players.Length)
 			{
 				int newAmount = amount - enemies.Count / players.Length;
-				spawnExtraEnemies(newAmount);
+				SpawnExtraEnemies(newAmount);
 			}
 			else
 			{
@@ -72,7 +72,7 @@ public class EnemySpawner : MonoBehaviour
 	{
 		players = GameObject.FindGameObjectsWithTag("Player");
 	}
-	public void spawnExtraEnemies(int amount)
+	public void SpawnExtraEnemies(int amount)
 	{
 		if (!PhotonNetwork.IsMasterClient)
 		{
@@ -83,7 +83,6 @@ public class EnemySpawner : MonoBehaviour
 			for (int i_i = 0; i_i < players.Length; i_i++)
 			{
 				Vector3 spawnPos = GetSpawnPos(i_i);
-
 				float dis = Vector3.Distance(spawnPos, players[i_i].transform.position);
 				if (CheckDistance(dis))
 				{
@@ -96,6 +95,8 @@ public class EnemySpawner : MonoBehaviour
 				else
 				{
 					int random = Random.Range(0, enemielist.enemieList.Count);
+					pv.RPC("SpawnPartical", RpcTarget.MasterClient, spawnPos);
+					new WaitForSeconds(1);
 					pv.RPC("Spawn", RpcTarget.MasterClient, spawnPos + spawnOffset, random);
 				}
 			}
@@ -132,10 +133,24 @@ public class EnemySpawner : MonoBehaviour
 					else
 					{
 						int random = Random.Range(0, enemielist.enemieList.Count);
+						pv.RPC("SpawnPartical", RpcTarget.MasterClient, spawnPos+new Vector3(0,1.6f,0));
+						new WaitForSeconds(1.6f);
 						pv.RPC("Spawn", RpcTarget.MasterClient, spawnPos + spawnOffset, random);
 					}
 				}
 			}
+		}
+	}
+	[PunRPC]
+	public void SpawnPartical(Vector3 spawnPos)
+	{
+		Ray ray = new Ray(spawnPos + new Vector3(0, 50, 0), -transform.up);
+		RaycastHit hitInfo;
+		if (Physics.Raycast(ray, out hitInfo, groundLayer))
+		{
+			GameObject tempObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "SpawnPartical"), spawnPos, Quaternion.FromToRotation(Vector3.up, hitInfo.normal));
+			new WaitForSeconds(2);
+			PhotonNetwork.Destroy(tempObject);
 		}
 	}
 	[PunRPC]

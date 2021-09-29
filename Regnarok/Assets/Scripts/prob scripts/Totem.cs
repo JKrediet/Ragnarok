@@ -168,6 +168,8 @@ public class Totem : MonoBehaviour
 		{
 			if (hitInfo.transform.tag == "Mesh")
 			{
+				GetComponent<PhotonView>().RPC("SpawnPartical", RpcTarget.MasterClient, hitInfo.point);
+				new WaitForSeconds(0.5f);
 				GetComponent<PhotonView>().RPC("SpawnEnemiesSyncted", RpcTarget.MasterClient,randomNum, hitInfo.point + spawnOffset);
 			}
 			else
@@ -175,6 +177,13 @@ public class Totem : MonoBehaviour
 				amountOfEnemies++;
 			}
 		}
+	}
+	[PunRPC]
+	public void SpawnPartical(Vector3 spawnPos)
+	{
+		GameObject tempObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "SpawnPartical"), spawnPos, Quaternion.identity);
+		new WaitForSeconds(0.6f);
+		PhotonNetwork.Destroy(tempObject);
 	}
 	[PunRPC]
 	public void SpawnEnemiesSyncted(int i,Vector3 spawnPos)

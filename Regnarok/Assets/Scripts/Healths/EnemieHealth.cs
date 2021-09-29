@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.AI;
+using System.IO;
 
 public class EnemieHealth : Health
 {
@@ -30,20 +31,16 @@ public class EnemieHealth : Health
 	{
 
 	}
-	public void GiveXP()
-	{
-
-	}
 	public void DropMoney()
 	{
-		coinDrop *= (gm.days / 100);
-		//instantiate hierro
+		coinDrop *= gm.days;
+		GameObject tempObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "GoldenCoin"), transform.position,Quaternion.identity);
+		tempObject.GetComponent<CoinScript>().coinAmount = coinDrop;
 	}
 	public void GivePlayerStuff()
 	{
 		RollItem();
-		GiveXP();
-		DropMoney();
+		pv.RPC("DropMoney", RpcTarget.MasterClient);
 		PhotonNetwork.Destroy(gameObject);
 	}
 }
