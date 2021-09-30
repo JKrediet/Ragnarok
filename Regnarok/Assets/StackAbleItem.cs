@@ -6,9 +6,9 @@ using Photon.Pun;
 public class StackAbleItem : MonoBehaviour
 {
 	public int id;
+	public string itemName;
 	public void Collision()
 	{
-		//PhotonNetwork.Destroy(gameObject);
-		Destroy(gameObject);
+		PhotonNetwork.Destroy(gameObject);
 	}
 }

@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
     public VideoClip[] videos;
     public GameObject loadingScreen, canvas;
 	public VideoPlayer videoplayer;
-
+    public ItemListScript itemlist;
 
     public List<GameObject> playerObjectList;
 
@@ -86,6 +86,36 @@ public class GameManager : MonoBehaviour
             }
         }
 	}
+    public void OpenChest(int id)
+	{
+        GetComponent<PhotonView>().RPC("OpenChestInWorld", RpcTarget.All,id);
+    }
+    public void SpawnItem(Vector3 spawnPos,int type)
+	{
+		switch (type)
+		{
+            case 0:
+                int randomComon = Random.Range(0, itemlist.common.Count);
+                PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", itemlist.common[randomComon].name), spawnPos, Quaternion.identity);
+                break;
+            case 1:
+                int randomRare = Random.Range(0, itemlist.rare.Count);
+                PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", itemlist.rare[randomRare].name), spawnPos, Quaternion.identity);
+                break;
+            case 2:
+                int randomEpic = Random.Range(0, itemlist.epic.Count);
+                PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", itemlist.epic[randomEpic].name), spawnPos, Quaternion.identity);
+                break;
+            case 3:
+                int randomLegendary = Random.Range(0, itemlist.legendary.Count);
+                PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", itemlist.legendary[randomLegendary].name), spawnPos, Quaternion.identity);
+                break;
+            case 4:
+                int randomMythic = Random.Range(0, itemlist.mythic.Count);
+                PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", itemlist.mythic[randomMythic].name), spawnPos, Quaternion.identity);
+                break;
+        }
+    }
     #region destroyWorldItems
     public void DropItems(string droppedItemName, Vector3 position, Quaternion rotation, int amount, int serialNumber)
     {
@@ -97,6 +127,18 @@ public class GameManager : MonoBehaviour
         GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", droppedItemName), position, rotation);
         droppedItem.GetComponent<WorldItem>().SetUp(ItemList.SelectItem(droppedItemName).name, amount, ItemList.SelectItem(droppedItemName).sprite, ItemList.SelectItem(droppedItemName).type, ItemList.SelectItem(droppedItemName).maxStackSize);
         GetComponent<PhotonView>().RPC("RemoveItemFromWorld", RpcTarget.All, serialNumber);
+    }
+    [PunRPC]
+    public void OpenChestInWorld(int id)
+    {
+        ChestScript[] objectsFound = FindObjectsOfType<ChestScript>();
+        for (int i = 0; i < objectsFound.Length; i++)
+        {
+            if (objectsFound[i].chestId == id)
+            {
+                objectsFound[i].transform.GetComponent<Animator>().SetBool("OpenChest", true);
+            }
+        }
     }
     [PunRPC]
     public void RemoveItemFromWorld(int serialNumber)

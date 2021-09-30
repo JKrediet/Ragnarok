@@ -15,6 +15,5 @@ public class ItemListScript : ScriptableObject
     public struct Objects
     {
         public string name;
-        public int index;
     }
 }

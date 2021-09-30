@@ -1,41 +1,49 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Photon.Pun;
 
 public class ChestScript : ProbScript
 {
     public int cost;
     public ItemList itemList;
+    public GameObject itemSpawnPos;
     public enum ChestType { small=0,medium =1, big =2, golden =3}
     public ChestType type;
     public int chestRarity;
     public int chestId;
     public Animator anim;
-    private GameObject listHolder;
+    private GameManager gm;
+    public List<GameObject> players;
+    private GameObject isMyPlayer;
     
-    public void Awake()
-    {
-        //pak hier de list holder
-    }
 	public override void Interaction()
 	{
-		
-	}
+        players = new List<GameObject>(GameObject.FindGameObjectsWithTag("Player"));
+		for (int i = 0; i < players.Count; i++)
+		{
+			if (players[i].GetComponent<PhotonView>().IsMine)
+			{
+                isMyPlayer = players[i];
+			}
+		}
+		if (isMyPlayer.GetComponent<PlayerController>().playerBalance >= cost)
+        { 
+            gm=FindObjectOfType<GameManager>();
+            GetRandomItem();
+		}
+		else
+		{
+            //doet sound dat die te weinig geld heeft
+		}
+    }
 	public void GetRandomItem()
     {
-        CheckSpawnItem();
-    }
-    public void CheckSpawnItem()
-    {
-        Vector3 spawnpint = new Vector3(0,1,0);
-        SpawnItem(spawnpint);
-    }
-    public void SpawnItem(Vector3 spawnPoint)
-    {
 
+        gm.OpenChest(chestId);
+        gm.SpawnItem(itemSpawnPos.transform.position, RaretyChance());
+        //doe ook item spawnen met rpc in de shit
     }
-
     public int RaretyChance()
     {
         float randomNum = Random.Range(0.00f, 100.00f);
@@ -110,8 +118,4 @@ public class ChestScript : ProbScript
             return roll;}
         return 0;
     }
-    public void OpenChest()
-	{
-        anim.SetBool("OpenChest", true);
-	}
 }
