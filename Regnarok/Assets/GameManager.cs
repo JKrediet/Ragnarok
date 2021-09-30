@@ -166,6 +166,7 @@ public class GameManager : MonoBehaviour
     {
         GetComponent<PhotonView>().RPC("SincSlotsOmMaster", RpcTarget.MasterClient, slotNumber, givenItem, amount, originFurnace);
     }
+    [PunRPC]
     public void SincSlotsOmMaster(int slotNumber, string givenItem, int amount, int originFurnace)
     {
         GetComponent<PhotonView>().RPC("Rpc_sincSlotsFurnace", RpcTarget.All, slotNumber, givenItem, amount, originFurnace);

@@ -326,7 +326,6 @@ public class EnviromentSpawner : MonoBehaviour
 	{
         new WaitForSeconds(5);
         FindObjectOfType<GameManager>().SpawnPlayers();
-        print("Spawnerd");
     }
     public bool Chance()
     {

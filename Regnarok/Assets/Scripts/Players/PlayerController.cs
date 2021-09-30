@@ -476,11 +476,24 @@ public class PlayerController : MonoBehaviour
             {
                 GameObject spawnInObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Stations", "placeAbleItems", "ActualItems", spawnThis.name), ghostPosition, ghostRotation);
                 PlaceAbleItemId[] objectsFound = FindObjectsOfType<PlaceAbleItemId>();
-                spawnInObject.GetComponent<PlaceAbleItemId>().placeabelItemID = objectsFound.Length + 1;
+                pv.RPC("SincplaceableID", RpcTarget.All, spawnInObject.GetComponent<PhotonView>().ViewID);
             }
             else
             {
                 print("item not found in actualItemList");
+                return;
+            }
+        }
+    }
+    [PunRPC]
+    public void SincplaceableID(int id)
+    {
+        PlaceAbleItemId[] objectsFound = FindObjectsOfType<PlaceAbleItemId>();
+        for (int i = 0; i < objectsFound.Length; i++)
+        {
+            if (objectsFound[i].GetComponent<PhotonView>().ViewID == id)
+            {
+                objectsFound[i].GetComponent<PlaceAbleItemId>().placeabelItemID = objectsFound.Length + 1;
                 return;
             }
         }
