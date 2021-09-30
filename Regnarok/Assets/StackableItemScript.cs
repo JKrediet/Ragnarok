@@ -3,6 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
+[System.Serializable]
+public struct items
+{
+    public string itemName;
+    public int amount;
+    [TextArea]
+    public string decription;
+    public float value;
+    public Sprite sprite;
+}
+
 public class StackableItemScript : MonoBehaviour
 {
 	public items[] itemlist;
@@ -104,9 +115,20 @@ public class StackableItemScript : MonoBehaviour
             }
         }
 
-
+        ItemsToInventory();
         stats.CalculateOffensiveStats();
         stats.CalculateDefensiveStats();
+    }
+    void ItemsToInventory()
+    {
+        Inventory inv = GetComponent<Inventory>();
+        for (int i = 0; i < itemlist.Length; i++)
+        {
+            if (itemlist[i].amount > 0)
+            {
+                inv.GiveStackAbleItem(itemlist[i]);
+            }
+        }
     }
 	public void ResetCooldown()
 	{
@@ -123,13 +145,4 @@ public class StackableItemScript : MonoBehaviour
 			return false;
 		}
 	}
-	[System.Serializable]
-	public struct items
-	{
-		public string itemName;
-		public int amount;
-        [TextArea]
-        public string decription;
-        public float value;
-    }
 }

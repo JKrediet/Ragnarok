@@ -6,10 +6,12 @@ using Photon.Pun;
 using System.IO;
 using UnityEngine.UI;
 using System;
+using TMPro;
 
 public class Inventory : MonoBehaviour
 {
     public List<Item> items;
+    public List<GameObject> stackAbleItemList;
     [SerializeField] Transform itemsParent, hotbarParent;
     public ItemSlot[] itemSlots, hotBarSlots;
     [Space]
@@ -37,6 +39,20 @@ public class Inventory : MonoBehaviour
          KeyCode.Alpha6
      };
 
+
+    public void GiveStackAbleItem(items item)
+    {
+        string itemName = item.itemName;
+        for (int i = 0; i < stackAbleItemList.Count; i++)
+        {
+            if(stackAbleItemList[i].name == itemName)
+            {
+                stackAbleItemList[i].GetComponentInChildren<Image>().sprite = item.sprite;
+                stackAbleItemList[i].GetComponentInChildren<TextMeshProUGUI>().text = item.amount.ToString();
+                stackAbleItemList[i].SetActive(true);
+            }
+        }
+    }
     private void Awake()
     {
         pv = GetComponent<PhotonView>();
