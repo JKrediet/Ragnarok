@@ -22,6 +22,21 @@ public class CharacterStats : MonoBehaviour
     [SerializeField] float addedDamage, addedAttackSpeed, addedCritChance, addedArmor, addedHealth, addedHealthRegen, addedLifeSteal, addedBleedChance, addedHealthOnKill, addedMovementSpeed;
     [SerializeField] float precentAddedDamage, precentAddedAttackSpeed, precentAddedCritChance, precentAddedArmor, precentAddedHealth;
 
+    [Space]
+    //xp
+    public int level;
+    public float xpAmountNeeded, xpAmount, xpIncreasment, xpGainedMultiplier = 1;
+
+    public void GainXp(float _xpAmount)
+    {
+        xpAmount += _xpAmount * xpGainedMultiplier;
+        if (xpAmount > xpAmountNeeded)
+        {
+            level++;
+            xpAmount -= xpAmountNeeded;
+            xpAmountNeeded *= xpIncreasment;
+        }
+    }
 
     private void Awake()
     {
@@ -99,10 +114,10 @@ public class CharacterStats : MonoBehaviour
             Item item = GetComponent<PlayerController>().heldItem;
             if (item.equipment == EquipmentType.axe || item.equipment == EquipmentType.pickaxe || item.equipment == EquipmentType.weapon)
             {
-                endDamage = (BaseDamage + addedDamage + item.damageBonus) * ((precentAddedDamage + item.damagePrecentBonus) / 100 + 1);
-                endAttackSpeed = (baseAttackSpeed + addedAttackSpeed + item.attackSpeedBonus) * ((precentAddedAttackSpeed + item.attackSpeedPrecentBonus) / 100 + 1);
+                endDamage = ((BaseDamage * (level * 0.1f + 1)) + addedDamage + item.damageBonus) * ((precentAddedDamage + item.damagePrecentBonus) / 100 + 1);
+                endAttackSpeed = ((baseAttackSpeed * (level * 0.1f + 1)) + addedAttackSpeed + item.attackSpeedBonus) * ((precentAddedAttackSpeed + item.attackSpeedPrecentBonus) / 100 + 1);
                 //endAttackSpeed = tempAttackSpeed / (tempAttackSpeed * tempAttackSpeed);
-                endCritChance = (baseCritChance + addedCritChance + item.critChanceBonus) * ((precentAddedCritChance + item.critChancePrecentBonus) / 100 + 1);
+                endCritChance = ((baseCritChance * (level * 0.1f + 1)) + addedCritChance + item.critChanceBonus) * ((precentAddedCritChance + item.critChancePrecentBonus) / 100 + 1);
             }
             else
             {
