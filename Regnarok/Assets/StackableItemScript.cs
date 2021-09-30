@@ -69,7 +69,7 @@ public class StackableItemScript : MonoBehaviour
                 }
                 else if (itemlist[i].itemName == "Crown")
                 {
-                    //xp nog niet added
+                    stats.GiveStats_xpmulti(itemlist[i].amount * itemlist[i].value);
                     continue;
                 }
                 else if (itemlist[i].itemName == "Knife")
@@ -88,7 +88,7 @@ public class StackableItemScript : MonoBehaviour
                 }
                 else if (itemlist[i].itemName == "GoldPouch")
                 {
-                    // more gold
+                    FindObjectOfType<GameManager>().GiveStats_goldmulti(itemlist[i].amount * itemlist[i].value);
                     continue;
                 }
                 else if (itemlist[i].itemName == "Plaster")

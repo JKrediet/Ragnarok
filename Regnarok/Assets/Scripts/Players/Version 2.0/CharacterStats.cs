@@ -103,7 +103,10 @@ public class CharacterStats : MonoBehaviour
     {
         addedMovementSpeed = value;
     }
-
+    public void GiveStats_xpmulti(float value)
+    {
+        xpGainedMultiplier = value + 1;
+    }
     #endregion
     public void CalculateOffensiveStats()
     {

@@ -29,7 +29,13 @@ public class GameManager : MonoBehaviour
 
     public List<GameObject> playerObjectList;
 
-	private void Start()
+    [Space]
+    public float goldMultiplier =1;
+    public void GiveStats_goldmulti(float value)
+    {
+        goldMultiplier = value + 1;
+    }
+    private void Start()
 	{
         es = GetComponent<EnemySpawner>();
         Reroll();
