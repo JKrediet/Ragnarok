@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class PlaceAbleItemId : MonoBehaviour
 {
-    [HideInInspector]public int placeabelItemID;
+    public int placeabelItemID;
 }

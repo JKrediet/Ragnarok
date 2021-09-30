@@ -474,9 +474,9 @@ public class PlayerController : MonoBehaviour
             GetComponent<Inventory>().RefreshUI();
             if (spawnThis != default)
             {
-                itemSpawnedIn++;
                 GameObject spawnInObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Stations", "placeAbleItems", "ActualItems", spawnThis.name), ghostPosition, ghostRotation);
-                spawnInObject.GetComponent<PlaceAbleItemId>().placeabelItemID = itemSpawnedIn;
+                PlaceAbleItemId[] objectsFound = FindObjectsOfType<PlaceAbleItemId>();
+                spawnInObject.GetComponent<PlaceAbleItemId>().placeabelItemID = objectsFound.Length + 1;
             }
             else
             {
