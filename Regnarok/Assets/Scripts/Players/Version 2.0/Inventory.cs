@@ -323,10 +323,13 @@ public class Inventory : MonoBehaviour
     }
     public void DropItem(Item item)
     {
-        //master client needs to do this!
-        GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", item.itemName), transform.position + transform.forward, Quaternion.identity);
-        droppedItem.GetComponent<Rigidbody>().AddExplosionForce(100, transform.position + transform.forward - transform.up, 2);
-        droppedItem.GetComponent<WorldItem>().SetUp(item.itemName, item.itemAmount, ItemList.SelectItem(item.itemName).sprite, ItemList.SelectItem(item.itemName).type, ItemList.SelectItem(item.itemName).maxStackSize);
-        SelectItemInHotBar(hotbarLocation);
+        if (item != null)
+        {
+            //master client needs to do this!
+            GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", item.itemName), transform.position + transform.forward, Quaternion.identity);
+            droppedItem.GetComponent<Rigidbody>().AddExplosionForce(100, transform.position + transform.forward - transform.up, 2);
+            droppedItem.GetComponent<WorldItem>().SetUp(item.itemName, item.itemAmount, ItemList.SelectItem(item.itemName).sprite, ItemList.SelectItem(item.itemName).type, ItemList.SelectItem(item.itemName).maxStackSize);
+            SelectItemInHotBar(hotbarLocation);
+        }
     }
 }

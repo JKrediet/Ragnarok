@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class CharacterStats : MonoBehaviour
 {
@@ -11,6 +12,10 @@ public class CharacterStats : MonoBehaviour
     public Items[] itemList;//list of items
     public bool itemIsBeingDragged;
     PlayerController playercontroller;
+    [Space]
+    public TextMeshProUGUI nameOfItemText;
+    public TextMeshProUGUI amountOfItemText;
+    public TextMeshProUGUI typeOfItemText;
 
     //color
     [HideInInspector] public Color normalColor = Color.white;
@@ -146,6 +151,28 @@ public class CharacterStats : MonoBehaviour
         endHealth = (baseHealth + addedHealth) * (precentAddedHealth / 100 + 1);
 
         GetComponent<Health>().RecieveStats(endHealth, endArmor, addedHealthRegen);
+    }
+    public void HoverItem(ItemSlot slot)
+    {
+        if (!itemIsBeingDragged)
+        {
+            if (slot.item == null)
+            {
+                nameOfItemText.text = string.Empty;
+                amountOfItemText.text = string.Empty;
+                typeOfItemText.text = string.Empty;
+            }
+            else
+            {
+                nameOfItemText.text = slot.item.itemName;
+                amountOfItemText.text = slot.item.itemAmount.ToString() + " / " + slot.item.maxStack.ToString();
+                if (slot.item.equipment == EquipmentType.none)
+                {
+                    return;
+                }
+                typeOfItemText.text = slot.item.equipment.ToString();
+            }
+        }
     }
     public void MoveItem(ItemSlot itemslot)
     {
