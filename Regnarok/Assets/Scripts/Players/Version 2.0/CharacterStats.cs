@@ -22,10 +22,10 @@ public class CharacterStats : MonoBehaviour
     [HideInInspector] public Color disabledColor = new Color(1, 1, 1, 0);
 
     [Space]
-    [SerializeField] float endDamage, endAttackSpeed, endCritChance, endArmor, endHealth;
+    float endDamage, endAttackSpeed, endCritChance, endArmor, endHealth;
     public float BaseDamage, baseAttackSpeed, baseCritChance, baseArmor, baseHealth;
-    [SerializeField] float addedDamage, addedAttackSpeed, addedCritChance, addedArmor, addedHealth, addedHealthRegen, addedLifeSteal, addedBleedChance, addedHealthOnKill, addedMovementSpeed;
-    [SerializeField] float precentAddedDamage, precentAddedAttackSpeed, precentAddedCritChance, precentAddedArmor, precentAddedHealth;
+    float addedDamage, addedAttackSpeed, addedCritChance, addedArmor, addedHealth, addedHealthRegen, addedLifeSteal, addedBleedChance, addedHealthOnKill, addedMovementSpeed;
+    float precentAddedDamage, precentAddedAttackSpeed, precentAddedCritChance, precentAddedArmor, precentAddedHealth;
 
     [Space]
     //xp

@@ -25,12 +25,12 @@ public class StackableItemScript : MonoBehaviour
 		{
 			if (!cooldownBool)
 			{
-				AddItem(other.transform.GetComponent<StackAbleItem>().id, other.transform.gameObject);
+				AddItem(other.transform.GetComponent<StackAbleItem>().id);
 				other.transform.GetComponent<StackAbleItem>().Collision();
 			}
 		}
 	}
-	public void AddItem(int index, GameObject item)
+	public void AddItem(int index)
 	{
 		cooldownBool = true;
 		if (ChanceToGetDubbel())
