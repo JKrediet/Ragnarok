@@ -6,11 +6,9 @@ using Photon.Pun;
 public class ChestScript : ProbScript
 {
     public int cost;
-    public ItemList itemList;
     public GameObject itemSpawnPos;
     public enum ChestType { small=0,medium =1, big =2, golden =3}
     public ChestType type;
-    public int chestRarity;
     public int chestId;
     public Animator anim;
     private GameManager gm;
@@ -30,19 +28,19 @@ public class ChestScript : ProbScript
 		if (isMyPlayer.GetComponent<PlayerController>().playerBalance >= cost)
         { 
             gm=FindObjectOfType<GameManager>();
-            GetRandomItem();
+            StartCoroutine("GetRandomItem");
+            canInteract = false;
 		}
 		else
 		{
             //doet sound dat die te weinig geld heeft
 		}
     }
-	public void GetRandomItem()
-    {
-
+	public IEnumerator GetRandomItem()
+    { 
         gm.OpenChest(chestId);
+        yield return new WaitForSeconds(0.5f);
         gm.SpawnItem(itemSpawnPos.transform.position, RaretyChance());
-        //doe ook item spawnen met rpc in de shit
     }
     public int RaretyChance()
     {
@@ -101,21 +99,21 @@ public class ChestScript : ProbScript
             else if (randomNum > 85){//mythic
                 itemRarity = 4;}
         }
-        if(itemRarity == 0){
-            int roll = Random.Range(0, 5);
-            return roll;}
-        else if (itemRarity == 1){
-            int roll = Random.Range(6, 11);
-            return roll;}
-        else if (itemRarity == 2){
-            int roll = Random.Range(12, 17);
-            return roll;}
-        else if (itemRarity == 3){
-            int roll = Random.Range(18, 22);
-            return roll;}
-        else if (itemRarity == 4){
-            int roll = Random.Range(23, 25);
-            return roll;}
-        return 0;
+        //if(itemRarity == 0){
+        //    int roll = Random.Range(0, 5);
+        //    return roll;}
+        //else if (itemRarity == 1){
+        //    int roll = Random.Range(6, 11);
+        //    return roll;}
+        //else if (itemRarity == 2){
+        //    int roll = Random.Range(12, 17);
+        //    return roll;}
+        //else if (itemRarity == 3){
+        //    int roll = Random.Range(18, 22);
+        //    return roll;}
+        //else if (itemRarity == 4){
+        //    int roll = Random.Range(23, 25);
+        //    return roll;}
+        return itemRarity;
     }
 }

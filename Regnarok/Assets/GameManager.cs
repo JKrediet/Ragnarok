@@ -96,23 +96,23 @@ public class GameManager : MonoBehaviour
 		{
             case 0:
                 int randomComon = Random.Range(0, itemlist.common.Count);
-                PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", itemlist.common[randomComon].name), spawnPos, Quaternion.identity);
+                PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "StackableItemPrefs", itemlist.common[randomComon].name), spawnPos, Quaternion.identity);
                 break;
             case 1:
                 int randomRare = Random.Range(0, itemlist.rare.Count);
-                PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", itemlist.rare[randomRare].name), spawnPos, Quaternion.identity);
+                PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "StackableItemPrefs", itemlist.rare[randomRare].name), spawnPos, Quaternion.identity);
                 break;
             case 2:
                 int randomEpic = Random.Range(0, itemlist.epic.Count);
-                PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", itemlist.epic[randomEpic].name), spawnPos, Quaternion.identity);
+                PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "StackableItemPrefs", itemlist.epic[randomEpic].name), spawnPos, Quaternion.identity);
                 break;
             case 3:
                 int randomLegendary = Random.Range(0, itemlist.legendary.Count);
-                PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", itemlist.legendary[randomLegendary].name), spawnPos, Quaternion.identity);
+                PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "StackableItemPrefs", itemlist.legendary[randomLegendary].name), spawnPos, Quaternion.identity);
                 break;
             case 4:
                 int randomMythic = Random.Range(0, itemlist.mythic.Count);
-                PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", itemlist.mythic[randomMythic].name), spawnPos, Quaternion.identity);
+                PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "StackableItemPrefs", itemlist.mythic[randomMythic].name), spawnPos, Quaternion.identity);
                 break;
         }
     }
@@ -136,7 +136,7 @@ public class GameManager : MonoBehaviour
         {
             if (objectsFound[i].chestId == id)
             {
-                objectsFound[i].transform.GetComponent<Animator>().SetBool("OpenChest", true);
+                objectsFound[i].anim.SetBool("OpenChest", true);
             }
         }
     }
