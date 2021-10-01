@@ -110,6 +110,7 @@ public class TrowState : AttackState
         objectScript.target = sm.target;
         objectRb.isKinematic = false;
         objectRb.useGravity = true;
+        objectScript.StartCoroutine("GotActived");
         objectScript.activated = true;
         objectRb = newTrowable.transform.GetComponent<Rigidbody>();
         objectScript = newTrowable.transform.GetComponent<TrowObject>();

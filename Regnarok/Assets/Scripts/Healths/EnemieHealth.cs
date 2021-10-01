@@ -21,12 +21,13 @@ public class EnemieHealth : Health
 	}
 	public override void Health_Dead()
 	{
+		transform.position -= new Vector3(0, 1, 0);
 		sm.isDead = true;
 		sm.ResetAnim();
 		sm.anim.SetBool("IsDying", true);
 		Destroy(gameObject.GetComponent<NavMeshAgent>());
 		Destroy(gameObject.GetComponent<NavMeshObstacle>());
-		Destroy(healthbar);
+		healthbar.SetActive(false);
 	}
 	public void RollItem()
 	{

@@ -7,20 +7,30 @@ public class TrowObject : MonoBehaviour
 	public float throwPower;
 	public float damage;
 	public bool activated;
-	private bool doingDamage;
 	public GameObject target;
-	public void LookAtPlayer(Vector3 pos)
+	private bool doingDamage;
+	private bool goToPlayer;
+	private Vector3 pos;
+	public void LookAtPlayer()
 	{
 		transform.LookAt(pos);
+	}
+	public IEnumerator GotActived()
+	{
+		pos= target.transform.position+new Vector3(0,0,0);
+		yield return new WaitForSeconds(1f);
+		goToPlayer = true;
 	}
 	public void Update()
 	{
 		if (activated)
 		{
 			gameObject.GetComponent<Rigidbody>().AddForce(transform.forward * throwPower + transform.up * 4, ForceMode.Impulse);
-			Vector3 delayedPos= target.transform.position;
-			new WaitForSeconds(1);
-			LookAtPlayer(delayedPos);
+			if (goToPlayer)
+			{
+				pos = target.transform.position;
+			}
+			LookAtPlayer();
 		}
 	}
 	private void OnCollisionEnter(Collision collision)

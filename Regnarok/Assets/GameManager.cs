@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     public GameObject loadingScreen, canvas;
 	public VideoPlayer videoplayer;
     public ItemListScript itemlist;
+    public EnemyList enemielist;
 
     public List<GameObject> playerObjectList;
 
@@ -127,6 +128,39 @@ public class GameManager : MonoBehaviour
         GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", droppedItemName), position, rotation);
         droppedItem.GetComponent<WorldItem>().SetUp(ItemList.SelectItem(droppedItemName).name, amount, ItemList.SelectItem(droppedItemName).sprite, ItemList.SelectItem(droppedItemName).type, ItemList.SelectItem(droppedItemName).maxStackSize);
         GetComponent<PhotonView>().RPC("RemoveItemFromWorld", RpcTarget.All, serialNumber);
+    }
+    public void SpawnEnemies(int i_i, Vector3 spawnPos, int id)
+    {
+        GetComponent<PhotonView>().RPC("SpawnEnemiesSyncted", RpcTarget.MasterClient, i_i, spawnPos,id);
+    }
+        [PunRPC]
+    public void SpawnEnemiesSyncted(int i_i, Vector3 spawnPos, int id)
+    {
+        GameObject spawnedEnemie = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", enemielist.enemieList[i_i]), spawnPos, Quaternion.identity);
+        Totem[] totems = FindObjectsOfType<Totem>();
+        for (int i = 0; i < totems.Length; i++)
+        {
+            if (totems[i].id == id)
+            {
+                totems[i].enemies.Add(spawnedEnemie);
+            }
+        }
+    }
+    public void ActivatTotem(int id)
+	{
+        GetComponent<PhotonView>().RPC("ActivatedTotemSync", RpcTarget.All, id);
+    }
+    [PunRPC]
+    public void ActivatedTotemSync(int id)
+    {
+        Totem[] totems = FindObjectsOfType<Totem>();
+        for (int i = 0; i < totems.Length; i++)
+        {
+            if (totems[i].id == id)
+            {
+                totems[i].activated = true;
+            }
+        }
     }
     [PunRPC]
     public void OpenChestInWorld(int id)

@@ -5,6 +5,7 @@ using Photon.Pun;
 using System.IO;
 public class Totem : MonoBehaviour
 {
+	public int id;
 	public bool activated;
 	public bool gaveItem;
 	public int amountOfEnemies;
@@ -12,13 +13,13 @@ public class Totem : MonoBehaviour
 	public Vector3 itemSpawnOffset = new Vector3(0, 1.5f, 0);
 	public Vector3 spawnOffset = new Vector3(0, 1, 0);
 	public GameObject[] torches;
-	public EnemyList enemielist;
 	public  ItemListScript itemlist;
 	public string spawnParticleName;
 	public List<GameObject> enemies;
 	private bool isChecking;
 	private bool allEnemiesDied;
 	private int type;
+	private GameManager gm;
 	private void Start()
 	{
 		type = Random.Range(1, 4);
@@ -32,9 +33,8 @@ public class Totem : MonoBehaviour
 			{
 				if (!isChecking)
 				{
-					if (allEnemiesDied)
+					if (!allEnemiesDied)
 					{
-
 						StartCoroutine(CheckEnemies());
 					}
 				}
@@ -73,72 +73,19 @@ public class Totem : MonoBehaviour
 	{
 		gaveItem = true;
 		int rarity = RaretyChance();
-		string prefabName;
-		if (rarity == 0)
+		Ray ray = new Ray(GetPos(), -transform.up);
+		RaycastHit hitInfo;
+		if (Physics.Raycast(ray, out hitInfo))
 		{
-			int random = Random.Range(0, itemlist.common.Count);
-			prefabName = itemlist.common[random].name;
-			Ray ray = new Ray(GetPos(), -transform.up);
-			RaycastHit hitInfo;
-			if (Physics.Raycast(ray, out hitInfo))
-			{
-				GetComponent<PhotonView>().RPC("SpawnItem", RpcTarget.MasterClient, hitInfo.point + itemSpawnOffset, prefabName);
-			}
+
+			gm.SpawnItem(hitInfo.point, rarity);
 		}
-		else if (rarity==1)
-		{
-			int random = Random.Range(0, itemlist.rare.Count);
-			prefabName = itemlist.rare[random].name;
-			Ray ray = new Ray(GetPos(), -transform.up);
-			RaycastHit hitInfo;
-			if (Physics.Raycast(ray, out hitInfo))
-			{
-				GetComponent<PhotonView>().RPC("SpawnItem", RpcTarget.MasterClient, hitInfo.point + itemSpawnOffset, prefabName);
-			}
-		}
-		else if (rarity == 2)
-		{
-			int random = Random.Range(0, itemlist.epic.Count);
-			prefabName = itemlist.epic[random].name;
-			Ray ray = new Ray(GetPos(), -transform.up);
-			RaycastHit hitInfo;
-			if (Physics.Raycast(ray, out hitInfo))
-			{
-				GetComponent<PhotonView>().RPC("SpawnItem", RpcTarget.MasterClient, hitInfo.point + itemSpawnOffset, prefabName);
-			}
-		}
-		else if (rarity == 3)
-		{
-			int random = Random.Range(0, itemlist.legendary.Count);
-			prefabName = itemlist.legendary[random].name;
-			Ray ray = new Ray(GetPos(), -transform.up);
-			RaycastHit hitInfo;
-			if (Physics.Raycast(ray, out hitInfo))
-			{
-				GetComponent<PhotonView>().RPC("SpawnItem", RpcTarget.MasterClient, hitInfo.point + itemSpawnOffset, prefabName);
-			}
-		}
-		else if (rarity == 4)
-		{
-			int random = Random.Range(0, itemlist.mythic.Count);
-			prefabName = itemlist.mythic[random].name;
-			Ray ray = new Ray(GetPos(), -transform.up);
-			RaycastHit hitInfo;
-			if (Physics.Raycast(ray, out hitInfo))
-			{
-				GetComponent<PhotonView>().RPC("SpawnItem", RpcTarget.MasterClient, hitInfo.point + itemSpawnOffset, prefabName);
-			}
-		}
-	}
-	[PunRPC]
-	public void SpawnItem(Vector3 pos,string name)
-	{
-		PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", name), pos, Quaternion.identity);
 	}
 	public void Interact()
 	{
 		if (!activated)
 		{
+			gm = FindObjectOfType<GameManager>();
 			for (int i = 0; i < torches.Length; i++)
 			{
 				torches[i].SetActive(true);
@@ -147,7 +94,7 @@ public class Totem : MonoBehaviour
 			{
 				SpawnEnemies();
 			}
-			GetComponent<PhotonView>().RPC("SyncActivated", RpcTarget.All);
+			gm.ActivatTotem(id);
 		}
 	}
 	public Vector3 GetPos()
@@ -161,16 +108,16 @@ public class Totem : MonoBehaviour
 	}
 	void SpawnEnemies()
 	{
-		int randomNum = Random.Range(0, enemielist.enemieList.Count);
+		int randomNum = Random.Range(0, gm.enemielist.enemieList.Count);
 		Ray ray = new Ray(GetPos(), -transform.up);
 		RaycastHit hitInfo;
 		if (Physics.Raycast(ray, out hitInfo))
 		{
 			if (hitInfo.transform.tag == "Mesh")
 			{
-				GetComponent<PhotonView>().RPC("SpawnPartical", RpcTarget.MasterClient, hitInfo.point);
+				gm.GetComponent<PhotonView>().RPC("SpawnPartical", RpcTarget.MasterClient, hitInfo.point);
 				new WaitForSeconds(0.5f);
-				GetComponent<PhotonView>().RPC("SpawnEnemiesSyncted", RpcTarget.MasterClient,randomNum, hitInfo.point + spawnOffset);
+				gm.SpawnEnemies(randomNum, hitInfo.point + spawnOffset,id);
 			}
 			else
 			{
@@ -184,17 +131,6 @@ public class Totem : MonoBehaviour
 		GameObject tempObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "SpawnPartical"), spawnPos, Quaternion.identity);
 		new WaitForSeconds(0.6f);
 		PhotonNetwork.Destroy(tempObject);
-	}
-	[PunRPC]
-	public void SpawnEnemiesSyncted(int i,Vector3 spawnPos)
-	{
-		GameObject spawnedEnemie =PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs",enemielist.enemieList[i]), spawnPos, Quaternion.identity);
-		enemies.Add(spawnedEnemie);
-	}
-	[PunRPC]
-	public void SyncActivated()
-	{
-		activated = true;
 	}
 	public int RaretyChance()
 	{
@@ -293,31 +229,6 @@ public class Totem : MonoBehaviour
 				itemRarity = 4;
 			}
 		}
-		if (itemRarity == 0)
-		{
-			int roll = Random.Range(0, 5);
-			return roll;
-		}
-		else if (itemRarity == 1)
-		{
-			int roll = Random.Range(6, 11);
-			return roll;
-		}
-		else if (itemRarity == 2)
-		{
-			int roll = Random.Range(12, 17);
-			return roll;
-		}
-		else if (itemRarity == 3)
-		{
-			int roll = Random.Range(18, 22);
-			return roll;
-		}
-		else if (itemRarity == 4)
-		{
-			int roll = Random.Range(23, 25);
-			return roll;
-		}
-		return 0;
+		return itemRarity;
 	}
 }

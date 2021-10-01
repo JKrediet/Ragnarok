@@ -201,6 +201,10 @@ public class EnviromentSpawner : MonoBehaviour
 			{
                 tempObject.GetComponent<ChestScript>().chestId = amount;
             }
+            else if (tempObject.GetComponent<Totem>())
+            {
+                tempObject.GetComponent<Totem>().id = amount;
+            }
         }
     }
     [PunRPC]
