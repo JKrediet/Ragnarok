@@ -168,6 +168,7 @@ public class CharacterStats : MonoBehaviour
                 amountOfItemText.text = slot.item.itemAmount.ToString() + " / " + slot.item.maxStack.ToString();
                 if (slot.item.equipment == EquipmentType.none)
                 {
+                    typeOfItemText.text = "";
                     return;
                 }
                 typeOfItemText.text = slot.item.equipment.ToString();

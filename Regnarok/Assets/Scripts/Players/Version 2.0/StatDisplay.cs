@@ -15,4 +15,14 @@ public class StatDisplay : MonoBehaviour
         nameText = texts[0];
         valueText = texts[1];
     }
+    private void Start()
+    {
+        TextMeshProUGUI[] texts = GetComponentsInChildren<TextMeshProUGUI>();
+        nameText = texts[0];
+        valueText = texts[1];
+    }
+    public void GiveStats(string _value)
+    {
+        valueText.text = _value;
+    }
 }

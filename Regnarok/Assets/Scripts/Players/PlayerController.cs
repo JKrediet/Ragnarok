@@ -83,6 +83,7 @@ public class PlayerController : MonoBehaviour
 
     private int itemSpawnedIn;
 
+    public List<StatDisplay> statTexts;
     private void Awake()
     {
         pv = GetComponent<PhotonView>();
@@ -120,6 +121,17 @@ public class PlayerController : MonoBehaviour
         totalChanceToInflictBleed = _bleedChance;
         totalHealthOnKill = _healthOnKill;
         totalExtraSpeed = _movementSpeed;
+
+        //ui stats
+        statTexts[0].GiveStats(GetComponent<CharacterStats>().level.ToString());
+        statTexts[1].GiveStats(totalDamage.ToString());
+        statTexts[2].GiveStats(totalAttackSpeed.ToString());
+        statTexts[3].GiveStats(totalCritChance.ToString());
+        statTexts[4].GiveStats(totalChanceToInflictBleed.ToString());
+        statTexts[5].GiveStats(GetComponent<Health>().maxHealth.ToString());
+        statTexts[6].GiveStats(GetComponent<Health>().armor.ToString());
+        statTexts[7].GiveStats(totalHealthOnKill.ToString());
+        statTexts[8].GiveStats((totalExtraSpeed + speed).ToString());
     }
     private void Update()
     {
