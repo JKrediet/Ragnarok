@@ -131,10 +131,16 @@ public class StateManager : MonoBehaviour
 	{
 		spawned = true;
 	}
-	public IEnumerator CoolDownTrow(float timeToWait)
+	public void CoolDownTrow(float timeToWait)
 	{
 		trowCoolDown = true;
-		yield return new WaitForSeconds(timeToWait);
+		Invoke("TurnOn", timeToWait);
+		print(timeToWait);
+		print("1");
+	}
+	public void TurnOn()
+	{
 		trowCoolDown = false;
+		print("2");
 	}
 }

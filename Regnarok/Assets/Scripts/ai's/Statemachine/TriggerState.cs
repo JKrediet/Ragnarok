@@ -19,7 +19,28 @@ public class TriggerState : State
         float dist = Vector3.Distance(transform.position, sm.target.transform.position);
         if (dist <= sm.triggerRange)
         {
-            if (dist <= sm.attackRange)
+			if (sm.hasRangedAtt && !sm.trowCoolDown && dist <= sm.attackRange * 3.5f)
+			{
+				Vector3 lookat = sm.delayedPos;
+				lookat.y = 0;
+
+				transform.LookAt(lookat);
+
+				if (!sm.doAttack)
+				{
+					Vector3 forward = transform.TransformDirection(Vector3.forward);
+					Vector3 toOther = sm.target.transform.position - transform.position;
+					if (Vector3.Dot(forward, toOther) > 0)
+					{
+						int randomI = Random.Range(0, sm.rangedStates.Length);
+						sm.currentAttack = randomI;
+						sm.ResetAnim();
+                        print(sm.curentState.name);
+						return sm.rangedStates[randomI];
+					}
+				}
+			}
+			if (dist <= sm.attackRange)
             {
                 Vector3 lookat = sm.delayedPos;
                 lookat.y = 0;
@@ -28,7 +49,6 @@ public class TriggerState : State
 
                 if (!sm.doAttack)
                 {
-
                     Vector3 forward = transform.TransformDirection(Vector3.forward);
                     Vector3 toOther = sm.target.transform.position - transform.position;
                     if (Vector3.Dot(forward, toOther) > 0)
@@ -39,26 +59,6 @@ public class TriggerState : State
                         return sm.attackStates[randomI];
 					}
 				}
-            }
-            else if(sm.hasRangedAtt&&!sm.trowCoolDown)
-			{
-                Vector3 lookat = sm.delayedPos;
-                lookat.y = 0;
-
-                transform.LookAt(lookat);
-
-                if (!sm.doAttack)
-                {
-                    Vector3 forward = transform.TransformDirection(Vector3.forward);
-                    Vector3 toOther = sm.target.transform.position - transform.position;
-                    if (Vector3.Dot(forward, toOther) > 0)
-                    {
-                        int randomI = Random.Range(0, sm.rangedStates.Length);
-                        sm.currentAttack = randomI;
-                        sm.ResetAnim();
-                        return sm.rangedStates[randomI];
-                    }
-                }
             }
             else
             {

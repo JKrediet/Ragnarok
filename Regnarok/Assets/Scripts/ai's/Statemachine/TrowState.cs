@@ -6,74 +6,59 @@ using System.IO;
 
 public class TrowState : AttackState
 {
+    public GameObject curveObject;
     public GameObject trowObject;
+    public GameObject handObject;
     public TrowObject objectScript;
     public Rigidbody objectRb;
     public GameObject enemie;
     public string trowObjectName;
     public float trowCooldownTime;
     private GameObject newTrowable;
+    private bool isTrowing;
+    
     public override State RunCurrentState()
     {
         if (sm.isDead)
         {
             return this;
         }
+		if (sm.trowCoolDown&& !isTrowing)
+		{
+            sm.anim.SetBool("Attack3", false);
+            return trigger;
+		}
         float dist = Vector3.Distance(transform.position, sm.target.transform.position);
         if (dist > 0.35)
         {
             FaceTarget(sm.target.transform.position);
         }
-        if (dist <= sm.triggerRange)
+        if (dist <= sm.triggerRange/1.5f)
         {
-            if (sm.hasRangedAtt && dist <= sm.attackRange * 3.5f && !sm.trowCoolDown)
+            if (!sm.doAttack)
             {
-                if (!sm.doAttack)
+                Vector3 forward = transform.TransformDirection(Vector3.forward);
+                Vector3 toOther = sm.target.transform.position - transform.position;
+                int randomI = Random.Range(0, sm.attackStates.Length);
+                if (!sm.trowCoolDown)
                 {
-                    Vector3 forward = transform.TransformDirection(Vector3.forward);
-                    Vector3 toOther = sm.target.transform.position - transform.position;
-                    if (Vector3.Dot(forward, toOther) > 0)
-                    {
-                        int randomI = Random.Range(0, sm.attackStates.Length);
-                        if (!sm.trowCoolDown)
-                        {
-                            DoAttack();
-                        }
-                        return this;
-                    }
+					if (sm.curentState == this)
+					{
+                        DoAttack();
+					}
                 }
-                else
-                {
-                    sm.doAttack = false;
-                    return trigger;
-                }
+                return this;
             }
             else
             {
-                if (!sm.doAttack)
-                {
-                    if (sm.spawned)
-                    {
-                        if (!sm.anim.GetCurrentAnimatorStateInfo(0).IsName(animationName))
-                        {
-                            agent.speed = sm.movementSpeed;
-                            sm.idleRange = 1000f;
-                            return trigger;
-                        }
-                    }
-                }
+                sm.doAttack = false;
+                return trigger;
             }
+		}
+		else
+		{
+            return trigger;
         }
-        else
-        {
-            if (!sm.anim.GetCurrentAnimatorStateInfo(0).IsName(animationName))
-            {
-                agent.speed = sm.movementSpeed;
-                sm.idleRange = 1000f;
-                return idle;
-            }
-        }
-        return this;
     }
     private void FaceTarget(Vector3 destination)
     {
@@ -84,18 +69,10 @@ public class TrowState : AttackState
     }
     public void DoAttack()
     {
-        if (sm.trowCoolDown)
-        {
-            sm.ResetAnim();
-        }
-        else
-        {
-            sm.StartCoroutine(sm.CoolDownTrow(trowCooldownTime));
-            agent.destination = enemie.transform.position;
-            sm.anim.SetBool(animationName, true);
-            agent.speed = sm.attackMovementSpeed;
-            sm.trowCoolDown = true;
-        }
+        isTrowing = true;
+        sm.ResetAnim();
+        sm.anim.SetBool(animationName, true);
+        sm.CoolDownTrow(trowCooldownTime);
     }
     [PunRPC]
     public void SpawnNewHamer()
@@ -107,6 +84,8 @@ public class TrowState : AttackState
 	{
         GetComponent<PhotonView>().RPC("SpawnNewHamer", RpcTarget.MasterClient);
         newTrowable.SetActive(false);
+        objectScript.curvepos = curveObject;
+        objectScript.hand = handObject;
         objectScript.target = sm.target;
         objectRb.isKinematic = false;
         objectRb.useGravity = true;
@@ -114,13 +93,11 @@ public class TrowState : AttackState
         objectScript.activated = true;
         objectRb = newTrowable.transform.GetComponent<Rigidbody>();
         objectScript = newTrowable.transform.GetComponent<TrowObject>();
+        trowObject.GetComponent<MeshRenderer>().enabled = false;
         trowObject.transform.parent = null;
         trowObject = newTrowable;
         newTrowable = null;
-        Invoke("SetActive",1);
-    }
-    public void SetActive()
-	{
         trowObject.SetActive(true);
+        isTrowing = false;
     }
 }
