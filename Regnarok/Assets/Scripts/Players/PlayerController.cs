@@ -83,6 +83,8 @@ public class PlayerController : MonoBehaviour
 
     private int itemSpawnedIn;
 
+    public GameObject pressE;
+
     public List<StatDisplay> statTexts;
     private void Awake()
     {
@@ -252,7 +254,7 @@ public class PlayerController : MonoBehaviour
                 if (staminaValue > 0)
                 {
                     staminaValue = Mathf.Clamp(staminaValue -= staminaLossPerSec * Time.deltaTime, 0, maxStamina);
-                    combinedSpeed = sprintSpeed + totalExtraSpeed;
+                    combinedSpeed = sprintSpeed + totalExtraSpeed * 1.5f;
                     Anim_sprint();
                 }
                 else
@@ -625,6 +627,80 @@ public class PlayerController : MonoBehaviour
     {
         if (pv.IsMine)
         {
+            RaycastHit infoHit;
+            if (Physics.Raycast(cam.transform.position, cam.transform.forward, out infoHit, 5))
+            {
+                if (infoHit.transform.GetComponent<ChestScript>())
+                {
+                    if(InventoryIsOpen)
+                    {
+                        pressE.SetActive(false);
+                    }
+                    else
+                    {
+                        pressE.SetActive(true);
+                    }
+                }
+                else if (infoHit.transform.GetComponent<Totem>())
+                {
+                    if (InventoryIsOpen)
+                    {
+                        pressE.SetActive(false);
+                    }
+                    else
+                    {
+                        pressE.SetActive(true);
+                    }
+                }
+                else if (infoHit.transform.GetComponent<ChestInventory>())
+                {
+                    if (InventoryIsOpen)
+                    {
+                        pressE.SetActive(false);
+                    }
+                    else
+                    {
+                        pressE.SetActive(true);
+                    }
+                }
+                else if (infoHit.transform.GetComponent<CraftingStation>())
+                {
+                    if (InventoryIsOpen)
+                    {
+                        pressE.SetActive(false);
+                    }
+                    else
+                    {
+                        pressE.SetActive(true);
+                    }
+                }
+                else if (infoHit.transform.GetComponent<OvenStation>())
+                {
+                    if (InventoryIsOpen)
+                    {
+                        pressE.SetActive(false);
+                    }
+                    else
+                    {
+                        pressE.SetActive(true);
+                    }
+                }
+                else if (infoHit.transform.GetComponent<ItemPickUp>())
+                {
+                    if (InventoryIsOpen)
+                    {
+                        pressE.SetActive(false);
+                    }
+                    else
+                    {
+                        pressE.SetActive(true);
+                    }
+                }
+                else
+                {
+                    pressE.SetActive(false);
+                }
+            }
             if (Input.GetKeyDown(KeyCode.E))
             {
                 RaycastHit _hit;
