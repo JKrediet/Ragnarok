@@ -21,6 +21,17 @@ public class SeeOtherPlayerScript : MonoBehaviour
 	{
 		if (Input.GetButtonDown("H"))
 		{
+			if (players.Count <= 0)
+			{
+				players = new List<GameObject>(GameObject.FindGameObjectsWithTag("Player"));
+				for (int i = 0; i < players.Count; i++)
+				{
+					if (players[i].transform.GetComponent<PhotonView>().IsMine)
+					{
+						players.Remove(players[i]);
+					}
+				}
+			}
 			for (int i = 0; i < players.Count; i++)
 			{
 				Trigger(i);
