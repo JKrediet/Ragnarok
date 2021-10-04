@@ -4,11 +4,11 @@ using UnityEngine;
 using Photon.Pun;
 public class SeeOtherPlayerScript : MonoBehaviour
 {
-	public List<GameObject> players;
+	public List<SeeOtherPlayerScript> players;
 	private bool active;
 	private void Start()
 	{
-		players = new List<GameObject>(GameObject.FindGameObjectsWithTag("Player"));
+		players = new List<SeeOtherPlayerScript>(FindObjectsOfType<SeeOtherPlayerScript>());
 		for (int i = 0; i < players.Count; i++)
 		{
 			if (players[i].transform.GetComponent<PhotonView>().IsMine)
@@ -23,10 +23,10 @@ public class SeeOtherPlayerScript : MonoBehaviour
 		{
 			if (players.Count <= 0)
 			{
-				players = new List<GameObject>(GameObject.FindGameObjectsWithTag("Player"));
+				players = new List<SeeOtherPlayerScript>(FindObjectsOfType<SeeOtherPlayerScript>());
 				for (int i = 0; i < players.Count; i++)
 				{
-					if (players[i].transform.GetComponent<PhotonView>().IsMine)
+					if (players[i]==this)
 					{
 						players.Remove(players[i]);
 					}
