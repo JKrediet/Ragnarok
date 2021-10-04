@@ -19,7 +19,7 @@ public class SeeOtherPlayerScript : MonoBehaviour
 	}
 	private void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.H)
+		if (Input.GetKeyDown(KeyCode.H))
 		{
 			print("1");
 			if (players.Count <= 0)
