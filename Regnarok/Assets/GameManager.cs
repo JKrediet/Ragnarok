@@ -112,8 +112,8 @@ public class GameManager : MonoBehaviour
                 PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "StackableItemPrefs", itemlist.legendary[randomLegendary].name), spawnPos, Quaternion.identity);
                 break;
             case 4:
-                int randomMythic = Random.Range(0, itemlist.mythic.Count);
-                PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "StackableItemPrefs", itemlist.mythic[randomMythic].name), spawnPos, Quaternion.identity);
+                int randomMythic = Random.Range(0, itemlist.common.Count);
+                PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "StackableItemPrefs", itemlist.common[randomMythic].name), spawnPos, Quaternion.identity);
                 break;
         }
     }
