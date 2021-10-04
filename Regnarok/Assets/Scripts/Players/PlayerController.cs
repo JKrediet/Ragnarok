@@ -701,6 +701,10 @@ public class PlayerController : MonoBehaviour
                     pressE.SetActive(false);
                 }
             }
+            else
+            {
+                pressE.SetActive(false);
+            }
             if (Input.GetKeyDown(KeyCode.E))
             {
                 pressE.SetActive(false);
