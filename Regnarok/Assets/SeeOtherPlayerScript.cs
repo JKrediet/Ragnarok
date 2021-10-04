@@ -5,6 +5,7 @@ using Photon.Pun;
 public class SeeOtherPlayerScript : MonoBehaviour
 {
 	public List<GameObject> players;
+	private bool active;
 	private void Start()
 	{
 		players = new List<GameObject>(GameObject.FindGameObjectsWithTag("Player"));
@@ -18,6 +19,18 @@ public class SeeOtherPlayerScript : MonoBehaviour
 	}
 	private void Update()
 	{
-		
+		if (Input.GetButtonDown("H"))
+		{
+			for (int i = 0; i < players.Count; i++)
+			{
+				Trigger(i);
+			}
+		}
+	}
+	public void Trigger(int i)
+	{
+		active = !active;
+
+		players[i].GetComponent<SeeOtherPlayerScript>().enabled = active;
 	}
 }
