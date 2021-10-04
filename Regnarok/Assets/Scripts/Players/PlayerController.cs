@@ -703,6 +703,7 @@ public class PlayerController : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.E))
             {
+                pressE.SetActive(false);
                 RaycastHit _hit;
                 if (Physics.Raycast(cam.transform.position, cam.transform.forward, out _hit, 5))
                 {
