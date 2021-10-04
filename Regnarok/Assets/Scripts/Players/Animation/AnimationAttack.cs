@@ -6,7 +6,8 @@ public class AnimationAttack : MonoBehaviour
 {
     public void DoneAttack()
     {
-        GetComponentInParent<PlayerController>().DoneAttacking();
+        print(1);
+        //GetComponentInParent<PlayerController>().AttackStuckFix2();
     }
     public void DoDamage()
     {

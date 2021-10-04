@@ -160,9 +160,8 @@ public class PlayerController : MonoBehaviour
                     {
                         if (mayAttack)
                         {
-                            mayAttack = false;
+                            StartCoroutine(AttackStuckFix());
                             Anim_attack();
-                            StartCoroutine("AttackStuckFix");
                         }
                     }
                     else
@@ -608,12 +607,14 @@ public class PlayerController : MonoBehaviour
     {
         animController.SetInteger("Attack", 0);
         animController.speed = 1;
-    }
+    }    
     IEnumerator AttackStuckFix()
     {
         mayAttack = false;
-        yield return new WaitForSeconds(totalAttackSpeed * 1.1f);
+        float tempAttackSpeed = totalAttackSpeed / (totalAttackSpeed * totalAttackSpeed);
+        yield return new WaitForSeconds(tempAttackSpeed * 1.1f);
         mayAttack = true;
+        DoneAttacking();
     }
     public void LockCamera()
     {
@@ -627,73 +628,38 @@ public class PlayerController : MonoBehaviour
     {
         if (pv.IsMine)
         {
-            RaycastHit infoHit;
-            if (Physics.Raycast(cam.transform.position, cam.transform.forward, out infoHit, 5))
+            if (!InventoryIsOpen)
             {
-                if (infoHit.transform.GetComponent<ChestScript>())
+                RaycastHit infoHit;
+                if (Physics.Raycast(cam.transform.position, cam.transform.forward, out infoHit, 5))
                 {
-                    if(InventoryIsOpen)
-                    {
-                        pressE.SetActive(false);
-                    }
-                    else
+                    if (infoHit.transform.GetComponent<ChestScript>())
                     {
                         pressE.SetActive(true);
                     }
-                }
-                else if (infoHit.transform.GetComponent<Totem>())
-                {
-                    if (InventoryIsOpen)
-                    {
-                        pressE.SetActive(false);
-                    }
-                    else
+                    else if (infoHit.transform.GetComponent<Totem>())
                     {
                         pressE.SetActive(true);
                     }
-                }
-                else if (infoHit.transform.GetComponent<ChestInventory>())
-                {
-                    if (InventoryIsOpen)
-                    {
-                        pressE.SetActive(false);
-                    }
-                    else
+                    else if (infoHit.transform.GetComponent<ChestInventory>())
                     {
                         pressE.SetActive(true);
                     }
-                }
-                else if (infoHit.transform.GetComponent<CraftingStation>())
-                {
-                    if (InventoryIsOpen)
-                    {
-                        pressE.SetActive(false);
-                    }
-                    else
+                    else if (infoHit.transform.GetComponent<CraftingStation>())
                     {
                         pressE.SetActive(true);
                     }
-                }
-                else if (infoHit.transform.GetComponent<OvenStation>())
-                {
-                    if (InventoryIsOpen)
-                    {
-                        pressE.SetActive(false);
-                    }
-                    else
+                    else if (infoHit.transform.GetComponent<OvenStation>())
                     {
                         pressE.SetActive(true);
                     }
-                }
-                else if (infoHit.transform.GetComponent<ItemPickUp>())
-                {
-                    if (InventoryIsOpen)
+                    else if (infoHit.transform.GetComponent<ItemPickUp>())
                     {
-                        pressE.SetActive(false);
+                        pressE.SetActive(true);
                     }
                     else
                     {
-                        pressE.SetActive(true);
+                        pressE.SetActive(false);
                     }
                 }
                 else
@@ -705,6 +671,8 @@ public class PlayerController : MonoBehaviour
             {
                 pressE.SetActive(false);
             }
+
+            //on e press
             if (Input.GetKeyDown(KeyCode.E))
             {
                 pressE.SetActive(false);
