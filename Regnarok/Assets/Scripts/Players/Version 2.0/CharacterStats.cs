@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Photon.Pun;
 
 public class CharacterStats : MonoBehaviour
 {
@@ -31,6 +32,8 @@ public class CharacterStats : MonoBehaviour
     //xp
     public int level;
     public float xpAmountNeeded, xpAmount, xpIncreasment, xpGainedMultiplier = 1;
+
+    public GameObject bambooHat, vikingHat, wizardHat;
 
     public void GainXp(float _xpAmount)
     {
@@ -173,6 +176,28 @@ public class CharacterStats : MonoBehaviour
                 }
                 typeOfItemText.text = slot.item.equipment.ToString();
             }
+        }
+    }
+    public void EquipHat(ItemSlot slot)
+    {
+        if(GetComponent<PhotonView>().IsMine)
+        {
+            return;
+        }
+        bambooHat.SetActive(false);
+        wizardHat.SetActive(false);
+        vikingHat.SetActive(false);
+        if(slot.item.itemName == "BambooHat")
+        {
+            bambooHat.SetActive(true);
+        }
+        else if(slot.item.itemName == "WizardHat")
+        {
+            wizardHat.SetActive(true);
+        }
+        else if (slot.item.itemName == "VikingHat")
+        {
+            vikingHat.SetActive(true);
         }
     }
     public void MoveItem(ItemSlot itemslot)
