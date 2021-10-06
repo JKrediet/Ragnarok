@@ -180,22 +180,27 @@ public class CharacterStats : MonoBehaviour
     }
     public void EquipHat(ItemSlot slot)
     {
-        if(GetComponent<PhotonView>().IsMine)
+        GetComponent<PhotonView>().RPC("ChangeHat", RpcTarget.All, slot.item.itemAmount);
+    }
+    [PunRPC]
+    public void ChangeHat(string _itemName)
+    {
+        if (GetComponent<PhotonView>().IsMine)
         {
             return;
         }
         bambooHat.SetActive(false);
         wizardHat.SetActive(false);
         vikingHat.SetActive(false);
-        if(slot.item.itemName == "BambooHat")
+        if (_itemName == "BambooHat")
         {
             bambooHat.SetActive(true);
         }
-        else if(slot.item.itemName == "WizardHat")
+        else if (_itemName == "WizardHat")
         {
             wizardHat.SetActive(true);
         }
-        else if (slot.item.itemName == "VikingHat")
+        else if (_itemName == "VikingHat")
         {
             vikingHat.SetActive(true);
         }
