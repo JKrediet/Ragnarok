@@ -27,6 +27,7 @@ public class CraftingStation : MonoBehaviour
     CharacterStats character;
     Inventory inventory;
     [SerializeField] List<Item> itemsInInventory;
+    [SerializeField] List<int> itemSlotForCraft, itemsNeedForCraft;
     Result craftThis;
     Result selectedCraft;
 
@@ -72,6 +73,8 @@ public class CraftingStation : MonoBehaviour
     private void Start()
     {
         itemsInInventory = new List<Item>();
+        itemsNeedForCraft = new List<int>();
+        itemSlotForCraft = new List<int>();
         craftThisSprite.gameObject.SetActive(false);
     }
 
@@ -153,7 +156,8 @@ public class CraftingStation : MonoBehaviour
                     }
                     else if (inventory.itemSlots[i].item.itemAmount >= neededAmountItem)
                     {
-                        inventory.itemSlots[i].item.itemAmount -= neededAmountItem;
+                        itemsNeedForCraft.Add(neededAmountItem);
+                        itemSlotForCraft.Add(i);
                     }
                     else
                     {
@@ -167,6 +171,10 @@ public class CraftingStation : MonoBehaviour
     }
     void FinishCrafting()
     {
+        for (int i = 0; i < itemSlotForCraft.Count; i++)
+        {
+            inventory.itemSlots[itemSlotForCraft[i]].item.itemAmount -= itemsNeedForCraft[i];
+        }
         inventory.RefreshUI();
         character.CreateItem(ItemList.SelectItem(selectedCraft.craftResult).name, 1, ItemList.SelectItem(selectedCraft.craftResult).sprite, ItemList.SelectItem(selectedCraft.craftResult).type, ItemList.SelectItem(selectedCraft.craftResult).maxStackSize);
         inventory.RefreshUI();

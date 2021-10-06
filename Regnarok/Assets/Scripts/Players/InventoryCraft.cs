@@ -9,8 +9,8 @@ public class InventoryCraft : MonoBehaviour
     [Space]
     [SerializeField] GameObject contentHolder;
     [SerializeField] Inventory inventory;
-    [SerializeField] List<Item> itemsInInventory, itemsNeedForCraft;
-    [SerializeField] List<int> itemSlotForCraft;
+    [SerializeField] List<Item> itemsInInventory;
+    [SerializeField] List<int> itemSlotForCraft, itemsNeedForCraft;
     Result craftThis;
     Result selectedCraft;
 
@@ -56,7 +56,7 @@ public class InventoryCraft : MonoBehaviour
     private void Start()
     {
         itemsInInventory = new List<Item>();
-        itemsNeedForCraft = new List<Item>();
+        itemsNeedForCraft = new List<int>();
         itemSlotForCraft = new List<int>();
         craftThisSprite.gameObject.SetActive(false);
     }
@@ -144,7 +144,7 @@ public class InventoryCraft : MonoBehaviour
                         }
                         else if (inventory.itemSlots[i].item.itemAmount >= neededAmountItem)
                         {
-                            itemsNeedForCraft.Add(inventory.itemSlots[i].item);
+                            itemsNeedForCraft.Add(neededAmountItem);
                             itemSlotForCraft.Add(i);
                         }
                         else
@@ -162,7 +162,10 @@ public class InventoryCraft : MonoBehaviour
     {
         for (int i = 0; i < itemSlotForCraft.Count; i++)
         {
-            inventory.itemSlots[itemSlotForCraft[i]].item.itemAmount -= itemsNeedForCraft[i].itemAmount;
+            print(inventory.itemSlots[itemSlotForCraft[i]].item.itemAmount);
+            inventory.itemSlots[itemSlotForCraft[i]].item.itemAmount -= itemsNeedForCraft[i];
+            print(itemsNeedForCraft[i]);
+            print(inventory.itemSlots[itemSlotForCraft[i]].item.itemAmount);
         }
         inventory.RefreshUI();
         GetComponent<CharacterStats>().CreateItem(ItemList.SelectItem(selectedCraft.craftResult).name, 1, ItemList.SelectItem(selectedCraft.craftResult).sprite, ItemList.SelectItem(selectedCraft.craftResult).type, ItemList.SelectItem(selectedCraft.craftResult).maxStackSize);
