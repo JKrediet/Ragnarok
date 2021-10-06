@@ -162,10 +162,7 @@ public class InventoryCraft : MonoBehaviour
     {
         for (int i = 0; i < itemSlotForCraft.Count; i++)
         {
-            print(inventory.itemSlots[itemSlotForCraft[i]].item.itemAmount);
             inventory.itemSlots[itemSlotForCraft[i]].item.itemAmount -= itemsNeedForCraft[i];
-            print(itemsNeedForCraft[i]);
-            print(inventory.itemSlots[itemSlotForCraft[i]].item.itemAmount);
         }
         inventory.RefreshUI();
         GetComponent<CharacterStats>().CreateItem(ItemList.SelectItem(selectedCraft.craftResult).name, 1, ItemList.SelectItem(selectedCraft.craftResult).sprite, ItemList.SelectItem(selectedCraft.craftResult).type, ItemList.SelectItem(selectedCraft.craftResult).maxStackSize);
