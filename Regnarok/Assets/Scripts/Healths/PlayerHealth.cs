@@ -33,6 +33,14 @@ public class PlayerHealth : Health
                     otherPlayersCam.Remove(otherPlayersCam[i]);
                 }
             }
+            for (int i = 0; i < otherPlayersCam.Count; i++)
+            {
+				if (otherPlayersCam[i].transform.GetComponent<AudioListener>())
+				{
+                    Destroy(otherPlayersCam[i].transform.GetComponent<AudioListener>());
+
+                }
+            }
         }
     }
 	public override void Health_Damage(float damageValue, bool bleed, Vector3 hitlocation)
@@ -85,6 +93,14 @@ public class PlayerHealth : Health
             else if (otherPlayersCam[i].transform.parent.transform.GetComponent<PlayerHealth>().health <= 0)
             {
                 otherPlayersCam.Remove(otherPlayersCam[i]);
+            }
+        }
+        for (int i = 0; i < otherPlayersCam.Count; i++)
+        {
+            if (otherPlayersCam[i].transform.GetComponent<AudioListener>())
+            {
+                Destroy(otherPlayersCam[i].transform.GetComponent<AudioListener>());
+
             }
         }
         mainCam.SetActive(false);
