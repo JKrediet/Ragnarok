@@ -27,7 +27,6 @@ public class WorldItem : MonoBehaviour
     [HideInInspector] public int attackSpeedPrecentBonus;
     [HideInInspector] public int critChancePrecentBonus;
     [HideInInspector] public int healthPrecentBonus;
-
     private void Start()
     {
         mayBePickedUp = false;

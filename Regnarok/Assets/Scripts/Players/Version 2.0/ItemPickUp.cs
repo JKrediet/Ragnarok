@@ -11,6 +11,7 @@ public class ItemPickUp : MonoBehaviour
     [SerializeField] Vector3 dropOffset;
     [SerializeField] List<StructDropItemsList> dropItems;
 
+    bool justOnce;
     [Serializable]
     public struct StructDropItemsList
     {
@@ -21,6 +22,11 @@ public class ItemPickUp : MonoBehaviour
     //destory
     public virtual void DropItems()
     {
+        if(justOnce)
+        {
+            return;
+        }
+        justOnce = true;
         for (int i = 0; i < dropItems.Count; i++)
         {
             FindObjectOfType<GameManager>().DropItems(dropItems[i].dropItemName, transform.position + dropOffset, Quaternion.identity, UnityEngine.Random.Range((int)dropItems[i].dropAmounts.x, (int)dropItems[i].dropAmounts.y), itemSerialNumber);

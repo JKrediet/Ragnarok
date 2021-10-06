@@ -19,6 +19,7 @@ public class HitableObject : MonoBehaviour
     Vector3 lastHitLocation;
 
     [SerializeField] List<StructDropItemsList> droppedItems;
+    bool justOnce;
 
     [Serializable]
     public struct StructDropItemsList
@@ -76,6 +77,11 @@ public class HitableObject : MonoBehaviour
     }
     protected virtual void DropItems()
     {
+        if (justOnce)
+        {
+            return;
+        }
+        justOnce = true;
         for (int i = 0; i < droppedItems.Count; i++)
         {
             manager.DropItems(droppedItems[i].dropItemName, lastHitLocation, Quaternion.identity, UnityEngine.Random.Range((int)droppedItems[i].dropAmounts.x, (int)droppedItems[i].dropAmounts.y), itemSerialNumber);
