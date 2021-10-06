@@ -21,25 +21,20 @@ public class SeeOtherPlayerScript : MonoBehaviour
 	{
 		if (Input.GetKeyDown(KeyCode.H))
 		{
-			print("1");
-			if (players.Count <= 0)
+			players.Clear();
+
+			players = new List<SeeOtherPlayerScript>(FindObjectsOfType<SeeOtherPlayerScript>());
+			for (int i = 0; i < players.Count; i++)
 			{
-				print("5");
-				players = new List<SeeOtherPlayerScript>(FindObjectsOfType<SeeOtherPlayerScript>());
-				for (int i = 0; i < players.Count; i++)
+				if (players[i]==this)
 				{
-					print("4");
-					if (players[i]==this)
-					{
-						players.Remove(players[i]);
-						print("3");
-					}
+					players.Remove(players[i]);
 				}
 			}
+			
 			for (int i = 0; i < players.Count; i++)
 			{
 				Trigger(i);
-				print("2");
 			}
 		}
 	}

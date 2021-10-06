@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.UI;
+using TMPro;
 
 public class ChestScript : ProbScript
 {
@@ -14,7 +16,15 @@ public class ChestScript : ProbScript
     private GameManager gm;
     public List<GameObject> players;
     private GameObject isMyPlayer;
-    
+    [Header("ui")]
+    public TextMeshProUGUI costText;
+    public GameObject uiToFace;
+
+	private void Start()
+	{
+        gm = FindObjectOfType<GameManager>();
+        costText.text = cost.ToString();
+	}
 	public override void Interaction()
 	{
         players = new List<GameObject>(GameObject.FindGameObjectsWithTag("Player"));
@@ -27,7 +37,6 @@ public class ChestScript : ProbScript
 		}
 		if (isMyPlayer.GetComponent<PlayerController>().playerBalance >= cost)
         { 
-            gm=FindObjectOfType<GameManager>();
             StartCoroutine("GetRandomItem");
             canInteract = false;
 		}
