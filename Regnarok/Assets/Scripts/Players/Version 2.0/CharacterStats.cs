@@ -180,7 +180,7 @@ public class CharacterStats : MonoBehaviour
     }
     public void EquipHat(ItemSlot slot)
     {
-        GetComponent<PhotonView>().RPC("ChangeHat", RpcTarget.All, slot.item.itemAmount);
+        GetComponent<PhotonView>().RPC("ChangeHat", RpcTarget.All, slot.item.itemName);
     }
     [PunRPC]
     public void ChangeHat(string _itemName)
