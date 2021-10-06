@@ -47,6 +47,6 @@ public class SeeOtherPlayerScript : MonoBehaviour
 	{
 		active = !active;
 
-		players[i].GetComponent<SeeOtherPlayerScript>().enabled = active;
+		players[i].GetComponent<Outline>().enabled = active;
 	}
 }
