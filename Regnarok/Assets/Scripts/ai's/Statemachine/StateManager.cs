@@ -96,6 +96,10 @@ public class StateManager : MonoBehaviour
 			{
 				players.Remove(players[i]);
 			}
+			else if (players[i].GetComponent<PlayerHealth>().health <= 0)
+			{
+				players.Remove(players[i]);
+			}
 			float dis = Vector3.Distance(transform.position, players[i].transform.position);
 			float targetDis = Vector3.Distance(transform.position, target.transform.position);
 			if (dis < targetDis)
