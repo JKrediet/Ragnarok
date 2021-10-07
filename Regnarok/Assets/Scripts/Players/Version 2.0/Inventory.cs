@@ -356,7 +356,8 @@ public class Inventory : MonoBehaviour
     public void OpenEscMenu()
     {
         escMenu.SetActive(!escMenu.activeSelf);
-        if(escMenu.activeSelf)
+        controller.LockCamera();
+        if (escMenu.activeSelf)
         {
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
@@ -378,6 +379,7 @@ public class Inventory : MonoBehaviour
     public void ResumeGame()
     {
         escMenu.SetActive(false);
+        controller.LockCamera();
     }
     public void FakeOptions()
     {

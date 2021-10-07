@@ -18,6 +18,8 @@ public class HitableObject : MonoBehaviour
     public GameObject damageNumber;
     Vector3 lastHitLocation;
 
+    public Vector3 dropOffset;
+
     [SerializeField] List<StructDropItemsList> droppedItems;
     bool justOnce;
 
@@ -84,7 +86,7 @@ public class HitableObject : MonoBehaviour
         justOnce = true;
         for (int i = 0; i < droppedItems.Count; i++)
         {
-            manager.DropItems(droppedItems[i].dropItemName, lastHitLocation, Quaternion.identity, UnityEngine.Random.Range((int)droppedItems[i].dropAmounts.x, (int)droppedItems[i].dropAmounts.y), itemSerialNumber);
+            manager.DropItems(droppedItems[i].dropItemName, lastHitLocation + dropOffset, Quaternion.identity, UnityEngine.Random.Range((int)droppedItems[i].dropAmounts.x, (int)droppedItems[i].dropAmounts.y), itemSerialNumber);
         }
     }
     public void TakeDamage(float _damage, EquipmentType _itemType, Vector3 hitlocation)
