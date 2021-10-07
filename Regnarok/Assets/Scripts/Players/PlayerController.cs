@@ -679,7 +679,11 @@ public class PlayerController : MonoBehaviour
                 RaycastHit _hit;
                 if (Physics.Raycast(cam.transform.position, cam.transform.forward, out _hit, 5))
                 {
-                    if (_hit.transform.GetComponent<ChestScript>())
+					if (_hit.transform.GetComponent<GraveStoneScript>())
+					{
+                        _hit.transform.GetComponent<GraveStoneScript>().Interaction();
+                    }
+                    else if (_hit.transform.GetComponent<ChestScript>())
                     {
                         if (_hit.transform.GetComponent<ChestScript>().canInteract)
                         {

@@ -1,13 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon.Realtime;
 using Photon.Pun;
-using TMPro;
 using UnityEngine.UI;
+using System.IO;
 
 public class PlayerHealth : Health
 {
+    public GameObject graveStone;
     public GameObject mainCam;
     public GameObject mesh;
     public List<GameObject> otherPlayersCam;
@@ -73,7 +73,7 @@ public class PlayerHealth : Health
         {
             return;
         }
-        StartCoroutine(RespawnPlayer());
+        Dead();
     }
 	IEnumerator HealthRegen()
     {
@@ -81,8 +81,10 @@ public class PlayerHealth : Health
         yield return new WaitForSeconds(1);
         StartCoroutine("HealthRegen");
     }
-    IEnumerator RespawnPlayer()
+    public void Dead()
 	{
+        graveStone=PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Grave"), transform.position, transform.rotation);
+        graveStone.GetComponent<GraveStoneScript>().myPlayer = transform.gameObject;
         otherPlayersCam = new List<GameObject>(GameObject.FindGameObjectsWithTag("MainCamera"));
         for (int i = 0; i < otherPlayersCam.Count; i++)
         {
@@ -104,15 +106,36 @@ public class PlayerHealth : Health
             }
         }
         mainCam.SetActive(false);
-        mesh.SetActive(false);
+        GetComponent<PhotonView>().RPC("SetBody", RpcTarget.All, false);
         GetComponent<PlayerController>().isDead = true;
         otherPlayersCam[index].GetComponent<Camera>().enabled = true;
-        yield return new WaitForSeconds(respawnTime);
+    }
+    public void Respawn()
+	{
         SincHeal(100);
         otherPlayersCam[index].GetComponent<Camera>().enabled = false;
         otherPlayersCam.Clear();
         mainCam.SetActive(true);
-        mesh.SetActive(true);
         GetComponent<PlayerController>().isDead = false;
+        GetComponent<PhotonView>().RPC("SetBody", RpcTarget.All,true);
+        GetComponent<PhotonView>().RPC("DestroyGraveStone", RpcTarget.MasterClient);
+        SincHeal(100);
+    }
+    [PunRPC]
+    public void SetBody(bool b)
+	{
+		if (b)
+		{
+            mesh.SetActive(true);
+        }
+		else
+		{
+            mesh.SetActive(false);
+        }
+	}
+    [PunRPC]
+    public void DestroyGraveStone()
+	{
+        PhotonNetwork.Destroy(graveStone);
     }
 }
