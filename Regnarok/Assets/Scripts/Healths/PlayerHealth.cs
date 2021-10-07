@@ -84,7 +84,7 @@ public class PlayerHealth : Health
 	public void Dead()
 	{
 		FindObjectOfType<GameManager>().CheckHp();
-        GetComponent<PhotonView>().RPC("SpawnGrave", RpcTarget.MasterClient, true);
+        GetComponent<PhotonView>().RPC("SpawnGrave", RpcTarget.MasterClient);
         graveStone.GetComponent<GraveStoneScript>().myPlayer = transform.gameObject;
 		otherPlayersCam = new List<GameObject>(GameObject.FindGameObjectsWithTag("MainCamera"));
 		for (int i = 0; i < otherPlayersCam.Count; i++)
