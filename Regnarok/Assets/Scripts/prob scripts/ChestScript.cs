@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon.Pun;
-using UnityEngine.UI;
+using Photon.Pun; 
 using TMPro;
 
 public class ChestScript : ProbScript
@@ -50,6 +49,7 @@ public class ChestScript : ProbScript
         gm.OpenChest(chestId);
         yield return new WaitForSeconds(0.5f);
         gm.SpawnItem(itemSpawnPos.transform.position, RaretyChance());
+        uiToFace.SetActive(false);
     }
     public int RaretyChance()
     {

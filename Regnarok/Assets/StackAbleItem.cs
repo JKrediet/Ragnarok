@@ -9,6 +9,9 @@ public class StackAbleItem : MonoBehaviour
 	public string itemName;
 	public void Collision()
 	{
-		PhotonNetwork.Destroy(gameObject);
+		if (PhotonNetwork.IsMasterClient)
+		{
+			PhotonNetwork.Destroy(gameObject);
+		}
 	}
 }
