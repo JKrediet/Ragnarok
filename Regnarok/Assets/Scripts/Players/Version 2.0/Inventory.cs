@@ -7,6 +7,7 @@ using System.IO;
 using UnityEngine.UI;
 using System;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class Inventory : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class Inventory : MonoBehaviour
     [SerializeField] Transform itemsParent, hotbarParent;
     public ItemSlot[] itemSlots, hotBarSlots;
     [Space]
-    [SerializeField] GameObject inventoryPanel, craftPanel;
+    [SerializeField] GameObject inventoryPanel, craftPanel, escMenu;
     [SerializeField] GameObject hotbarIndecator;
     [SerializeField] int allHotbarSlots = 6;
 
@@ -291,6 +292,10 @@ public class Inventory : MonoBehaviour
         {
             OpenActualInventory(false);
         }
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            OpenEscMenu();
+        }
     }
     public void OpenActualInventory(bool closeCraft)
     {
@@ -347,5 +352,44 @@ public class Inventory : MonoBehaviour
             droppedItem.GetComponent<WorldItem>().SetUp(item.itemName, item.itemAmount, ItemList.SelectItem(item.itemName).sprite, ItemList.SelectItem(item.itemName).type, ItemList.SelectItem(item.itemName).maxStackSize);
             SelectItemInHotBar(hotbarLocation);
         }
+    }
+    public void OpenEscMenu()
+    {
+        escMenu.SetActive(!escMenu.activeSelf);
+        if(escMenu.activeSelf)
+        {
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = true;
+        }
+        else
+        {
+            if(inventoryEnabled)
+            {
+                Cursor.lockState = CursorLockMode.Confined;
+                Cursor.visible = true;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+        }
+    }
+    public void ResumeGame()
+    {
+        escMenu.SetActive(false);
+    }
+    public void FakeOptions()
+    {
+        //shh these exist
+    }
+    public void ToMainMenu()
+    {
+        PhotonNetwork.LeaveRoom();
+        SceneManager.LoadScene(0);
+    }
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }
