@@ -136,11 +136,9 @@ public class StateManager : MonoBehaviour
 		trowCoolDown = true;
 		Invoke("TurnOn", timeToWait);
 		print(timeToWait);
-		print("1");
 	}
 	public void TurnOn()
 	{
 		trowCoolDown = false;
-		print("2");
 	}
 }

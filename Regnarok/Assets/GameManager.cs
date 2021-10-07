@@ -91,6 +91,27 @@ public class GameManager : MonoBehaviour
 	{
         GetComponent<PhotonView>().RPC("OpenChestInWorld", RpcTarget.All,id);
     }
+    private int amountOffDeads;
+    public void CheckHp()
+	{
+        amountOffDeads = 0;
+        for (int i = 0; i < playerObjectList.Count; i++)
+		{
+			if (playerObjectList[i].GetComponent<PlayerHealth>().health <= 0)
+			{
+                amountOffDeads++;
+			}
+		}
+        if(amountOffDeads== playerObjectList.Count)
+		{
+            GetComponent<PhotonView>().RPC("DisconectAll", RpcTarget.All);
+        }
+	}
+    [PunRPC]
+    public void DisconectAll()
+	{
+        PhotonNetwork.Disconnect();
+    }
     public void SpawnItem(Vector3 spawnPos,int type)
 	{
 		switch (type)

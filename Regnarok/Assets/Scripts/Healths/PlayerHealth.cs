@@ -80,37 +80,43 @@ public class PlayerHealth : Health
         Health_Heal(healthRegen);
         yield return new WaitForSeconds(1);
         StartCoroutine("HealthRegen");
-    }
-    public void Dead()
+	}
+	public void Dead()
 	{
-        graveStone=PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Grave"), transform.position, transform.rotation);
+		FindObjectOfType<GameManager>().CheckHp();
+        GetComponent<PhotonView>().RPC("SpawnGrave", RpcTarget.MasterClient, true);
         graveStone.GetComponent<GraveStoneScript>().myPlayer = transform.gameObject;
-        otherPlayersCam = new List<GameObject>(GameObject.FindGameObjectsWithTag("MainCamera"));
-        for (int i = 0; i < otherPlayersCam.Count; i++)
-        {
-            if (otherPlayersCam[i] == mainCam)
-            {
-                otherPlayersCam.Remove(otherPlayersCam[i]);
-            }
-            else if (otherPlayersCam[i].transform.parent.transform.GetComponent<PlayerHealth>().health <= 0)
-            {
-                otherPlayersCam.Remove(otherPlayersCam[i]);
-            }
-        }
-        for (int i = 0; i < otherPlayersCam.Count; i++)
-        {
-            if (otherPlayersCam[i].transform.GetComponent<AudioListener>())
-            {
-                Destroy(otherPlayersCam[i].transform.GetComponent<AudioListener>());
+		otherPlayersCam = new List<GameObject>(GameObject.FindGameObjectsWithTag("MainCamera"));
+		for (int i = 0; i < otherPlayersCam.Count; i++)
+		{
+			if (otherPlayersCam[i] == mainCam)
+			{
+				otherPlayersCam.Remove(otherPlayersCam[i]);
+			}
+			else if (otherPlayersCam[i].transform.parent.transform.GetComponent<PlayerHealth>().health <= 0)
+			{
+				otherPlayersCam.Remove(otherPlayersCam[i]);
+			}
+		}
+		for (int i = 0; i < otherPlayersCam.Count; i++)
+		{
+			if (otherPlayersCam[i].transform.GetComponent<AudioListener>())
+			{
+				Destroy(otherPlayersCam[i].transform.GetComponent<AudioListener>());
 
-            }
-        }
-        mainCam.SetActive(false);
-        GetComponent<PhotonView>().RPC("SetBody", RpcTarget.All, false);
-        GetComponent<PlayerController>().isDead = true;
-        otherPlayersCam[index].GetComponent<Camera>().enabled = true;
+			}
+		}
+		mainCam.SetActive(false);
+		GetComponent<PhotonView>().RPC("SetBody", RpcTarget.All, false);
+		GetComponent<PlayerController>().isDead = true;
+		otherPlayersCam[index].GetComponent<Camera>().enabled = true;
+	}
+    [PunRPC]
+    public void SpawnGrave()
+	{
+        graveStone = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Grave"), transform.position, transform.rotation);
     }
-    public void Respawn()
+	public void Respawn()
 	{
         SincHeal(100);
         otherPlayersCam[index].GetComponent<Camera>().enabled = false;
