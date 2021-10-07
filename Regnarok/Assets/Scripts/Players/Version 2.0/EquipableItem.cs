@@ -15,6 +15,7 @@ public enum EquipmentType
     food,
     smeltable,
     fuel,
+    coin,
 }
 [CreateAssetMenu]
 public class EquipableItem : Item
