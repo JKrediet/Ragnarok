@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.Video;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -110,7 +111,8 @@ public class GameManager : MonoBehaviour
     [PunRPC]
     public void DisconectAll()
 	{
-        PhotonNetwork.Disconnect();
+        PhotonNetwork.LeaveRoom();
+        SceneManager.LoadScene(0);
     }
     public void SpawnItem(Vector3 spawnPos,int type)
 	{
