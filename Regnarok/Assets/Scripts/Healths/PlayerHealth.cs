@@ -73,7 +73,7 @@ public class PlayerHealth : Health
         {
             return;
         }
-        Dead();
+        StartCoroutine(Dead());
     }
 	IEnumerator HealthRegen()
     {
@@ -81,14 +81,14 @@ public class PlayerHealth : Health
         yield return new WaitForSeconds(1);
         StartCoroutine("HealthRegen");
 	}
-	public void Dead()
-	{
-		FindObjectOfType<GameManager>().CheckHp();
+    public IEnumerator Dead()
+    {
+        FindObjectOfType<GameManager>().CheckHp();
         GetComponent<PhotonView>().RPC("SpawnGrave", RpcTarget.MasterClient);
-        new WaitForSeconds(1);
+        yield return new WaitForSeconds(1.5f);
         graveStone.GetComponent<GraveStoneScript>().myPlayer = transform.gameObject;
-		otherPlayersCam = new List<GameObject>(GameObject.FindGameObjectsWithTag("MainCamera"));
-		for (int i = 0; i < otherPlayersCam.Count; i++)
+        otherPlayersCam = new List<GameObject>(GameObject.FindGameObjectsWithTag("MainCamera"));
+        for (int i = 0; i < otherPlayersCam.Count; i++)
 		{
 			if (otherPlayersCam[i] == mainCam)
 			{

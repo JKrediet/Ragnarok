@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class SnakeBehavour : MonoBehaviour
 {
@@ -10,27 +11,34 @@ public class SnakeBehavour : MonoBehaviour
 	public ParticleSystem ps;
 	private bool isGettingTarget;
 	private bool isAttacking;
+	private bool cooldownIsOn;
 	private GameObject target;
 	private Animator anim;
+	private NavMeshAgent agent;
 	private void Start()
 	{
+		agent = GetComponent<NavMeshAgent>();
 		anim = GetComponent<Animator>();
 		ps.Play();
 	}
-	//void Update()
- //   {
-	//	if (!isGettingTarget)
-	//	{
-	//		StartCoroutine(GetTarget());
-	//	}
-	//	if (!isAttacking)
-	//	{
-	//		if (target != null)
-	//		{
-	//			StartCoroutine(Attack());
-	//		}
-	//	}
- //   }
+	void Update()
+	{
+		if (!isGettingTarget)
+		{
+			StartCoroutine(GetTarget());
+		}
+		if (!cooldownIsOn)
+		{
+			if (target != null)
+			{
+				if (!isAttacking)
+				{
+					StartCoroutine(Attack());
+				}
+			}
+			agent.destination = target.transform.position;
+		}
+	}
 	private void OnTriggerEnter(Collider other)
 	{
 		if (other.CompareTag("Enemy"))
@@ -48,6 +56,8 @@ public class SnakeBehavour : MonoBehaviour
 	public IEnumerator GetTarget()
 	{
 		isGettingTarget = true;
+		cooldownIsOn = true;
+		Invoke("SetFalse", targetCooldown);
 		for (int i = 0; i < targets.Count; i++)
 		{
 			if (targets[i] != null)
@@ -67,8 +77,12 @@ public class SnakeBehavour : MonoBehaviour
 				targets.Remove(targets[i]);
 			}
 		}
-		yield return new WaitForSeconds(targetCooldown);
+		yield return new WaitForSeconds(targetCooldown/2);
 		isGettingTarget = false;
+	}
+	public void SetFalse()
+	{
+		cooldownIsOn = false;
 	}
 	public IEnumerator Attack()
 	{
