@@ -23,8 +23,8 @@ public class CharacterStats : MonoBehaviour
     [HideInInspector] public Color disabledColor = new Color(1, 1, 1, 0);
 
     [Space]
-    float endDamage, endAttackSpeed, endCritChance, endArmor, endHealth, endJumpAmount;
-    public float BaseDamage, baseAttackSpeed, baseCritChance, baseArmor, baseHealth, executeBelow;
+    float endDamage, endAttackSpeed, endCritChance, endArmor, endHealth, endJumpAmount, executeBelow, revives;
+    public float BaseDamage, baseAttackSpeed, baseCritChance, baseArmor, baseHealth;
     float addedDamage, addedAttackSpeed, addedCritChance, addedArmor, addedHealth, addedHealthRegen, addedLifeSteal, addedBleedChance, addedHealthOnKill, addedMovementSpeed, addedJumps;
     float precentAddedDamage, precentAddedAttackSpeed, precentAddedCritChance, precentAddedArmor, precentAddedHealth;
 
@@ -126,6 +126,10 @@ public class CharacterStats : MonoBehaviour
     {
         executeBelow = value / 100;
     }
+    public void GiveStats_revives(float value)
+    {
+        revives = value;
+    }
     #endregion
     public void CalculateOffensiveStats()
     {
@@ -165,7 +169,7 @@ public class CharacterStats : MonoBehaviour
         endArmor = (baseArmor + addedArmor) * (precentAddedArmor / 100 + 1);
         endHealth = (baseHealth + addedHealth) * (precentAddedHealth / 100 + 1);
 
-        GetComponent<Health>().RecieveStats(endHealth, endArmor, addedHealthRegen);
+        GetComponent<Health>().RecieveStats(endHealth, endArmor, addedHealthRegen, (int)revives);
     }
     public void HoverItem(ItemSlot slot)
     {

@@ -59,9 +59,9 @@ public class PlayerHealth : Health
             HealthSlider.value = health;
         }
     }
-    public override void RecieveStats(float _health, float _armor, float _healthRegen)
+    public override void RecieveStats(float _health, float _armor, float _healthRegen, int revives)
     {
-        base.RecieveStats(_health, _armor, _healthRegen);
+        base.RecieveStats(_health, _armor, _healthRegen, revives);
         if (PV.IsMine)
         {
             HealthSlider.maxValue = maxHealth;
@@ -73,7 +73,15 @@ public class PlayerHealth : Health
         {
             return;
         }
-        StartCoroutine(Dead());
+        if (reviveAmount > 0)
+        {
+            Health_Heal(maxHealth);
+            GetComponent<StackableItemScript>().RemoveItem("Revive");
+        }
+        else
+        {
+            StartCoroutine(Dead());
+        }
     }
 	IEnumerator HealthRegen()
     {

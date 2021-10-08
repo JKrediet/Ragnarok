@@ -22,6 +22,8 @@ public class Health : MonoBehaviour
     int BleedTicks;
     float bleedDamage;
 
+    public float reviveAmount;
+
     protected virtual void Awake()
     {
         if(GetComponent<PhotonView>())
@@ -94,11 +96,12 @@ public class Health : MonoBehaviour
     {
         //nothing here yet
     }
-    public virtual void RecieveStats(float _health, float _armor, float _healthRegen)
+    public virtual void RecieveStats(float _health, float _armor, float _healthRegen, int revives)
     {
         maxHealth = _health;
         armor = _armor;
         healthRegen = _healthRegen;
+        reviveAmount = revives;
     }
 
     protected virtual IEnumerator Bleed()

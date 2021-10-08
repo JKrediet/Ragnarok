@@ -124,7 +124,12 @@ public class StackableItemScript : MonoBehaviour
                 }
                 else if (itemlist[i].itemName == "Guillotine")
                 {
-                    stats.GiveStats_addedJumps(itemlist[i].amount * itemlist[i].value);
+                    stats.GiveStats_execute(itemlist[i].amount * itemlist[i].value);
+                    continue;
+                }
+                else if (itemlist[i].itemName == "Revive")
+                {
+                    stats.GiveStats_revives(itemlist[i].amount * itemlist[i].value);
                     continue;
                 }
             }
@@ -133,6 +138,17 @@ public class StackableItemScript : MonoBehaviour
         ItemsToInventory();
         stats.CalculateOffensiveStats();
         stats.CalculateDefensiveStats();
+    }
+    public void RemoveItem(string nameOfItem)
+    {
+        for (int i = 0; i < itemlist.Length; i++)
+        {
+            if (itemlist[i].itemName == nameOfItem)
+            {
+                itemlist[i].amount -= 1;
+                return;
+            }
+        }
     }
     void ItemsToInventory()
     {
