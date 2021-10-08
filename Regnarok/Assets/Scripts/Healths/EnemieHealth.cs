@@ -39,7 +39,7 @@ public class EnemieHealth : Health
 		float temcoins = (coinDrop * gm.days) * gm.goldMultiplier;
 		coinDrop = (int)temcoins;
 		GameObject tempObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "GoldenCoin"), transform.position,Quaternion.identity);
-		tempObject.GetComponent<CoinScript>().coinAmount = coinDrop;
+		tempObject.GetComponent<WorldItem>().itemAmount = coinDrop;
 	}
 	[PunRPC]
 	public void GiveXp()

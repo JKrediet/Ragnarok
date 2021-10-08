@@ -27,6 +27,8 @@ public class Inventory : MonoBehaviour
     public int hotbarLocation;
     private PhotonView pv;
 
+    public int goldCoinsInPocket;
+
     CharacterStats character;
     PlayerController controller;
     InventoryCraft craftingthingy;
@@ -146,8 +148,18 @@ public class Inventory : MonoBehaviour
         SelectItemInHotBar(hotbarLocation);
     }
     //for world items
+
+    void AddCoin(int amount)
+    {
+        goldCoinsInPocket += amount;
+    }
     public void AddItem(Item item)
     {
+        if(item.equipment == EquipmentType.coin)
+        {
+            AddCoin(item.itemAmount);
+            return;
+        }
         if (!IsFull())
         {
             for (int i = 0; i < itemSlots.Length; i++)

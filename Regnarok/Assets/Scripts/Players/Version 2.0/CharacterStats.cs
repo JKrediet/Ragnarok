@@ -47,6 +47,9 @@ public class CharacterStats : MonoBehaviour
             xpAmountNeeded *= xpIncreasment;
             xpBar.maxValue = xpAmountNeeded;
             xpBar.value = xpAmount;
+            CalculateOffensiveStats();
+            CalculateDefensiveStats();
+            GainXp(0);
         }
     }
 
@@ -145,22 +148,22 @@ public class CharacterStats : MonoBehaviour
             if (item.equipment == EquipmentType.axe || item.equipment == EquipmentType.pickaxe || item.equipment == EquipmentType.weapon)
             {
                 endDamage = ((BaseDamage * (level * 0.1f + 1)) + addedDamage + item.damageBonus) * ((precentAddedDamage + item.damagePrecentBonus) / 100 + 1);
-                endAttackSpeed = ((baseAttackSpeed * (level * 0.1f + 1)) + addedAttackSpeed + item.attackSpeedBonus) * ((precentAddedAttackSpeed + item.attackSpeedPrecentBonus) / 100 + 1);
+                endAttackSpeed = ((baseAttackSpeed * (level * 0.01f + 1)) + addedAttackSpeed + item.attackSpeedBonus) * ((precentAddedAttackSpeed + item.attackSpeedPrecentBonus) / 100 + 1);
                 //endAttackSpeed = tempAttackSpeed / (tempAttackSpeed * tempAttackSpeed);
-                endCritChance = ((baseCritChance * (level * 0.1f + 1)) + addedCritChance + item.critChanceBonus) * ((precentAddedCritChance + item.critChancePrecentBonus) / 100 + 1);
+                endCritChance = ((baseCritChance * (level * 0.01f + 1)) + addedCritChance + item.critChanceBonus) * ((precentAddedCritChance + item.critChancePrecentBonus) / 100 + 1);
             }
             else
             {
-                endDamage = 1;
-                endAttackSpeed = 1;
-                endCritChance = 5;
+                endDamage = 1 * (level * 0.1f + 1);
+                endAttackSpeed = 1 * (level * 0.1f + 1);
+                endCritChance = 5 * (level * 0.1f + 1);
             }
         }
         else
         {
-            endDamage = 1;
-            endAttackSpeed = 1;
-            endCritChance = 5;
+            endDamage = 1 * (level * 0.1f + 1);
+            endAttackSpeed = 1 * (level * 0.1f + 1);
+            endCritChance = 5 * (level * 0.1f + 1);
             endJumpAmount = addedJumps + 1;
         }
 
@@ -170,8 +173,8 @@ public class CharacterStats : MonoBehaviour
     public void CalculateDefensiveStats()
     {
         //defensive
-        endArmor = (baseArmor + addedArmor) * (precentAddedArmor / 100 + 1);
-        endHealth = (baseHealth + addedHealth) * (precentAddedHealth / 100 + 1);
+        endArmor = ((baseArmor * (level * 0.1f + 1)) + addedArmor) * (precentAddedArmor / 100 + 1);
+        endHealth = ((baseHealth * (level * 0.1f + 1)) + addedHealth) * (precentAddedHealth / 100 + 1);
 
         GetComponent<Health>().RecieveStats(endHealth, endArmor, addedHealthRegen, (int)revives);
     }
