@@ -82,6 +82,9 @@ public class PlayerController : MonoBehaviour
 
     public bool isDead;
 
+    public GameObject jumpPartical;
+    public GameObject runningPartical;
+
     private int itemSpawnedIn;
 
     public GameObject pressE;
@@ -179,6 +182,7 @@ public class PlayerController : MonoBehaviour
                 {
                     Jump();
                     Anim_Jump();
+                    StartCoroutine(JumpPartic());
                 }
             }
             //check for chestDistance
@@ -258,10 +262,12 @@ public class PlayerController : MonoBehaviour
                     staminaValue = Mathf.Clamp(staminaValue -= staminaLossPerSec * Time.deltaTime, 0, maxStamina);
                     combinedSpeed = sprintSpeed + totalExtraSpeed * 1.5f;
                     Anim_sprint();
+                    runningPartical.GetComponent<ParticleSystem>().Play();
                 }
                 else
                 {
                     Anim_movement();
+                    runningPartical.GetComponent<ParticleSystem>().Stop();
                 }
             }
             else
@@ -285,6 +291,12 @@ public class PlayerController : MonoBehaviour
             movementDirection = (transform.forward * movementSpeed.z + transform.right * movementSpeed.x) * combinedSpeed;
             //else is done in rotation
         }
+    }
+    public IEnumerator JumpPartic()
+	{
+        jumpPartical.GetComponent<ParticleSystem>().Play();
+        yield return new WaitForSeconds(1f);
+        jumpPartical.GetComponent<ParticleSystem>().Stop();
     }
     void Gravity()
     {
@@ -318,6 +330,7 @@ public class PlayerController : MonoBehaviour
         remainingJumps--;
         gravity = jumpForce;
         groundCheck = false;
+
     }
     void Rotation()
     {
