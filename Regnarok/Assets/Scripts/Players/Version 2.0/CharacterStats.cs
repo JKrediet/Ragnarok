@@ -32,17 +32,21 @@ public class CharacterStats : MonoBehaviour
     //xp
     public int level;
     public float xpAmountNeeded, xpAmount, xpIncreasment, xpGainedMultiplier = 1;
+    public Slider xpBar;
 
     public GameObject bambooHat, vikingHat, wizardHat;
 
     public void GainXp(float _xpAmount)
     {
         xpAmount += _xpAmount * xpGainedMultiplier;
+        xpBar.value = xpAmount;
         if (xpAmount > xpAmountNeeded)
         {
             level++;
             xpAmount -= xpAmountNeeded;
             xpAmountNeeded *= xpIncreasment;
+            xpBar.maxValue = xpAmountNeeded;
+            xpBar.value = xpAmount;
         }
     }
 
