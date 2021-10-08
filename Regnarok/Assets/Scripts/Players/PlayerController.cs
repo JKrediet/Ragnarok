@@ -14,8 +14,9 @@ public class PlayerController : MonoBehaviour
     PhotonView pv;
 
     //attackStats
-    [SerializeField] float totalDamage, totalAttackSpeed, totalCritChance, totalLifeSteal, totalChanceToInflictBleed, totalHealthOnKill, totalExtraSpeed;
+    [SerializeField] float totalDamage, totalAttackSpeed, totalCritChance, totalLifeSteal, totalChanceToInflictBleed, totalHealthOnKill, totalExtraSpeed, totalJumps = 1, executeBelow;
     public Item heldItem;
+    float remainingJumps = 1;
 
     //movement
     [SerializeField] float speed, sprintSpeed, weight, jumpForce, combinedSpeed;
@@ -114,7 +115,7 @@ public class PlayerController : MonoBehaviour
         }
         FindObjectOfType<GameManager>().playerObjectList.Add(gameObject);
     }
-    public void RecieveStats(float _damage, float _attackSpeed, float _critChance, float _lifesteal, float _bleedChance, float _healthOnKill, float _movementSpeed)
+    public void RecieveStats(float _damage, float _attackSpeed, float _critChance, float _lifesteal, float _bleedChance, float _healthOnKill, float _movementSpeed, int _jumps, float _executeBelow)
     {
         totalDamage = _damage;
         totalAttackSpeed = _attackSpeed;
@@ -123,6 +124,8 @@ public class PlayerController : MonoBehaviour
         totalChanceToInflictBleed = _bleedChance;
         totalHealthOnKill = _healthOnKill;
         totalExtraSpeed = _movementSpeed;
+        totalJumps = _jumps;
+        executeBelow = _executeBelow;
 
         //ui stats
         statTexts[0].GiveStats(GetComponent<CharacterStats>().level.ToString());
@@ -172,7 +175,7 @@ public class PlayerController : MonoBehaviour
             }
             if (Input.GetButtonDown("Jump"))
             {
-                if (groundCheck)
+                if (remainingJumps > 0)
                 {
                     Jump();
                     Anim_Jump();
@@ -290,6 +293,7 @@ public class PlayerController : MonoBehaviour
             if(!groundCheck)
             {
                 groundCheck = true;
+                remainingJumps = totalJumps;
                 gravity = -0.3f;
             }
             groundCheckTime = Time.time;
@@ -311,6 +315,7 @@ public class PlayerController : MonoBehaviour
     }
     void Jump()
     {
+        remainingJumps--;
         gravity = jumpForce;
         groundCheck = false;
     }
@@ -551,10 +556,12 @@ public class PlayerController : MonoBehaviour
                     //crit
                     float critDamage = 0;
                     bool inflictBleed = false;
+                    bool isCrit = false;
                     float roll = Random.Range(0, 100);
                     if (roll < totalCritChance)
                     {
                         critDamage = totalDamage;
+                        isCrit = true;
                     }
                     roll = Random.Range(0, 100);
                     if (roll < totalChanceToInflictBleed)
@@ -580,7 +587,7 @@ public class PlayerController : MonoBehaviour
                         //damage
                         if (heldItem != null)
                         {
-                            hitObject.GetComponent<EnemieHealth>().TakeDamage(totalDamage + critDamage, inflictBleed, hitObject.ClosestPoint(attackPos.position));
+                            hitObject.GetComponent<EnemieHealth>().TakeDamage(totalDamage + critDamage, inflictBleed, executeBelow, hitObject.ClosestPoint(attackPos.position));
                             if (totalLifeSteal > 0)
                             {
                                 float healAmount = (totalDamage + critDamage - hitObject.GetComponent<EnemieHealth>().armor) * (totalLifeSteal / 100);
@@ -596,7 +603,7 @@ public class PlayerController : MonoBehaviour
                         }
                         else
                         {
-                            hitObject.GetComponent<EnemieHealth>().TakeDamage(totalDamage + critDamage, false, hitObject.ClosestPoint(attackPos.position));
+                            hitObject.GetComponent<EnemieHealth>().TakeDamage(totalDamage + critDamage, inflictBleed, executeBelow, hitObject.ClosestPoint(attackPos.position));
                         }
                     }
                 }

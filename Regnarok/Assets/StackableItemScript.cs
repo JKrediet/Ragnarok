@@ -112,6 +112,21 @@ public class StackableItemScript : MonoBehaviour
                     stats.GiveStats_addLifeSteal(itemlist[i].amount * itemlist[i].value);
                     continue;
                 }
+                else if (itemlist[i].itemName == "BigHeartContainer")
+                {
+                    stats.GiveStats_healthPrecent(itemlist[i].amount * itemlist[i].value);
+                    continue;
+                }
+                else if (itemlist[i].itemName == "WingShoes")
+                {
+                    stats.GiveStats_addedJumps(itemlist[i].amount * itemlist[i].value);
+                    continue;
+                }
+                else if (itemlist[i].itemName == "Guillotine")
+                {
+                    stats.GiveStats_addedJumps(itemlist[i].amount * itemlist[i].value);
+                    continue;
+                }
             }
         }
 

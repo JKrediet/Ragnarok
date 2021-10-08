@@ -23,9 +23,9 @@ public class CharacterStats : MonoBehaviour
     [HideInInspector] public Color disabledColor = new Color(1, 1, 1, 0);
 
     [Space]
-    float endDamage, endAttackSpeed, endCritChance, endArmor, endHealth;
-    public float BaseDamage, baseAttackSpeed, baseCritChance, baseArmor, baseHealth;
-    float addedDamage, addedAttackSpeed, addedCritChance, addedArmor, addedHealth, addedHealthRegen, addedLifeSteal, addedBleedChance, addedHealthOnKill, addedMovementSpeed;
+    float endDamage, endAttackSpeed, endCritChance, endArmor, endHealth, endJumpAmount;
+    public float BaseDamage, baseAttackSpeed, baseCritChance, baseArmor, baseHealth, executeBelow;
+    float addedDamage, addedAttackSpeed, addedCritChance, addedArmor, addedHealth, addedHealthRegen, addedLifeSteal, addedBleedChance, addedHealthOnKill, addedMovementSpeed, addedJumps;
     float precentAddedDamage, precentAddedAttackSpeed, precentAddedCritChance, precentAddedArmor, precentAddedHealth;
 
     [Space]
@@ -82,7 +82,6 @@ public class CharacterStats : MonoBehaviour
     {
         precentAddedCritChance = value;
     }
-    //health things
     public void GiveStats_addedHealth(float value)
     {
         addedHealth = value;
@@ -115,6 +114,18 @@ public class CharacterStats : MonoBehaviour
     {
         xpGainedMultiplier = value + 1;
     }
+    public void GiveStats_healthPrecent(float value)
+    {
+        precentAddedHealth = value;
+    }
+    public void GiveStats_addedJumps(float value)
+    {
+        addedJumps = value;
+    }
+    public void GiveStats_execute(float value)
+    {
+        executeBelow = value / 100;
+    }
     #endregion
     public void CalculateOffensiveStats()
     {
@@ -142,10 +153,11 @@ public class CharacterStats : MonoBehaviour
             endDamage = 1;
             endAttackSpeed = 1;
             endCritChance = 5;
+            endJumpAmount = addedJumps + 1;
         }
 
         //give stats/ offensive
-        playercontroller.RecieveStats(endDamage, endAttackSpeed, endCritChance, addedLifeSteal, addedBleedChance, addedHealthOnKill, addedMovementSpeed);
+        playercontroller.RecieveStats(endDamage, endAttackSpeed, endCritChance, addedLifeSteal, addedBleedChance, addedHealthOnKill, addedMovementSpeed, (int)endJumpAmount, executeBelow);
     }
     public void CalculateDefensiveStats()
     {
