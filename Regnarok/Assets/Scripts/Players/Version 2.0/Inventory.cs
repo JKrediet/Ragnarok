@@ -16,7 +16,7 @@ public class Inventory : MonoBehaviour
     [SerializeField] Transform itemsParent, hotbarParent;
     public ItemSlot[] itemSlots, hotBarSlots;
     [Space]
-    [SerializeField] GameObject inventoryPanel, craftPanel, escMenu;
+    [SerializeField] GameObject inventoryPanel, craftPanel, escMenu, escContent, optionsContent;
     [SerializeField] GameObject hotbarIndecator;
     [SerializeField] int allHotbarSlots = 6;
 
@@ -371,6 +371,7 @@ public class Inventory : MonoBehaviour
         controller.LockCamera();
         if (escMenu.activeSelf)
         {
+            FakeOptions(false);
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
         }
@@ -393,9 +394,10 @@ public class Inventory : MonoBehaviour
         escMenu.SetActive(false);
         controller.LockCamera();
     }
-    public void FakeOptions()
+    public void FakeOptions(bool onOff)
     {
-        //shh these exist
+        optionsContent.SetActive(onOff);
+        escContent.SetActive(!onOff);
     }
     public void ToMainMenu()
     {

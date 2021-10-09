@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject head;
     [SerializeField] LayerMask playerAimMask;
     [SerializeField] Camera cam;
-    [SerializeField] float mouseSensitivity, pitchDown, pitchUp;
+    [SerializeField] float mouseSensitivity, extraMouseSense, pitchDown, pitchUp;
     float cameraPitch;
     bool InventoryIsOpen;
 
@@ -117,6 +117,10 @@ public class PlayerController : MonoBehaviour
             nameOfPlayer.GetComponentInChildren<TextMeshProUGUI>().text = pv.Owner.NickName;
         }
         FindObjectOfType<GameManager>().playerObjectList.Add(gameObject);
+    }
+    private void Start()
+    {
+        extraMouseSense = 5;
     }
     public void RecieveStats(float _damage, float _attackSpeed, float _critChance, float _lifesteal, float _bleedChance, float _healthOnKill, float _movementSpeed, int _jumps, float _executeBelow)
     {
@@ -341,10 +345,10 @@ public class PlayerController : MonoBehaviour
         if (!isThirdPerson)
         {
             //player
-            transform.Rotate(Vector3.up, mouseDelta.x * mouseSensitivity);
+            transform.Rotate(Vector3.up, mouseDelta.x * (mouseSensitivity + extraMouseSense));
 
             //camera
-            cameraPitch -= mouseDelta.y * mouseSensitivity;
+            cameraPitch -= mouseDelta.y * (mouseSensitivity + extraMouseSense);
             cameraPitch = Mathf.Clamp(cameraPitch, -pitchDown, pitchUp);
             cam.transform.localEulerAngles = Vector3.right * cameraPitch;
         }
@@ -361,7 +365,7 @@ public class PlayerController : MonoBehaviour
             }
 
             //camera moet 3rd worden
-            cameraPitch -= mouseDelta.y * mouseSensitivity;
+            cameraPitch -= mouseDelta.y * (mouseSensitivity + extraMouseSense);
             cameraPitch = Mathf.Clamp(cameraPitch, -pitchDown, pitchUp);
             cam.transform.localEulerAngles = Vector3.right * cameraPitch;
         }
@@ -569,12 +573,10 @@ public class PlayerController : MonoBehaviour
                     //crit
                     float critDamage = 0;
                     bool inflictBleed = false;
-                    bool isCrit = false;
                     float roll = Random.Range(0, 100);
                     if (roll < totalCritChance)
                     {
                         critDamage = totalDamage;
-                        isCrit = true;
                     }
                     roll = Random.Range(0, 100);
                     if (roll < totalChanceToInflictBleed)
@@ -639,6 +641,10 @@ public class PlayerController : MonoBehaviour
     public void LockCamera()
     {
         InventoryIsOpen = !InventoryIsOpen;
+    }
+    public void SetSensetifity(Slider value)
+    {
+        extraMouseSense = value.value / 10;
     }
     public void GiveItemStats(Item _itemType)
     {
