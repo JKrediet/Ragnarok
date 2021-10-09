@@ -295,7 +295,7 @@ public class Inventory : MonoBehaviour
     }
     void ShowItemInHand(string nameOfItem)
     {
-        handObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "handItems", nameOfItem), handHolder.transform.position, Quaternion.identity);
+        handObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "handItems", nameOfItem), handHolder.transform.position, handHolder.transform.rotation);
         handObject.transform.SetParent(handHolder.transform);
     }
     void OpenInventory()

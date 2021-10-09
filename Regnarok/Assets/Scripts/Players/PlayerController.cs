@@ -180,6 +180,19 @@ public class PlayerController : MonoBehaviour
                     }
                 }
             }
+            if (Input.GetButtonDown("Fire2"))
+            {
+                if (!InventoryIsOpen)
+                {
+                    if(heldItem != null)
+                    {
+                        if(heldItem.equipment == EquipmentType.staff)
+                        {
+                            //hier summon activaten
+                        }
+                    }
+                }
+            }
             if (Input.GetButtonDown("Jump"))
             {
                 if (remainingJumps > 0)
