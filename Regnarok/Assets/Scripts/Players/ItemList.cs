@@ -25,6 +25,7 @@ public struct ItemContent
     [Range(0, 600)]
     public int smeltTime;
     public string smeltResult;
+    public GameObject summonObject;
 }
 
 public class ItemList : MonoBehaviour

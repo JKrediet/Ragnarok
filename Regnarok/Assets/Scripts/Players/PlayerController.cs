@@ -90,6 +90,12 @@ public class PlayerController : MonoBehaviour
     public GameObject pressE;
 
     public List<StatDisplay> statTexts;
+
+
+    //summon
+    public Queue<GameObject> listOfSummons;
+    public int maxSummons = 1;
+
     private void Awake()
     {
         pv = GetComponent<PhotonView>();
@@ -117,6 +123,7 @@ public class PlayerController : MonoBehaviour
             nameOfPlayer.GetComponentInChildren<TextMeshProUGUI>().text = pv.Owner.NickName;
         }
         FindObjectOfType<GameManager>().playerObjectList.Add(gameObject);
+        listOfSummons = new Queue<GameObject>();
     }
     private void Start()
     {
@@ -158,6 +165,7 @@ public class PlayerController : MonoBehaviour
             if (!InventoryIsOpen)
             {
                 EatFood();
+                SummonAlly();
                 Rotation();
                 CheckForInfo();
             }
@@ -177,19 +185,6 @@ public class PlayerController : MonoBehaviour
                     else
                     {
                         PlaceItem();
-                    }
-                }
-            }
-            if (Input.GetButtonDown("Fire2"))
-            {
-                if (!InventoryIsOpen)
-                {
-                    if(heldItem != null)
-                    {
-                        if(heldItem.equipment == EquipmentType.staff)
-                        {
-                            //hier summon activaten
-                        }
                     }
                 }
             }
@@ -429,6 +424,42 @@ public class PlayerController : MonoBehaviour
     void StopEating()
     {
         eatingOnCooldown = false;
+    }
+    void SummonAlly()
+    {
+        if (heldItem)
+        {
+            if (Input.GetButtonDown("Fire2"))
+            {
+                if (heldItem.equipment == EquipmentType.staff)
+                {
+                    //hier summon activaten
+                    GameObject spawnThis;
+                    RaycastHit _hit;
+                    if (Physics.Raycast(cam.transform.position, cam.transform.forward, out _hit))
+                    {
+                        spawnThis = heldItem.summonObject;
+                        if (spawnThis != default)
+                        {
+                            GameObject spawnInObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Summons", spawnThis.name), _hit.point, Quaternion.identity);
+                            print(spawnInObject);
+                            print(listOfSummons.Count);
+                            listOfSummons.Enqueue(spawnInObject);
+                            if (listOfSummons.Count > maxSummons)
+                            {
+                                GameObject firstSummon = listOfSummons.Peek();
+                                listOfSummons.Dequeue();
+                                PhotonNetwork.Destroy(firstSummon);
+                            }
+                        }
+                        else
+                        {
+                            print("summon not found");
+                        }
+                    }
+                }
+            }
+        }
     }
     void CheckPlacement()
     {

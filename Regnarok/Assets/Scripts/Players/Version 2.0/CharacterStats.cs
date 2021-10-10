@@ -425,7 +425,7 @@ public class CharacterStats : MonoBehaviour
             newItem.attackSpeedBonus = ItemList.SelectItem(name).baseAttackSpeed;
             newItem.critChanceBonus = ItemList.SelectItem(name).baseCritChance;
         }
-        newItem.SetUpNewItem(name, amount, image, type, maxStack, ItemList.SelectItem(name).foodHealAmount, ItemList.SelectItem(name).smeltTime);
+        newItem.SetUpNewItem(name, amount, image, type, maxStack, ItemList.SelectItem(name).foodHealAmount, ItemList.SelectItem(name).smeltTime, ItemList.SelectItem(name).summonObject);
 
         inventory.AddItem(newItem);
     }
@@ -438,7 +438,7 @@ public class CharacterStats : MonoBehaviour
             newItem.attackSpeedBonus = ItemList.SelectItem(name).baseAttackSpeed;
             newItem.critChanceBonus = ItemList.SelectItem(name).baseCritChance;
         }
-        newItem.SetUpNewItem(name, amount, image, type, maxStack, ItemList.SelectItem(name).foodHealAmount, ItemList.SelectItem(name).smeltTime);
+        newItem.SetUpNewItem(name, amount, image, type, maxStack, ItemList.SelectItem(name).foodHealAmount, ItemList.SelectItem(name).smeltTime, ItemList.SelectItem(name).summonObject);
         return newItem;
     }
     [System.Serializable]

@@ -155,7 +155,7 @@ public class Inventory : MonoBehaviour
     }
     public void AddItem(Item item)
     {
-        if(item.equipment == EquipmentType.coin)
+        if (item.equipment == EquipmentType.coin)
         {
             AddCoin(item.itemAmount);
             return;

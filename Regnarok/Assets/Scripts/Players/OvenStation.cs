@@ -81,7 +81,7 @@ public class OvenStation : MonoBehaviour
     public void CreateItem(string name, int amount, Sprite image, EquipmentType type, int maxStack)
     {
         Item newItem = ScriptableObject.CreateInstance<Item>();
-        newItem.SetUpNewItem(name, amount, image, type, maxStack, ItemList.SelectItem(name).foodHealAmount, ItemList.SelectItem(name).smeltTime);
+        newItem.SetUpNewItem(name, amount, image, type, maxStack, ItemList.SelectItem(name).foodHealAmount, ItemList.SelectItem(name).smeltTime, ItemList.SelectItem(name).summonObject);
 
         finishedSlot.item = newItem;
         UpdateSlots();

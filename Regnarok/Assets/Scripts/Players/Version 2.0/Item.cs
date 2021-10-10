@@ -32,9 +32,10 @@ public class Item : ScriptableObject
     public EquipmentType equipment;
     [Space]
     [HideInInspector] public float smeltTime;
+    [HideInInspector] public GameObject summonObject;
     public string smeltResult;
 
-    public virtual void SetUpNewItem(string _itemName, int _itemAmount, Sprite _icon, EquipmentType _type, int _maxStack, int _heal, float _smeltTime)
+    public virtual void SetUpNewItem(string _itemName, int _itemAmount, Sprite _icon, EquipmentType _type, int _maxStack, int _heal, float _smeltTime, GameObject _summonObject)
     {
         itemName = _itemName;
         itemAmount = _itemAmount;
@@ -43,5 +44,6 @@ public class Item : ScriptableObject
         equipment = _type;
         foodLifeRestore = _heal;
         smeltTime = _smeltTime;
+        summonObject = _summonObject;
     }
 }
