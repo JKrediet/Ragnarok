@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Photon.Pun;
 public class StateManager : MonoBehaviour
 {
 	public State curentState;
@@ -10,6 +10,7 @@ public class StateManager : MonoBehaviour
 	public GameObject target;
 	public AttackState[] attackStates;
 	public AttackState[] rangedStates;
+	public AttackState healingState;
 	public Animator anim;
 	public Vector3 delayedPos;
 	public float targetUpdateTime;
@@ -27,6 +28,12 @@ public class StateManager : MonoBehaviour
 	[Header("ranged")]
 	public bool hasRangedAtt;
 	public bool trowCoolDown;
+	[Header("mage")]
+	public bool hasMageAttack;
+	public float healingCoolDownTime;
+	public bool isHealing;
+	public GameObject laser;
+	public GameObject healingEffect;
 	private bool gettingTarget;
 	private bool hitboxActive;
 	private bool doingDamage;
@@ -141,8 +148,72 @@ public class StateManager : MonoBehaviour
 		Invoke("TurnOn", timeToWait);
 		print(timeToWait);
 	}
+	public void HealingCoolDown()
+	{
+		Invoke("TurnOffCoolDown", healingCoolDownTime);
+		isHealing = true;
+	}
+	public void TurnOffCoolDown()
+	{
+		isHealing = false;
+	}
 	public void TurnOn()
 	{
 		trowCoolDown = false;
+	}
+	public void ToggelHealEffect(int i)
+	{
+		if (i ==1)
+		{
+			GetComponent<PhotonView>().RPC("ToggelHealEffectSynced", RpcTarget.All, true);
+		}
+		else
+		{
+			GetComponent<PhotonView>().RPC("ToggelHealEffectSynced", RpcTarget.All, false);
+		}
+	}
+	[PunRPC]
+	public void ToggelHealEffectSynced(bool b)
+	{
+		if (b)
+		{
+			healingEffect.SetActive(true);
+			healingEffect.GetComponent<ParticleSystem>().Play();
+		}
+		else
+		{
+			healingEffect.SetActive(false);
+			healingEffect.GetComponent<ParticleSystem>().Stop();
+		}
+	}
+	public void HealMe()
+	{
+		GetComponent<EnemieHealth>().SincHeal(GetComponent<EnemieHealth>().health += 40);
+	}
+	public void TogleLaserMagic(int i)
+	{
+		if (i == 1)
+		{
+			GetComponent<PhotonView>().RPC("ToggleSynceLaserMagic", RpcTarget.All, true);
+		}
+		else
+		{
+			GetComponent<PhotonView>().RPC("ToggleSynceLaserMagic", RpcTarget.All, false);
+		}
+	}
+	[PunRPC]
+	public void ToggleSynceLaserMagic(bool b)
+	{
+		if (b)
+		{
+			laser.SetActive(true);
+			laser.GetComponent<ParticleSystem>().Play();
+			laser.transform.LookAt(target.transform.position);
+		}
+		else
+		{
+			laser.SetActive(false);
+			laser.GetComponent<ParticleSystem>().Stop();
+		}
 	}
 }
