@@ -7,21 +7,26 @@ using Photon.Pun;
 public class SnakeBehavour : MonoBehaviour
 {
     public List<GameObject> targets;
-    public float attackTime;
+	public float damage;
+	public float attackTime;
 	public float attackCooldown;
 	public float targetCooldown;
+	public float damageCoolDownTime;
 	public ParticleSystem ps;
 	public GameObject player;
 	private bool isGettingTarget;
 	private bool isAttacking;
 	private bool cooldownIsOn;
 	private bool hasAttackCooldown;
+	private bool doingDamage;
 	public Animator anim;
 	private NavMeshAgent agent;
+	private float speed;
 	private void Start()
 	{
 		agent = GetComponent<NavMeshAgent>();
 		Invoke("KillMe",300f);
+		speed = agent.speed;
 	}
 	void Update()
 	{
@@ -29,19 +34,28 @@ public class SnakeBehavour : MonoBehaviour
 		{
 			if (targets.Count != 0)
 			{
-				if (!isAttacking && !hasAttackCooldown)
+				if (targets[0] != null)
 				{
-					StartCoroutine(Attack());
-					transform.LookAt(targets[0].transform.position);
-				}
-				float dis = Vector3.Distance(transform.position, player.transform.position);
-				if (dis > 4)
-				{
-					agent.destination = targets[0].transform.position;
+					if (!isAttacking && !hasAttackCooldown)
+					{
+						StartCoroutine(Attack());
+						transform.LookAt(targets[0].transform.position);
+					}
+					float dis = Vector3.Distance(transform.position, player.transform.position);
+					if (dis > 4)
+					{
+						agent.destination = targets[0].transform.position;
+						agent.speed = speed;
+					}
+					else
+					{
+						agent.destination = transform.position;
+						agent.speed = 0;
+					}
 				}
 				else
 				{
-					agent.destination = transform.position;
+					FiltherEnemies();
 				}
 			}
 			else
@@ -50,13 +64,52 @@ public class SnakeBehavour : MonoBehaviour
 				if (dis > 4)
 				{
 					agent.destination = player.transform.position;
+					agent.speed = speed;
 				}
 				else
 				{
 					agent.destination = transform.position;
+					agent.speed = 0;
 				}
 			}
+			if (isAttacking)
+			{
+				RaycastHit hitInfo;
+				if (
+
+					Physics.Raycast(transform.position, transform.forward,out hitInfo)||
+					Physics.Raycast(transform.position +new Vector3(0,2,0), transform.forward, out hitInfo) ||
+					Physics.Raycast(transform.position + new Vector3(0, 4, 0), transform.forward, out hitInfo) ||
+					Physics.Raycast(transform.position + new Vector3(0, 6, 0), transform.forward, out hitInfo) ||
+
+					Physics.Raycast(transform.position + new Vector3(-2, 2, 0), transform.forward, out hitInfo) ||
+					Physics.Raycast(transform.position + new Vector3(-4, 4, 0), transform.forward, out hitInfo) ||
+					Physics.Raycast(transform.position + new Vector3(-6, 6, 0), transform.forward, out hitInfo) ||
+
+					Physics.Raycast(transform.position + new Vector3(2, 2, 0), transform.forward, out hitInfo) ||
+					Physics.Raycast(transform.position + new Vector3(4, 4, 0), transform.forward, out hitInfo) ||
+					Physics.Raycast(transform.position + new Vector3(6, 6, 0), transform.forward, out hitInfo)
+
+					)
+				{
+					if (hitInfo.transform.GetComponent<EnemieHealth>())
+					{
+						if (!doingDamage)
+						{
+							StartCoroutine(DamageCoolDown());
+							hitInfo.transform.GetComponent<EnemieHealth>().TakeDamage(damage, false, 0, Vector3.zero);
+						}
+					}
+				}
+				
+			}
 		}
+	}
+	public IEnumerator DamageCoolDown()
+	{
+		doingDamage = true;
+		yield return new WaitForSeconds(damageCoolDownTime);
+		doingDamage = false;
 	}
 	private void OnTriggerEnter(Collider other)
 	{
@@ -78,23 +131,38 @@ public class SnakeBehavour : MonoBehaviour
 	}
 	public IEnumerator Attack()
 	{
+		FiltherEnemies();
 		isAttacking = true;
 		ps.Play();
-		anim.SetBool("IsAttacking", true);
+		ps.transform.gameObject.SetActive(true);
+		//anim.SetBool("IsAttacking", true);
 		yield return new WaitForSeconds(attackTime);
 		ps.Stop();
-		anim.SetBool("IsAttacking", false);
+		ps.transform.gameObject.SetActive(false);
+		//anim.SetBool("IsAttacking", false);
 		isAttacking = false;
 		StartCoroutine(AttackCooldown());
 	}
 	public IEnumerator AttackCooldown()
 	{
+		FiltherEnemies();
 		hasAttackCooldown = true;
 		yield return new WaitForSeconds(attackCooldown);
 		hasAttackCooldown = false;
+		FiltherEnemies();
 	}
 	public void KillMe()
 	{
 		PhotonNetwork.Destroy(gameObject);
+	}
+	public void FiltherEnemies()
+	{
+		for (int i = 0; i < targets.Count; i++)
+		{
+			if (targets[i] == null)
+			{
+				targets.Remove(targets[i]);
+			}
+		}
 	}
 }
