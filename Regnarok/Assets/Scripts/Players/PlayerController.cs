@@ -304,6 +304,7 @@ public class PlayerController : MonoBehaviour
             //else is done in rotation
         }
     }
+    [PunRPC]
     public void TogleJumpPartical(bool b)
 	{
 		if (b)
@@ -466,9 +467,12 @@ public class PlayerController : MonoBehaviour
                             GameObject spawnInObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Summons", spawnThis.name), _hit.point, Quaternion.identity);
                             print(spawnInObject);
                             print(listOfSummons.Count);
+                            print(listOfSummons);
                             listOfSummons.Enqueue(spawnInObject);
+                            print(listOfSummons);
                             if (listOfSummons.Count > maxSummons)
                             {
+                                print(10000);
                                 GameObject firstSummon = listOfSummons.Peek();
                                 listOfSummons.Dequeue();
                                 PhotonNetwork.Destroy(firstSummon);
