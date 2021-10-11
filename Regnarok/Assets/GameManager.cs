@@ -160,6 +160,7 @@ public class GameManager : MonoBehaviour
     public void SpawnEnemiesSyncted(int i_i, Vector3 spawnPos, int id)
     {
         GameObject spawnedEnemie = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", enemielist.enemieList[i_i]), spawnPos, Quaternion.identity);
+        spawnedEnemie.GetComponent<Outline>().enabled = true;
         Totem[] totems = FindObjectsOfType<Totem>();
         for (int i = 0; i < totems.Length; i++)
         {

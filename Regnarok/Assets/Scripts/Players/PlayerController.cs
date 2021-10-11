@@ -274,12 +274,12 @@ public class PlayerController : MonoBehaviour
                     staminaValue = Mathf.Clamp(staminaValue -= staminaLossPerSec * Time.deltaTime, 0, maxStamina);
                     combinedSpeed = sprintSpeed + totalExtraSpeed * 1.5f;
                     Anim_sprint();
-                    runningPartical.GetComponent<ParticleSystem>().Play();
+                    pv.RPC("TogleRunningPartical", RpcTarget.All, true);
                 }
                 else
                 {
                     Anim_movement();
-                    runningPartical.GetComponent<ParticleSystem>().Stop();
+                    pv.RPC("TogleRunningPartical", RpcTarget.All, false);
                 }
             }
             else
@@ -304,11 +304,33 @@ public class PlayerController : MonoBehaviour
             //else is done in rotation
         }
     }
+    public void TogleJumpPartical(bool b)
+	{
+		if (b)
+		{
+            jumpPartical.GetComponent<ParticleSystem>().Play();
+        }
+		else
+		{
+            jumpPartical.GetComponent<ParticleSystem>().Stop();
+        }
+    }
+    public void TogleRunningPartical(bool b)
+    {
+        if (b)
+        {
+            runningPartical.GetComponent<ParticleSystem>().Play();
+        }
+        else
+        {
+            runningPartical.GetComponent<ParticleSystem>().Stop();
+        }
+    }
     public IEnumerator JumpPartic()
 	{
-        jumpPartical.GetComponent<ParticleSystem>().Play();
+        pv.RPC("TogleJumpPartical", RpcTarget.All, true);
         yield return new WaitForSeconds(1f);
-        jumpPartical.GetComponent<ParticleSystem>().Stop();
+        pv.RPC("TogleJumpPartical", RpcTarget.All, false);
     }
     void Gravity()
     {
