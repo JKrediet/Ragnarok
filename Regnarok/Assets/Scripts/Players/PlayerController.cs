@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     PhotonView pv;
 
     //attackStats
-    [SerializeField] float totalDamage, totalAttackSpeed, totalCritChance, totalLifeSteal, totalChanceToInflictBleed, totalHealthOnKill, totalExtraSpeed, totalJumps = 1, executeBelow, nimbusStacks;
+    [SerializeField] float totalDamage, totalAttackSpeed, totalCritChance, totalLifeSteal, totalChanceToInflictBleed, totalHealthOnKill, totalExtraSpeed, totalJumps = 1, executeBelow, nimbusStacks, burnTicks, poisonChance;
     public Item heldItem;
     float remainingJumps = 1;
 
@@ -132,7 +132,7 @@ public class PlayerController : MonoBehaviour
     {
         extraMouseSense = 5;
     }
-    public void RecieveStats(float _damage, float _attackSpeed, float _critChance, float _lifesteal, float _bleedChance, float _healthOnKill, float _movementSpeed, int _jumps, float _executeBelow, int nimbus)
+    public void RecieveStats(float _damage, float _attackSpeed, float _critChance, float _lifesteal, float _bleedChance, float _healthOnKill, float _movementSpeed, int _jumps, float _executeBelow, int nimbus, int _burnTicks, float _poisonStacks)
     {
         totalDamage = _damage;
         totalAttackSpeed = _attackSpeed;
@@ -144,6 +144,8 @@ public class PlayerController : MonoBehaviour
         totalJumps = _jumps;
         executeBelow = _executeBelow;
         nimbusStacks = nimbus;
+        burnTicks = _burnTicks;
+        poisonChance = _poisonStacks;
 
         //ui stats
         statTexts[0].GiveStats(GetComponent<CharacterStats>().level.ToString());
@@ -640,10 +642,11 @@ public class PlayerController : MonoBehaviour
                         //    tempObject.GetComponent<VisualEffect>().SetVector4("GivenColor", kleurtje);
                         //}
                     }
-                    #region crits and bleed
+                    #region crits/bleed/burn/poison
                     //crit
                     float critDamage = 0;
                     bool inflictBleed = false;
+                    float poisonDamage = 0;
                     float roll = Random.Range(0, 100);
                     if (roll < totalCritChance)
                     {
@@ -653,6 +656,11 @@ public class PlayerController : MonoBehaviour
                     if (roll < totalChanceToInflictBleed)
                     {
                         inflictBleed = true;
+                    }
+                    roll = Random.Range(0, 100);
+                    if(roll < poisonChance * 10)
+                    {
+                        poisonDamage = totalDamage * 0.05f * totalCritChance;
                     }
                     #endregion
                     //actual hit
@@ -694,11 +702,11 @@ public class PlayerController : MonoBehaviour
                                     nimbusje.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f) * nimbusStacks;
                                 }
                             }
-                            hitObject.GetComponent<EnemieHealth>().TakeDamage(totalDamage + critDamage, inflictBleed, executeBelow, hitObject.ClosestPoint(attackPos.position));
+                            hitObject.GetComponent<EnemieHealth>().TakeDamage(totalDamage + critDamage, inflictBleed, (int)burnTicks, poisonDamage, executeBelow, hitObject.ClosestPoint(attackPos.position));
                         }
                         else
                         {
-                            hitObject.GetComponent<EnemieHealth>().TakeDamage(totalDamage + critDamage, inflictBleed, executeBelow, hitObject.ClosestPoint(attackPos.position));
+                            hitObject.GetComponent<EnemieHealth>().TakeDamage(totalDamage + critDamage, inflictBleed, (int)burnTicks, poisonDamage, executeBelow, hitObject.ClosestPoint(attackPos.position));
                         }
                     }
                 }

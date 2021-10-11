@@ -29,7 +29,7 @@ public class NimbusCloud : MonoBehaviour
         {
             if(enemy.GetComponent<EnemieHealth>())
             {
-                enemy.GetComponent<EnemieHealth>().TakeDamage(damage,false,0,Vector3.zero);
+                enemy.GetComponent<EnemieHealth>().TakeDamage(damage,false,0,0,0,Vector3.zero);
             }
         }
     }

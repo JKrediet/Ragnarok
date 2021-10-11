@@ -112,7 +112,7 @@ public class EnemyScript : MonoBehaviour
 				if (hitInfo.transform.tag == "Player")
 				{
                     ResetAnim();
-                    hitInfo.transform.GetComponent<PlayerHealth>().TakeDamage(damage,false,0, hitInfo.transform.position);
+                    hitInfo.transform.GetComponent<PlayerHealth>().TakeDamage(damage,false,0,0,0, hitInfo.transform.position);
                     anim.SetBool("IsAttacking", true);
                 }
             }

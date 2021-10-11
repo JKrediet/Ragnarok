@@ -72,7 +72,7 @@ public class TrowObject : MonoBehaviour
 	public void DoDamage(Transform trans)
 	{
 		doingDamage = true;
-		trans.GetComponent<PlayerHealth>().TakeDamage(damage, false,0, trans.transform.position);
+		trans.GetComponent<PlayerHealth>().TakeDamage(damage, false,0,0,0, trans.transform.position);
 	}
 	public Vector3 GetQuadraticCurvePoint(float t, Vector3 p0, Vector3 p1, Vector3 p2)
 	{

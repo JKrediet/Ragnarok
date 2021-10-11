@@ -20,7 +20,7 @@ public class BeamerScript : MonoBehaviour
                 {
 			        if (hitInfo.transform.CompareTag("Player"))
 			        {
-                        hitInfo.transform.GetComponent<PlayerHealth>().TakeDamage(damage, false, 0, Vector3.zero);
+                        hitInfo.transform.GetComponent<PlayerHealth>().TakeDamage(damage, false, 0,0,0, Vector3.zero);
                         StartCoroutine(StartCoolDown());
                     }
 		        }

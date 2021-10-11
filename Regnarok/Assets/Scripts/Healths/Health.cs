@@ -19,8 +19,8 @@ public class Health : MonoBehaviour
 
     protected float healthRegen;
 
-    int BleedTicks;
-    float bleedDamage;
+    int bleedTicks, burnTicks, poisonTicks;
+    float bleedDamage, burnDamage, poisonDamage;
 
     public float reviveAmount;
 
@@ -31,8 +31,9 @@ public class Health : MonoBehaviour
             PV = GetComponent<PhotonView>();
         }
         health = maxHealth;
+        burnDamage = maxHealth / 40;
     }
-    public virtual void Health_Damage(float damageValue, bool bleed, float execute, Vector3 hitlocation)
+    public virtual void Health_Damage(float damageValue, bool bleed, int burn, float poison, float execute, Vector3 hitlocation)
     {
         if (PV.IsMine)
         {
@@ -67,11 +68,28 @@ public class Health : MonoBehaviour
             }
             if (bleed)
             {
+                if (bleedDamage == 0)
+                {
+                    StartCoroutine(Bleed());
+                }
+                bleedTicks += 5;
                 if (bleedDamage < damageValue * 0.25f)
                 {
                     bleedDamage = damageValue * 0.25f;
                 }
-                BleedTicks += 5;
+            }
+            if(burn > 0)
+            {
+                bleedTicks += burn * 2;
+                if (burnTicks > 0)
+                {
+                    StartCoroutine(Bleed());                    
+                }
+            }
+            if(poison > 0)
+            {
+                poisonTicks = 10;
+                poisonDamage += poison;
             }
         }
     }
@@ -106,24 +124,51 @@ public class Health : MonoBehaviour
 
     protected virtual IEnumerator Bleed()
     {
-        yield return new WaitForSeconds(1);
-        if(BleedTicks > 0)
+        float roll = Random.Range(0.4f, 0.7f);
+        yield return new WaitForSeconds(roll);
+        if(bleedTicks > 0)
         {
-            BleedTicks--;
-            Health_Damage(bleedDamage, false, 0, lastHitLocation);
-            StartCoroutine("Bleed");
+            bleedTicks--;
+            Health_Damage(bleedDamage, false, 0, 0, 0, lastHitLocation);
+            StartCoroutine(Bleed());
         }
-        else if (BleedTicks == 0)
+        else
         {
             bleedDamage = 0;
+        }
+    }
+    protected virtual IEnumerator Burn()
+    {
+        float roll = Random.Range(0.9f, 1.2f);
+        yield return new WaitForSeconds(roll);
+        if (burnTicks > 0)
+        {
+            burnTicks--;
+            Health_Damage(burnDamage, false, 0, 0, 0, lastHitLocation);
+            StartCoroutine(Burn());
+        }
+    }
+    protected virtual IEnumerator Poison()
+    {
+        float roll = Random.Range(0.4f, 0.7f);
+        yield return new WaitForSeconds(roll);
+        if (poisonTicks > 0)
+        {
+            poisonTicks--;
+            Health_Damage(poisonDamage, false, 0, 0, 0, lastHitLocation);
+            StartCoroutine(Poison());
+        }
+        else
+        {
+            poisonDamage = 0;
         }
     }
 
     #region sinc
     //damage
-    public void TakeDamage(float damageValue, bool _bleed, float execute, Vector3 _hitlocation)
+    public void TakeDamage(float damageValue, bool _bleed, int burnticks, float poisonTicks, float execute, Vector3 _hitlocation)
     {
-        PV.RPC("SincHealthOnMAster", RpcTarget.MasterClient, damageValue, _bleed, execute, _hitlocation);
+        PV.RPC("SincHealthOnMAster", RpcTarget.MasterClient, damageValue, _bleed, burnticks, poisonTicks, execute, _hitlocation);
     }
     //heal
     public void TakeHeal(float damageValue)
@@ -133,14 +178,14 @@ public class Health : MonoBehaviour
 
     //damage
     [PunRPC]
-    public void SincHealthOnMAster(float _health, bool _bleed, float execute, Vector3 _hitlocation)
+    public void SincHealthOnMAster(float _health, bool _bleed, int burnticks, float poisonTicks, float execute, Vector3 _hitlocation)
     {
-         PV.RPC("SincHealth", RpcTarget.All, _health, _bleed, execute, _hitlocation);
+         PV.RPC("SincHealth", RpcTarget.All, _health, _bleed, burnticks, poisonTicks, execute, _hitlocation);
     }
     [PunRPC]
-    public void SincHealth(float _health, bool _bleed, float execute, Vector3 _hitlocation)
+    public void SincHealth(float _health, bool _bleed, int burnticks, float poisonTicks, float execute, Vector3 _hitlocation)
     {
-        Health_Damage(_health, _bleed, execute, _hitlocation);
+        Health_Damage(_health, _bleed, burnticks, poisonTicks, execute, _hitlocation);
     }
     //heal
     [PunRPC]

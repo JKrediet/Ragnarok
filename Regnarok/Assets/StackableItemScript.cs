@@ -137,6 +137,16 @@ public class StackableItemScript : MonoBehaviour
                     stats.GiveStats_nimbus(itemlist[i].amount * itemlist[i].value);
                     continue;
                 }
+                else if (itemlist[i].itemName == "Matches")
+                {
+                    stats.GiveStats_burn(itemlist[i].amount * itemlist[i].value);
+                    continue;
+                }
+                else if (itemlist[i].itemName == "Skull")
+                {
+                    stats.GiveStats_poison(itemlist[i].amount * itemlist[i].value);
+                    continue;
+                }
             }
         }
 
