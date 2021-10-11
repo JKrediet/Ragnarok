@@ -97,7 +97,7 @@ public class SnakeBehavour : MonoBehaviour
 						if (!doingDamage)
 						{
 							StartCoroutine(DamageCoolDown());
-							hitInfo.transform.GetComponent<EnemieHealth>().TakeDamage(damage, false, 0, Vector3.zero);
+							hitInfo.transform.GetComponent<EnemieHealth>().TakeDamage(damage, false, 0, 0, 0, Vector3.zero);
 						}
 					}
 				}

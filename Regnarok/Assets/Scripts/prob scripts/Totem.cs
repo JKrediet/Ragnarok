@@ -5,6 +5,7 @@ using Photon.Pun;
 using System.IO;
 public class Totem : MonoBehaviour
 {
+	public LayerMask groundLayer;
 	public int id;
 	public bool activated;
 	public bool gaveItem;
@@ -43,9 +44,11 @@ public class Totem : MonoBehaviour
 	}
 	public IEnumerator CheckEnemies()
 	{
+		
 		isChecking = true;
 		for (var i = enemies.Count - 1; i > -1; i--)
 		{
+			enemies[i].transform.GetComponent<Outline>().enabled = true;
 			if (enemies[i] == null)
 			{
 				enemies.RemoveAt(i);
@@ -75,9 +78,9 @@ public class Totem : MonoBehaviour
 		int rarity = RaretyChance();
 		Ray ray = new Ray(GetPos(), -transform.up);
 		RaycastHit hitInfo;
-		if (Physics.Raycast(ray, out hitInfo))
+		if (Physics.Raycast(ray, out hitInfo, groundLayer))
 		{
-
+			print(hitInfo.transform.gameObject.layer);
 			gm.SpawnItem(hitInfo.point, rarity);
 		}
 	}
@@ -111,7 +114,7 @@ public class Totem : MonoBehaviour
 		int randomNum = Random.Range(0, gm.enemielist.enemieList.Count);
 		Ray ray = new Ray(GetPos(), -transform.up);
 		RaycastHit hitInfo;
-		if (Physics.Raycast(ray, out hitInfo))
+		if (Physics.Raycast(ray, out hitInfo, groundLayer))
 		{
 			if (hitInfo.transform.tag == "Mesh")
 			{
