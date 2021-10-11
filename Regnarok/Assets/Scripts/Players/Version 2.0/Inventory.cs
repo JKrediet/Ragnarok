@@ -28,6 +28,7 @@ public class Inventory : MonoBehaviour
     private PhotonView pv;
 
     public int goldCoinsInPocket;
+    public TextMeshProUGUI coinsText;
 
     CharacterStats character;
     PlayerController controller;
@@ -152,6 +153,12 @@ public class Inventory : MonoBehaviour
     void AddCoin(int amount)
     {
         goldCoinsInPocket += amount;
+        coinsText.text = "Golden coins : " + goldCoinsInPocket;
+    }
+    void RemoveeCoin(int amount)
+    {
+        goldCoinsInPocket -= amount;
+        coinsText.text = "Golden coins : " + goldCoinsInPocket;
     }
     public void AddItem(Item item)
     {
