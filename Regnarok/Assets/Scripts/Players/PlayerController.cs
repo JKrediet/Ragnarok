@@ -471,6 +471,7 @@ public class PlayerController : MonoBehaviour
                         {
                             GameObject spawnInObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Summons", spawnThis.name), _hit.point + Vector3.up * 2, Quaternion.identity);
                             listOfSummons.Enqueue(spawnInObject);
+                            spawnInObject.GetComponent<SnakeBehavour>().player = transform.gameObject;
                             if (listOfSummons.Count > maxSummons)
                             {
                                 GameObject firstSummon = listOfSummons.Peek();

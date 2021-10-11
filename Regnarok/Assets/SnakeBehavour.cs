@@ -2,83 +2,75 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Photon.Pun;
 
 public class SnakeBehavour : MonoBehaviour
 {
     public List<GameObject> targets;
     public float attackTime;
+	public float attackCooldown;
 	public float targetCooldown;
 	public ParticleSystem ps;
+	public GameObject player;
 	private bool isGettingTarget;
 	private bool isAttacking;
 	private bool cooldownIsOn;
-	private GameObject target;
-	private Animator anim;
+	private bool hasAttackCooldown;
+	public Animator anim;
 	private NavMeshAgent agent;
 	private void Start()
 	{
 		agent = GetComponent<NavMeshAgent>();
-		anim = GetComponent<Animator>();
-		ps.Play();
+		Invoke("KillMe",300f);
 	}
 	void Update()
 	{
-		if (!isGettingTarget)
-		{
-			StartCoroutine(GetTarget());
-		}
 		if (!cooldownIsOn)
 		{
-			if (target != null)
+			if (targets.Count != 0)
 			{
-				if (!isAttacking)
+				if (!isAttacking && !hasAttackCooldown)
 				{
 					StartCoroutine(Attack());
+					transform.LookAt(targets[0].transform.position);
+				}
+				float dis = Vector3.Distance(transform.position, player.transform.position);
+				if (dis > 4)
+				{
+					agent.destination = targets[0].transform.position;
+				}
+				else
+				{
+					agent.destination = transform.position;
 				}
 			}
-			agent.destination = target.transform.position;
+			else
+			{
+				float dis = Vector3.Distance(transform.position, player.transform.position);
+				if (dis > 4)
+				{
+					agent.destination = player.transform.position;
+				}
+				else
+				{
+					agent.destination = transform.position;
+				}
+			}
 		}
 	}
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.CompareTag("Enemy"))
+		if (other.transform.GetComponent<EnemieHealth>())
 		{
             targets.Add(other.gameObject);
 		}
 	}
 	private void OnTriggerExit(Collider other)
 	{
-		if (other.CompareTag("Enemy"))
+		if (other.transform.GetComponent<EnemieHealth>())
 		{
 			targets.Remove(other.gameObject);
 		}
-	}
-	public IEnumerator GetTarget()
-	{
-		isGettingTarget = true;
-		cooldownIsOn = true;
-		Invoke("SetFalse", targetCooldown);
-		for (int i = 0; i < targets.Count; i++)
-		{
-			if (targets[i] != null)
-			{
-				float dis = Vector3.Distance(targets[i].transform.position, transform.position);
-				if (dis < Vector3.Distance(target.transform.position, transform.position))
-				{
-					target = targets[i];
-				}
-				else if (target == null)
-				{
-					target = targets[i];
-				}
-			}
-			else
-			{
-				targets.Remove(targets[i]);
-			}
-		}
-		yield return new WaitForSeconds(targetCooldown/2);
-		isGettingTarget = false;
 	}
 	public void SetFalse()
 	{
@@ -87,7 +79,22 @@ public class SnakeBehavour : MonoBehaviour
 	public IEnumerator Attack()
 	{
 		isAttacking = true;
+		ps.Play();
+		anim.SetBool("IsAttacking", true);
 		yield return new WaitForSeconds(attackTime);
+		ps.Stop();
+		anim.SetBool("IsAttacking", false);
 		isAttacking = false;
+		StartCoroutine(AttackCooldown());
+	}
+	public IEnumerator AttackCooldown()
+	{
+		hasAttackCooldown = true;
+		yield return new WaitForSeconds(attackCooldown);
+		hasAttackCooldown = false;
+	}
+	public void KillMe()
+	{
+		PhotonNetwork.Destroy(gameObject);
 	}
 }

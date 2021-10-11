@@ -34,7 +34,7 @@ public class ChestScript : ProbScript
                 isMyPlayer = players[i];
 			}
 		}
-		if (isMyPlayer.GetComponent<PlayerController>().playerBalance >= cost)
+		if (isMyPlayer.GetComponent<Inventory>().goldCoinsInPocket >= cost)
         { 
             StartCoroutine("GetRandomItem");
             canInteract = false;
