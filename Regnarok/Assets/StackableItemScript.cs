@@ -132,6 +132,11 @@ public class StackableItemScript : MonoBehaviour
                     stats.GiveStats_revives(itemlist[i].amount * itemlist[i].value);
                     continue;
                 }
+                else if (itemlist[i].itemName == "Nimbus")
+                {
+                    stats.GiveStats_nimbus(itemlist[i].amount * itemlist[i].value);
+                    continue;
+                }
             }
         }
 

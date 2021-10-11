@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     PhotonView pv;
 
     //attackStats
-    [SerializeField] float totalDamage, totalAttackSpeed, totalCritChance, totalLifeSteal, totalChanceToInflictBleed, totalHealthOnKill, totalExtraSpeed, totalJumps = 1, executeBelow;
+    [SerializeField] float totalDamage, totalAttackSpeed, totalCritChance, totalLifeSteal, totalChanceToInflictBleed, totalHealthOnKill, totalExtraSpeed, totalJumps = 1, executeBelow, nimbusStacks;
     public Item heldItem;
     float remainingJumps = 1;
 
@@ -96,6 +96,9 @@ public class PlayerController : MonoBehaviour
     public Queue<GameObject> listOfSummons;
     public int maxSummons = 1;
 
+    //nimbus
+    public GameObject nimbusObject;
+
     private void Awake()
     {
         pv = GetComponent<PhotonView>();
@@ -129,7 +132,7 @@ public class PlayerController : MonoBehaviour
     {
         extraMouseSense = 5;
     }
-    public void RecieveStats(float _damage, float _attackSpeed, float _critChance, float _lifesteal, float _bleedChance, float _healthOnKill, float _movementSpeed, int _jumps, float _executeBelow)
+    public void RecieveStats(float _damage, float _attackSpeed, float _critChance, float _lifesteal, float _bleedChance, float _healthOnKill, float _movementSpeed, int _jumps, float _executeBelow, int nimbus)
     {
         totalDamage = _damage;
         totalAttackSpeed = _attackSpeed;
@@ -140,6 +143,7 @@ public class PlayerController : MonoBehaviour
         totalExtraSpeed = _movementSpeed;
         totalJumps = _jumps;
         executeBelow = _executeBelow;
+        nimbusStacks = nimbus;
 
         //ui stats
         statTexts[0].GiveStats(GetComponent<CharacterStats>().level.ToString());
@@ -668,7 +672,6 @@ public class PlayerController : MonoBehaviour
                         //damage
                         if (heldItem != null)
                         {
-                            hitObject.GetComponent<EnemieHealth>().TakeDamage(totalDamage + critDamage, inflictBleed, executeBelow, hitObject.ClosestPoint(attackPos.position));
                             if (totalLifeSteal > 0)
                             {
                                 float healAmount = (totalDamage + critDamage - hitObject.GetComponent<EnemieHealth>().armor) * (totalLifeSteal / 100);
@@ -681,6 +684,16 @@ public class PlayerController : MonoBehaviour
                                     GetComponent<Health>().TakeHeal(totalHealthOnKill);
                                 }
                             }
+                            if(nimbusStacks > 0)
+                            {
+                                if (hitObject.GetComponent<EnemieHealth>().health - (totalDamage + critDamage - hitObject.GetComponent<EnemieHealth>().armor) <= 0)
+                                {
+                                    GameObject nimbusje = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Summons", nimbusObject.name), hitObject.transform.position + Vector3.up * 2, Quaternion.identity);
+                                    StartCoroutine(nimbusje.GetComponent<NimbusCloud>().StartNimbus(nimbusStacks, totalDamage / 4));
+                                    nimbusje.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f) * nimbusStacks;
+                                }
+                            }
+                            hitObject.GetComponent<EnemieHealth>().TakeDamage(totalDamage + critDamage, inflictBleed, executeBelow, hitObject.ClosestPoint(attackPos.position));
                         }
                         else
                         {

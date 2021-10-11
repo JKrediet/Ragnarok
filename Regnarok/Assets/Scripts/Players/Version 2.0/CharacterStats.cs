@@ -23,7 +23,7 @@ public class CharacterStats : MonoBehaviour
     [HideInInspector] public Color disabledColor = new Color(1, 1, 1, 0);
 
     [Space]
-    float endDamage, endAttackSpeed, endCritChance, endArmor, endHealth, endJumpAmount, executeBelow, revives;
+    float endDamage, endAttackSpeed, endCritChance, endArmor, endHealth, endJumpAmount, executeBelow, revives, nimbusStacks;
     public float BaseDamage, baseAttackSpeed, baseCritChance, baseArmor, baseHealth;
     float addedDamage, addedAttackSpeed, addedCritChance, addedArmor, addedHealth, addedHealthRegen, addedLifeSteal, addedBleedChance, addedHealthOnKill, addedMovementSpeed, addedJumps;
     float precentAddedDamage, precentAddedAttackSpeed, precentAddedCritChance, precentAddedArmor, precentAddedHealth;
@@ -137,6 +137,10 @@ public class CharacterStats : MonoBehaviour
     {
         revives = value;
     }
+    public void GiveStats_nimbus(float value)
+    {
+        nimbusStacks = value;
+    }
     #endregion
     public void CalculateOffensiveStats()
     {
@@ -168,7 +172,7 @@ public class CharacterStats : MonoBehaviour
         }
 
         //give stats/ offensive
-        playercontroller.RecieveStats(endDamage, endAttackSpeed, endCritChance, addedLifeSteal, addedBleedChance, addedHealthOnKill, addedMovementSpeed, (int)endJumpAmount, executeBelow);
+        playercontroller.RecieveStats(endDamage, endAttackSpeed, endCritChance, addedLifeSteal, addedBleedChance, addedHealthOnKill, addedMovementSpeed, (int)endJumpAmount, executeBelow, (int)nimbusStacks);
     }
     public void CalculateDefensiveStats()
     {
