@@ -316,6 +316,7 @@ public class PlayerController : MonoBehaviour
             jumpPartical.GetComponent<ParticleSystem>().Stop();
         }
     }
+    [PunRPC]
     public void TogleRunningPartical(bool b)
     {
         if (b)
@@ -464,15 +465,10 @@ public class PlayerController : MonoBehaviour
                         spawnThis = heldItem.summonObject;
                         if (spawnThis != default)
                         {
-                            GameObject spawnInObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Summons", spawnThis.name), _hit.point, Quaternion.identity);
-                            print(spawnInObject);
-                            print(listOfSummons.Count);
-                            print(listOfSummons);
+                            GameObject spawnInObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Summons", spawnThis.name), _hit.point + Vector3.up * 2, Quaternion.identity);
                             listOfSummons.Enqueue(spawnInObject);
-                            print(listOfSummons);
                             if (listOfSummons.Count > maxSummons)
                             {
-                                print(10000);
                                 GameObject firstSummon = listOfSummons.Peek();
                                 listOfSummons.Dequeue();
                                 PhotonNetwork.Destroy(firstSummon);
