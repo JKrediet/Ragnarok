@@ -7,6 +7,7 @@ public class Totem : MonoBehaviour
 {
 	public LayerMask groundLayer;
 	public int id;
+	public bool isBoss;	
 	public bool activated;
 	public bool gaveItem;
 	public int amountOfEnemies;
@@ -89,17 +90,20 @@ public class Totem : MonoBehaviour
 		if (!activated)
 		{
 			gm = FindObjectOfType<GameManager>();
-			for (int i = 0; i < torches.Length; i++)
+			if (isBoss)
 			{
-				torches[i].SetActive(true);
+				SpawnBoss();
 			}
-			for (int i = 0; i < amountOfEnemies; i++)
+			else
 			{
-				SpawnEnemies();
+				for (int i = 0; i < amountOfEnemies; i++)
+				{
+					SpawnEnemies();
+				}
 			}
-			gm.ActivatTotem(id);
+			gm.ActivatTotem(id,isBoss);
 		}
-	}
+	}  
 	public Vector3 GetPos()
 	{
 		Vector3 pos = transform.position;
@@ -108,6 +112,24 @@ public class Totem : MonoBehaviour
 
 		pos.y = 100;
 		return pos;
+	}
+	public void SpawnBoss()
+	{
+		Ray ray = new Ray(GetPos(), -transform.up);
+		RaycastHit hitInfo;
+		if (Physics.Raycast(ray, out hitInfo, groundLayer))
+		{
+			if (hitInfo.transform.tag == "Mesh")
+			{
+				gm.GetComponent<PhotonView>().RPC("SpawnPartical", RpcTarget.MasterClient, hitInfo.point);
+				new WaitForSeconds(0.5f);
+				gm.SpawnBoss( hitInfo.point + spawnOffset, id);
+			}
+			else
+			{
+				amountOfEnemies++;
+			}
+		}
 	}
 	void SpawnEnemies()
 	{

@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
 	public VideoPlayer videoplayer;
     public ItemListScript itemlist;
     public EnemyList enemielist;
+    public string miniBossName;
 
     public List<GameObject> playerObjectList;
 
@@ -152,6 +153,24 @@ public class GameManager : MonoBehaviour
         droppedItem.GetComponent<WorldItem>().SetUp(ItemList.SelectItem(droppedItemName).name, amount, ItemList.SelectItem(droppedItemName).sprite, ItemList.SelectItem(droppedItemName).type, ItemList.SelectItem(droppedItemName).maxStackSize);
         GetComponent<PhotonView>().RPC("RemoveItemFromWorld", RpcTarget.All, serialNumber);
     }
+    public void SpawnBoss(Vector3 spawnPos, int id)
+	{
+        GetComponent<PhotonView>().RPC("SpawnBossSyncted", RpcTarget.MasterClient, spawnPos, id);
+    }
+    [PunRPC]
+    public void SpawnBossSyncted(Vector3 spawnPos, int id)
+    {
+        GameObject spawnedEnemie = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", miniBossName ), spawnPos, Quaternion.identity);
+        spawnedEnemie.GetComponent<Outline>().enabled = true;
+        Totem[] totems = FindObjectsOfType<Totem>();
+        for (int i = 0; i < totems.Length; i++)
+        {
+            if (totems[i].id == id)
+            {
+                totems[i].enemies.Add(spawnedEnemie);
+            }
+        }
+    }
     public void SpawnEnemies(int i_i, Vector3 spawnPos, int id)
     {
         GetComponent<PhotonView>().RPC("SpawnEnemiesSyncted", RpcTarget.MasterClient, i_i, spawnPos,id);
@@ -170,19 +189,22 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-    public void ActivatTotem(int id)
+    public void ActivatTotem(int id,bool isboss)
 	{
-        GetComponent<PhotonView>().RPC("ActivatedTotemSync", RpcTarget.All, id);
+        GetComponent<PhotonView>().RPC("ActivatedTotemSync", RpcTarget.All, id,isboss);
     }
     [PunRPC]
-    public void ActivatedTotemSync(int id)
+    public void ActivatedTotemSync(int id,bool isboss)
     {
         Totem[] totems = FindObjectsOfType<Totem>();
         for (int i = 0; i < totems.Length; i++)
         {
             if (totems[i].id == id)
             {
-                totems[i].activated = true;
+				if (totems[i].isBoss == isboss)
+				{
+                    totems[i].activated = true;
+				}
             }
         }
     }

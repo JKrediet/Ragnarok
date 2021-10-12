@@ -25,6 +25,9 @@ public class EnviromentSpawner : MonoBehaviour
     public GameObject mesh;
     public GameObject grassMesh;
     public MapGenerator mapGen;
+    [Space(2)]
+    public GameObject bossTotemObj;
+    public BossTotemManager btm;
     [Space(5)]
     public float minGrassHeight=1.5f;
     public float maxGrassHeight = 8f;
@@ -43,6 +46,7 @@ public class EnviromentSpawner : MonoBehaviour
     {
         Random.InitState(mapGen.mapSeed);
         new WaitForSeconds(1);
+        Transform parent;
         for (int i = 0; i < spawnItems.Length; i++)
         {
             for (int i_ = 0; i_ < spawnItems[i].amountToSpawn; i_++)
@@ -50,8 +54,7 @@ public class EnviromentSpawner : MonoBehaviour
                 if (spawnItems[i].spawnItem)
                 {
                     if (Chance())
-                    {
-                        Transform parent;
+                    { 
                         if (spawnItems[i].isGrass)
                         {
                             parent = grassHolder;
@@ -175,6 +178,25 @@ public class EnviromentSpawner : MonoBehaviour
             }
             yield return new WaitForSecondsRealtime(1);
         }
+		for (int i = 0; i < btm.amountOffBosses; i++)
+		{
+            spawnPoint = new Vector3(Random.Range(firstPos.position.x, secondPos.position.x), spawnItems[i].startHeight, Random.Range(firstPos.position.z, secondPos.position.z));
+            Ray ray = new Ray(spawnPoint, -transform.up);
+            RaycastHit hitInfo;
+            if (Physics.Raycast(ray, out hitInfo))
+            {
+
+                if (hitInfo.transform.tag == "Water"
+                || hitInfo.transform.tag == "Rock"
+                || hitInfo.transform.tag == "Tree"
+                || hitInfo.transform.tag == "Chest"
+                || hitInfo.transform.tag == "Totem")
+                {
+
+                }
+            }
+                    InstatiateEnviorment(bossTotemObj, spawnPoint, Quaternion.identity, transform, i, i);
+        }
         BuildNavMesh();
     }
     public void InstatiateEnviorment(GameObject toSpawn, Vector3 location, Quaternion rotation, Transform parent, int index,int amount)
@@ -201,9 +223,14 @@ public class EnviromentSpawner : MonoBehaviour
 			{
                 tempObject.GetComponent<ChestScript>().chestId = amount;
             }
-            else if (tempObject.GetComponent<Totem>())
+            else if (!tempObject.GetComponent<Totem>().isBoss)
             {
                 tempObject.GetComponent<Totem>().id = amount;
+            }
+            else if (tempObject.GetComponent<Totem>().isBoss)
+            {
+                tempObject.GetComponent<Totem>().id = amount;
+                btm.bosTotems.Add(tempObject);
             }
         }
     }
