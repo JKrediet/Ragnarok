@@ -22,29 +22,52 @@ public class SnakeBehavour : MonoBehaviour
 	public Animator anim;
 	private NavMeshAgent agent;
 	private float speed;
+	private bool canAttack;
 	private void Start()
 	{
 		agent = GetComponent<NavMeshAgent>();
 		Invoke("KillMe",300f);
 		speed = agent.speed;
+		Invoke("Started", 5);
 	}
 	void Update()
 	{
-		if (!cooldownIsOn)
+		if (canAttack)
 		{
-			if (targets.Count != 0)
+			if (!cooldownIsOn)
 			{
-				if (targets[0] != null)
+				if (targets.Count != 0)
 				{
-					if (!isAttacking && !hasAttackCooldown)
+					if (targets[0] != null)
 					{
-						StartCoroutine(Attack());
-						transform.LookAt(targets[0].transform.position);
+						if (!isAttacking && !hasAttackCooldown)
+						{
+							StartCoroutine(Attack());
+							transform.LookAt(targets[0].transform.position);
+						}
+						float dis = Vector3.Distance(transform.position, player.transform.position);
+						if (dis > 4)
+						{
+							agent.destination = targets[0].transform.position;
+							agent.speed = speed;
+						}
+						else
+						{
+							agent.destination = transform.position;
+							agent.speed = 0;
+						}
 					}
+					else
+					{
+						FiltherEnemies();
+					}
+				}
+				else
+				{
 					float dis = Vector3.Distance(transform.position, player.transform.position);
 					if (dis > 4)
 					{
-						agent.destination = targets[0].transform.position;
+						agent.destination = player.transform.position;
 						agent.speed = speed;
 					}
 					else
@@ -53,57 +76,43 @@ public class SnakeBehavour : MonoBehaviour
 						agent.speed = 0;
 					}
 				}
-				else
+				if (isAttacking)
 				{
-					FiltherEnemies();
-				}
-			}
-			else
-			{
-				float dis = Vector3.Distance(transform.position, player.transform.position);
-				if (dis > 4)
-				{
-					agent.destination = player.transform.position;
-					agent.speed = speed;
-				}
-				else
-				{
-					agent.destination = transform.position;
-					agent.speed = 0;
-				}
-			}
-			if (isAttacking)
-			{
-				RaycastHit hitInfo;
-				if (
+					RaycastHit hitInfo;
+					if (
 
-					Physics.Raycast(transform.position, transform.forward,out hitInfo)||
-					Physics.Raycast(transform.position +new Vector3(0,2,0), transform.forward, out hitInfo) ||
-					Physics.Raycast(transform.position + new Vector3(0, 4, 0), transform.forward, out hitInfo) ||
-					Physics.Raycast(transform.position + new Vector3(0, 6, 0), transform.forward, out hitInfo) ||
+						Physics.Raycast(transform.position, transform.forward, out hitInfo) ||
+						Physics.Raycast(transform.position + new Vector3(0, 2, 0), transform.forward, out hitInfo) ||
+						Physics.Raycast(transform.position + new Vector3(0, 4, 0), transform.forward, out hitInfo) ||
+						Physics.Raycast(transform.position + new Vector3(0, 6, 0), transform.forward, out hitInfo) ||
 
-					Physics.Raycast(transform.position + new Vector3(-2, 2, 0), transform.forward, out hitInfo) ||
-					Physics.Raycast(transform.position + new Vector3(-4, 4, 0), transform.forward, out hitInfo) ||
-					Physics.Raycast(transform.position + new Vector3(-6, 6, 0), transform.forward, out hitInfo) ||
+						Physics.Raycast(transform.position + new Vector3(-2, 2, 0), transform.forward, out hitInfo) ||
+						Physics.Raycast(transform.position + new Vector3(-4, 4, 0), transform.forward, out hitInfo) ||
+						Physics.Raycast(transform.position + new Vector3(-6, 6, 0), transform.forward, out hitInfo) ||
 
-					Physics.Raycast(transform.position + new Vector3(2, 2, 0), transform.forward, out hitInfo) ||
-					Physics.Raycast(transform.position + new Vector3(4, 4, 0), transform.forward, out hitInfo) ||
-					Physics.Raycast(transform.position + new Vector3(6, 6, 0), transform.forward, out hitInfo)
+						Physics.Raycast(transform.position + new Vector3(2, 2, 0), transform.forward, out hitInfo) ||
+						Physics.Raycast(transform.position + new Vector3(4, 4, 0), transform.forward, out hitInfo) ||
+						Physics.Raycast(transform.position + new Vector3(6, 6, 0), transform.forward, out hitInfo)
 
-					)
-				{
-					if (hitInfo.transform.GetComponent<EnemieHealth>())
+						)
 					{
-						if (!doingDamage)
+						if (hitInfo.transform.GetComponent<EnemieHealth>())
 						{
-							StartCoroutine(DamageCoolDown());
-							hitInfo.transform.GetComponent<EnemieHealth>().TakeDamage(damage, false, 0, 0, 0, Vector3.zero);
+							if (!doingDamage)
+							{
+								StartCoroutine(DamageCoolDown());
+								hitInfo.transform.GetComponent<EnemieHealth>().TakeDamage(damage, false, 0, 0, 0, Vector3.zero);
+							}
 						}
 					}
+
 				}
-				
 			}
 		}
+	}
+	public void Started()
+	{
+		canAttack = true;
 	}
 	public IEnumerator DamageCoolDown()
 	{
