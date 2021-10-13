@@ -6,7 +6,7 @@ using Photon.Pun;
 
 public class SnakeBehavour : MonoBehaviour
 {
-    public List<GameObject> targets;
+	public List<GameObject> targets;
 	public float damage;
 	public float attackTime;
 	public float attackCooldown;
@@ -14,7 +14,6 @@ public class SnakeBehavour : MonoBehaviour
 	public float damageCoolDownTime;
 	public ParticleSystem ps;
 	public GameObject player;
-	private bool isGettingTarget;
 	private bool isAttacking;
 	private bool cooldownIsOn;
 	private bool hasAttackCooldown;
@@ -26,17 +25,17 @@ public class SnakeBehavour : MonoBehaviour
 	private void Start()
 	{
 		agent = GetComponent<NavMeshAgent>();
-		Invoke("KillMe",300f);
+		Invoke("KillMe", 300f);
 		speed = agent.speed;
 		Invoke("Started", 5);
 	}
 	void Update()
 	{
-		if (canAttack)
+		if (!cooldownIsOn)
 		{
-			if (!cooldownIsOn)
+			if (targets.Count != 0)
 			{
-				if (targets.Count != 0)
+				if (canAttack)
 				{
 					if (targets[0] != null)
 					{
@@ -62,50 +61,53 @@ public class SnakeBehavour : MonoBehaviour
 						FiltherEnemies();
 					}
 				}
+			}
+			else
+			{
+				if (ps.transform.gameObject.activeSelf)
+				{
+					StopAttacking();
+				}
+				float dis = Vector3.Distance(transform.position, player.transform.position);
+				if (dis > 4)
+				{
+					agent.destination = player.transform.position;
+					agent.speed = speed;
+				}
 				else
 				{
-					float dis = Vector3.Distance(transform.position, player.transform.position);
-					if (dis > 4)
-					{
-						agent.destination = player.transform.position;
-						agent.speed = speed;
-					}
-					else
-					{
-						agent.destination = transform.position;
-						agent.speed = 0;
-					}
+					agent.destination = transform.position;
+					agent.speed = 0;
 				}
-				if (isAttacking)
+			}
+			if (isAttacking)
+			{
+				RaycastHit hitInfo;
+				if (
+
+					Physics.Raycast(transform.position, transform.forward, out hitInfo) ||
+					Physics.Raycast(transform.position + new Vector3(0, 2, 0), transform.forward, out hitInfo) ||
+					Physics.Raycast(transform.position + new Vector3(0, 4, 0), transform.forward, out hitInfo) ||
+					Physics.Raycast(transform.position + new Vector3(0, 6, 0), transform.forward, out hitInfo) ||
+
+					Physics.Raycast(transform.position + new Vector3(-2, 2, 0), transform.forward, out hitInfo) ||
+					Physics.Raycast(transform.position + new Vector3(-4, 4, 0), transform.forward, out hitInfo) ||
+					Physics.Raycast(transform.position + new Vector3(-6, 6, 0), transform.forward, out hitInfo) ||
+
+					Physics.Raycast(transform.position + new Vector3(2, 2, 0), transform.forward, out hitInfo) ||
+					Physics.Raycast(transform.position + new Vector3(4, 4, 0), transform.forward, out hitInfo) ||
+					Physics.Raycast(transform.position + new Vector3(6, 6, 0), transform.forward, out hitInfo)
+
+					)
 				{
-					RaycastHit hitInfo;
-					if (
-
-						Physics.Raycast(transform.position, transform.forward, out hitInfo) ||
-						Physics.Raycast(transform.position + new Vector3(0, 2, 0), transform.forward, out hitInfo) ||
-						Physics.Raycast(transform.position + new Vector3(0, 4, 0), transform.forward, out hitInfo) ||
-						Physics.Raycast(transform.position + new Vector3(0, 6, 0), transform.forward, out hitInfo) ||
-
-						Physics.Raycast(transform.position + new Vector3(-2, 2, 0), transform.forward, out hitInfo) ||
-						Physics.Raycast(transform.position + new Vector3(-4, 4, 0), transform.forward, out hitInfo) ||
-						Physics.Raycast(transform.position + new Vector3(-6, 6, 0), transform.forward, out hitInfo) ||
-
-						Physics.Raycast(transform.position + new Vector3(2, 2, 0), transform.forward, out hitInfo) ||
-						Physics.Raycast(transform.position + new Vector3(4, 4, 0), transform.forward, out hitInfo) ||
-						Physics.Raycast(transform.position + new Vector3(6, 6, 0), transform.forward, out hitInfo)
-
-						)
+					if (hitInfo.transform.GetComponent<EnemieHealth>())
 					{
-						if (hitInfo.transform.GetComponent<EnemieHealth>())
+						if (!doingDamage)
 						{
-							if (!doingDamage)
-							{
-								StartCoroutine(DamageCoolDown());
-								hitInfo.transform.GetComponent<EnemieHealth>().TakeDamage(damage, false, 0, 0, 0, Vector3.zero);
-							}
+							StartCoroutine(DamageCoolDown());
+							hitInfo.transform.GetComponent<EnemieHealth>().TakeDamage(damage, false, 0, 0, 0, Vector3.zero);
 						}
 					}
-
 				}
 			}
 		}
@@ -124,7 +126,7 @@ public class SnakeBehavour : MonoBehaviour
 	{
 		if (other.transform.GetComponent<EnemieHealth>())
 		{
-            targets.Add(other.gameObject);
+			targets.Add(other.gameObject);
 		}
 	}
 	private void OnTriggerExit(Collider other)
@@ -144,13 +146,17 @@ public class SnakeBehavour : MonoBehaviour
 		isAttacking = true;
 		ps.Play();
 		ps.transform.gameObject.SetActive(true);
-		//anim.SetBool("IsAttacking", true);
+		anim.SetBool("IsAttacking", true);
 		yield return new WaitForSeconds(attackTime);
+		StopAttacking();
+		StartCoroutine(AttackCooldown());
+	}
+	public void StopAttacking()
+	{
 		ps.Stop();
 		ps.transform.gameObject.SetActive(false);
-		//anim.SetBool("IsAttacking", false);
+		anim.SetBool("IsAttacking", false);
 		isAttacking = false;
-		StartCoroutine(AttackCooldown());
 	}
 	public IEnumerator AttackCooldown()
 	{

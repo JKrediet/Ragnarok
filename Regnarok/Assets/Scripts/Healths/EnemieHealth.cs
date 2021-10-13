@@ -9,6 +9,7 @@ public class EnemieHealth : Health
 {
 	public int coinDrop;
 	public float xpAmount;
+	public GameObject[] toDisolve;
 	public GameObject healthbar;
 	private GameManager gm;
 	private StateManager sm;
@@ -63,5 +64,12 @@ public class EnemieHealth : Health
 		pv.RPC("DropMoney", RpcTarget.MasterClient);
 		pv.RPC("GiveXp", RpcTarget.All);
 		PhotonNetwork.Destroy(gameObject);
+	}
+	public void DisolveMe()
+	{
+		for (int i = 0; i < toDisolve.Length; i++)
+		{
+
+		}
 	}
 }
