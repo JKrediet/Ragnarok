@@ -40,10 +40,9 @@ public class EnemieHealth : Health
 	public void DropMoney()
 	{
 		coinDropOffset = new Vector3(0, 2, 0);
-		float temcoins = (coinDrop * gm.days) * gm.goldMultiplier;
+		float temcoins = coinDrop * (gm.days + 1) * gm.goldMultiplier;
 		coinDrop = (int)temcoins;
 		GameObject tempObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "GoldenCoin"), transform.position + coinDropOffset, Quaternion.identity);
-		print(tempObject);
 		tempObject.GetComponent<WorldItem>().itemAmount = coinDrop;
 	}
 	[PunRPC]

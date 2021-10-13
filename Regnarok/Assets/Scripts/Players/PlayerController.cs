@@ -61,8 +61,6 @@ public class PlayerController : MonoBehaviour
 
     public Animator animController;
 
-    public int playerBalance;
-
     public GameObject nameOfPlayer;
     GameObject localplayerObject;
 
@@ -791,6 +789,7 @@ public class PlayerController : MonoBehaviour
             {
                 pressE.SetActive(false);
                 RaycastHit _hit;
+                Inventory inv = GetComponent<Inventory>();
                 if (Physics.Raycast(cam.transform.position, cam.transform.forward, out _hit, 5))
                 {
 					if (_hit.transform.GetComponent<GraveStoneScript>())
@@ -801,9 +800,9 @@ public class PlayerController : MonoBehaviour
                     {
                         if (_hit.transform.GetComponent<ChestScript>().canInteract)
                         {
-                            if (playerBalance >= _hit.transform.GetComponent<ChestScript>().cost)
+                            if (inv.goldCoinsInPocket >= _hit.transform.GetComponent<ChestScript>().cost)
                             {
-                                playerBalance -= _hit.transform.GetComponent<ChestScript>().cost;
+                                inv.RemoveCoin(_hit.transform.GetComponent<ChestScript>().cost);
                                 _hit.transform.GetComponent<ChestScript>().Interaction();
                             }
                         }

@@ -155,7 +155,7 @@ public class Inventory : MonoBehaviour
         goldCoinsInPocket += amount;
         coinsText.text = "Golden coins : " + goldCoinsInPocket;
     }
-    void RemoveeCoin(int amount)
+    public void RemoveCoin(int amount)
     {
         goldCoinsInPocket -= amount;
         coinsText.text = "Golden coins : " + goldCoinsInPocket;

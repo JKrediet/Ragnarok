@@ -26,23 +26,9 @@ public class ChestScript : ProbScript
 	}
 	public override void Interaction()
 	{
-        players = new List<GameObject>(GameObject.FindGameObjectsWithTag("Player"));
-		for (int i = 0; i < players.Count; i++)
-		{
-			if (players[i].GetComponent<PhotonView>().IsMine)
-			{
-                isMyPlayer = players[i];
-			}
-		}
-		if (isMyPlayer.GetComponent<Inventory>().goldCoinsInPocket >= cost)
-        { 
-            StartCoroutine("GetRandomItem");
-            canInteract = false;
-		}
-		else
-		{
-            //doet sound dat die te weinig geld heeft
-		}
+        StartCoroutine("GetRandomItem");
+        canInteract = false;
+        //doet sound dat die te weinig geld heeft
     }
 	public IEnumerator GetRandomItem()
     { 

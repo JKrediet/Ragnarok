@@ -100,6 +100,7 @@ public class Connection : MonoBehaviourPunCallbacks
         {
             seed = Random.Range(0, 99999);
         }
+        PhotonNetwork.CurrentRoom.IsVisible = false;
         GetComponent<PhotonView>().RPC("SincSeed", RpcTarget.All, seed);
         GetComponent<PhotonView>().RPC("LoadingScreen", RpcTarget.All);
         Invoke("StartLevel", 5);
