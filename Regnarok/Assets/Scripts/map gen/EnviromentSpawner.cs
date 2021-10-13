@@ -194,8 +194,46 @@ public class EnviromentSpawner : MonoBehaviour
                 {
 
                 }
-            }
+                else
+                {
                     InstatiateEnviorment(bossTotemObj, spawnPoint, Quaternion.identity, transform, i, i);
+                }
+            }
+        }
+        List<Totem> tempTotemList = new List<Totem>(FindObjectsOfType<Totem>());
+        for (int i = 0; i < tempTotemList.Count; i++)
+		{
+			if (!tempTotemList[i].isBoss)
+			{
+                tempTotemList.Remove(tempTotemList[i]);
+			}
+		}
+		if (tempTotemList.Count < btm.amountOffBosses)
+		{
+            int listLengt = tempTotemList.Count;
+            int newAmountSpawns = btm.amountOffBosses-= listLengt;
+            for (int i = 0; i < newAmountSpawns; i++)
+            {
+                spawnPoint = new Vector3(Random.Range(firstPos.position.x, secondPos.position.x), spawnItems[i].startHeight, Random.Range(firstPos.position.z, secondPos.position.z));
+                Ray ray = new Ray(spawnPoint, -transform.up);
+                RaycastHit hitInfo;
+                if (Physics.Raycast(ray, out hitInfo))
+                {
+
+                    if (hitInfo.transform.tag == "Water"
+                    || hitInfo.transform.tag == "Rock"
+                    || hitInfo.transform.tag == "Tree"
+                    || hitInfo.transform.tag == "Chest"
+                    || hitInfo.transform.tag == "Totem")
+                    {
+
+                    }
+					else
+					{
+                        InstatiateEnviorment(bossTotemObj, spawnPoint, Quaternion.identity, transform, i, i);
+                    }   
+                }
+            }
         }
         BuildNavMesh();
     }

@@ -44,15 +44,17 @@ public class Totem : MonoBehaviour
 		}
 	}
 	public IEnumerator CheckEnemies()
-	{
-		
+	{	
 		isChecking = true;
 		for (var i = enemies.Count - 1; i > -1; i--)
 		{
-			enemies[i].transform.GetComponent<Outline>().enabled = true;
 			if (enemies[i] == null)
 			{
 				enemies.RemoveAt(i);
+			}
+			else
+			{
+				enemies[i].transform.GetComponent<Outline>().enabled = true;
 			}
 		}
 		if (enemies.Count<=0)
