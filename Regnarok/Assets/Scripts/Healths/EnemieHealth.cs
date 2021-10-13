@@ -9,7 +9,7 @@ public class EnemieHealth : Health
 {
 	public int coinDrop;
 	public float xpAmount;
-	public GameObject[] toDisolve;
+	public Shader[] toDisolve;
 	public GameObject healthbar;
 	private GameManager gm;
 	private StateManager sm;
@@ -22,6 +22,7 @@ public class EnemieHealth : Health
 		gm = FindObjectOfType<GameManager>();
 		sm = GetComponent<StateManager>();
 		pv = GetComponent<PhotonView>();
+		DisolveMe();
 	}
 	public override void Health_Dead()
 	{
@@ -69,7 +70,7 @@ public class EnemieHealth : Health
 	{
 		for (int i = 0; i < toDisolve.Length; i++)
 		{
-
+			//toDisolve[0]..SetFloat("Dissolve", 0);
 		}
 	}
 }
