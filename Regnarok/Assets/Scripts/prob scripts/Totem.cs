@@ -83,7 +83,6 @@ public class Totem : MonoBehaviour
 		RaycastHit hitInfo;
 		if (Physics.Raycast(ray, out hitInfo, groundLayer))
 		{
-			print(hitInfo.transform.gameObject.layer);
 			gm.SpawnItem(hitInfo.point, rarity);
 		}
 	}
