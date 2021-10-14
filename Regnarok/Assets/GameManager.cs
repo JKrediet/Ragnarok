@@ -57,6 +57,11 @@ public class GameManager : MonoBehaviour
 	{
         isDoingNight = true;
         days++;
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (var item in players)
+        {
+            item.GetComponent<Inventory>().GiveDaysToMe(days.ToString());
+        }
         es.ClearPlayers();
         es.GetPlayers();
         es.SpawnEnemies(ScalingLeJorn());

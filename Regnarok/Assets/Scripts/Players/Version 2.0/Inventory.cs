@@ -29,6 +29,7 @@ public class Inventory : MonoBehaviour
 
     public int goldCoinsInPocket;
     public TextMeshProUGUI coinsText;
+    public TextMeshProUGUI dayText;
 
     CharacterStats character;
     PlayerController controller;
@@ -414,5 +415,10 @@ public class Inventory : MonoBehaviour
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    public void GiveDaysToMe(string daysAmount)
+    {
+        dayText.text = "Day : " + daysAmount;
     }
 }
