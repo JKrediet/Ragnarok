@@ -88,7 +88,12 @@ public class PlayerController : MonoBehaviour
     public GameObject pressE;
 
     public List<StatDisplay> statTexts;
-
+    [Header("sounds")]
+    public AudioSource jump_Audio;
+    public AudioSource walking_Audio;
+    public AudioSource running_Audio;
+    public AudioSource itemPickup_audio;
+    public AudioSource itemDrop_audio;
 
     //summon
     public Queue<GameObject> listOfSummons;
@@ -196,6 +201,8 @@ public class PlayerController : MonoBehaviour
             {
                 if (remainingJumps > 0)
                 {
+                    jump_Audio.Play();
+
                     Jump();
                     Anim_Jump();
                     StartCoroutine(JumpPartic());
@@ -279,11 +286,13 @@ public class PlayerController : MonoBehaviour
                     combinedSpeed = sprintSpeed + totalExtraSpeed * 1.5f;
                     Anim_sprint();
                     pv.RPC("TogleRunningPartical", RpcTarget.All, true);
+                    running_Audio.Play();
                 }
                 else
                 {
                     Anim_movement();
                     pv.RPC("TogleRunningPartical", RpcTarget.All, false);
+                    walking_Audio.Play();
                 }
             }
             else
@@ -832,6 +841,7 @@ public class PlayerController : MonoBehaviour
                     else if (_hit.transform.GetComponent<ItemPickUp>())
                     {
                         _hit.transform.GetComponent<ItemPickUp>().DropItems();
+                        itemDrop_audio.Play();
                     }
                 }
             }
