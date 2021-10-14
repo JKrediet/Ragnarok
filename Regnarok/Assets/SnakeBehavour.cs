@@ -35,11 +35,9 @@ public class SnakeBehavour : MonoBehaviour
 		{
 			if (targets.Count != 0)
 			{
-				if (canAttack)
-				{
 					if (targets[0] != null)
 					{
-						if (!isAttacking && !hasAttackCooldown)
+						if (!isAttacking && !hasAttackCooldown&&canAttack)
 						{
 							StartCoroutine(Attack());
 							transform.LookAt(targets[0].transform.position);
@@ -60,7 +58,6 @@ public class SnakeBehavour : MonoBehaviour
 					{
 						FiltherEnemies();
 					}
-				}
 			}
 			else
 			{

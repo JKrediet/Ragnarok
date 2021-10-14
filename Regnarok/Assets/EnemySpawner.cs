@@ -21,6 +21,7 @@ public class EnemySpawner : MonoBehaviour
 	public LightingManager lm;
 	public GameManager gm;
 	private bool isChecking;
+	private bool burningEnemies;
 	private void Update()
 	{
 		if (!PhotonNetwork.IsMasterClient)
@@ -47,9 +48,22 @@ public class EnemySpawner : MonoBehaviour
 		{
 			if (enemies.Count != 0)
 			{
-				enemies.Clear();
+				if (!burningEnemies)
+				{
+					StartCoroutine(StartBurning());
+				}
 			}
 		}
+	}
+	public IEnumerator StartBurning()
+	{
+		burningEnemies = true;
+		for (int i = 0; i < enemies.Count; i++)
+		{
+			enemies[i].GetComponent<EnemieHealth>().ActivateDisolve();
+		}
+		yield return new WaitForSeconds(10);
+		enemies.Clear();
 	}
 	public IEnumerator CheckList()
 	{
@@ -108,6 +122,7 @@ public class EnemySpawner : MonoBehaviour
 		{
 			return;
 		}
+		burningEnemies = false;
 		playerAmount = 0;
 		for (int i = 0; i < players.Length; i++)
 		{

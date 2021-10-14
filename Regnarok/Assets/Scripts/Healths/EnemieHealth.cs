@@ -9,7 +9,7 @@ public class EnemieHealth : Health
 {
 	public int coinDrop;
 	public float xpAmount;
-	public Shader[] toDisolve;
+	public Renderer[] toDisolve;
 	public GameObject healthbar;
 	private GameManager gm;
 	private StateManager sm;
@@ -17,12 +17,14 @@ public class EnemieHealth : Health
 
 	public Vector3 coinDropOffset;
 	public Vector3 itemDropOffset;
+
+	private float value;
+	private bool disolveCharachter;
 	public void Start()
 	{
 		gm = FindObjectOfType<GameManager>();
 		sm = GetComponent<StateManager>();
 		pv = GetComponent<PhotonView>();
-		DisolveMe();
 	}
 	public override void Health_Dead()
 	{
@@ -33,6 +35,20 @@ public class EnemieHealth : Health
 		Destroy(gameObject.GetComponent<NavMeshAgent>());
 		Destroy(gameObject.GetComponent<NavMeshObstacle>());
 		healthbar.SetActive(false);
+	}
+	private void Update()
+	{
+		if (disolveCharachter)
+		{
+			value += 0.2f * Time.deltaTime;
+			DisolveMe();
+			if (value > 1)
+			{
+				value = 1;
+				PhotonNetwork.Destroy(gameObject);
+				disolveCharachter = false;
+			}
+		}
 	}
 	public void RollItem()
 	{
@@ -66,11 +82,15 @@ public class EnemieHealth : Health
 		pv.RPC("GiveXp", RpcTarget.All);
 		PhotonNetwork.Destroy(gameObject);
 	}
+	public void ActivateDisolve()
+	{
+		disolveCharachter = true;
+	}
 	public void DisolveMe()
 	{
 		for (int i = 0; i < toDisolve.Length; i++)
 		{
-			//toDisolve[0]..SetFloat("Dissolve", 0);
+			toDisolve[i].material.SetFloat("_Dissolve", value);
 		}
 	}
 }
