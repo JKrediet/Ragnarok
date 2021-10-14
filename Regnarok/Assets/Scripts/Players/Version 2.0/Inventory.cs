@@ -307,7 +307,7 @@ public class Inventory : MonoBehaviour
     }
     void OpenInventory()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.I))
         {
             OpenActualInventory(false);
         }
