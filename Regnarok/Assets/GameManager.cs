@@ -59,8 +59,8 @@ public class GameManager : MonoBehaviour
     }
 	public IEnumerator IsNight()
 	{
-        dayAudio.Stop();
-        nightAudio.Play();
+        //dayAudio.Stop();
+        //nightAudio.Play();
         isDoingNight = true;
         days++;
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
