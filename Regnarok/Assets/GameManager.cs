@@ -34,6 +34,10 @@ public class GameManager : MonoBehaviour
 
     [Space]
     public float goldMultiplier =1;
+
+    [Header("aduio")]
+    public AudioSource dayAudio;
+    public AudioSource nightAudio;
     public void GiveStats_goldmulti(float value)
     {
         goldMultiplier = value + 1;
@@ -55,6 +59,8 @@ public class GameManager : MonoBehaviour
     }
 	public IEnumerator IsNight()
 	{
+        dayAudio.Stop();
+        nightAudio.Play();
         isDoingNight = true;
         days++;
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
