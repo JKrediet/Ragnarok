@@ -51,8 +51,8 @@ public class LightingManager : MonoBehaviour
                 {
 					if (gm.nightAudio.isPlaying)
 					{
-                        gm.dayAudio.Play();
-                        gm.nightAudio.Stop();
+                       // gm.dayAudio.Play();
+                      //  gm.nightAudio.Stop();
                     }
                     isNight = false;
                     gm.isDoingNight = false;

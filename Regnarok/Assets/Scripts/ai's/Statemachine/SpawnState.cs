@@ -15,6 +15,7 @@ public class SpawnState : State
     public float jumpSpeed;
     public bool hasWeapon;
     public GameObject weapon;
+    public GameObject secondWeapon;
     private bool isSpawning;
 	public override State RunCurrentState()
 	{
@@ -53,5 +54,13 @@ public class SpawnState : State
         rb.useGravity = false;
         rb.isKinematic = true;
         isSpawning = false;
+    }
+    public void SetWeapon1Active()
+	{
+        weapon.SetActive(true);
+	}
+    public void SetWeapon2Active()
+    {
+        secondWeapon.SetActive(true);
     }
 }
