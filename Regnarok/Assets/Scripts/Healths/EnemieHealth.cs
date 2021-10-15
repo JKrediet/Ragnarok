@@ -52,7 +52,18 @@ public class EnemieHealth : Health
 	}
 	public void RollItem()
 	{
-
+        foreach (DropItems item in dropItemList)
+        {
+			float roll = Random.Range(0, 101);
+			if(roll < item.ChanceOfDrop)
+            {
+				GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", item.nameOfItem), transform.position + itemDropOffset, Quaternion.identity);
+				if(item.amountOfItem > 1)
+                {
+					droppedItem.GetComponent<WorldItem>().itemAmount = item.amountOfItem;
+				}
+			}
+        }
 	}
 	[PunRPC]
 	public void DropMoney()

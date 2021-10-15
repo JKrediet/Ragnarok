@@ -22,7 +22,15 @@ public class Health : MonoBehaviour
     int bleedTicks, burnTicks, poisonTicks;
     float bleedDamage, burnDamage, poisonDamage;
 
-    public float reviveAmount;
+    [HideInInspector]public float reviveAmount;
+    public List<DropItems> dropItemList;
+    [System.Serializable]
+    public struct DropItems
+    {
+        public string nameOfItem;
+        public int amountOfItem;
+        public float ChanceOfDrop;
+    }
 
     protected virtual void Awake()
     {
