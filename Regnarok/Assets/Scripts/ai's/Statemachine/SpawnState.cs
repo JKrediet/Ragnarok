@@ -16,6 +16,8 @@ public class SpawnState : State
     public bool hasWeapon;
     public GameObject weapon;
     public GameObject secondWeapon;
+    public bool hasHat;
+    public GameObject hat;
     private bool isSpawning;
 	public override State RunCurrentState()
 	{
@@ -37,6 +39,10 @@ public class SpawnState : State
 		{
             weapon.SetActive(false);
         }
+		if (hasHat)
+		{
+            hat.SetActive(false);
+		}
     }
     public void StopSpawnForce()
     {
@@ -46,6 +52,10 @@ public class SpawnState : State
         if (hasWeapon)
         {
             weapon.SetActive(true);
+        }
+        if (hasHat)
+        {
+            hat.SetActive(true);
         }
         Invoke("TurnOffGravity", 0.5f);
     }
