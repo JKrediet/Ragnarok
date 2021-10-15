@@ -32,6 +32,7 @@ public class StackableItemScript : MonoBehaviour
 	}
 	public void AddItem(int index)
 	{
+        print(index);
 		cooldownBool = true;
 		if (ChanceToGetDubbel())
 		{

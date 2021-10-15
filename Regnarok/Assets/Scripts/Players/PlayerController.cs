@@ -705,7 +705,7 @@ public class PlayerController : MonoBehaviour
                                 if (hitObject.GetComponent<EnemieHealth>().health - (totalDamage + critDamage - hitObject.GetComponent<EnemieHealth>().armor) <= 0)
                                 {
                                     GameObject nimbusje = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Summons", nimbusObject.name), hitObject.transform.position + Vector3.up * 2, Quaternion.identity);
-                                    StartCoroutine(nimbusje.GetComponent<NimbusCloud>().StartNimbus(nimbusStacks, totalDamage / 4));
+                                    StartCoroutine(nimbusje.GetComponent<NimbusCloud>().StartNimbus(nimbusStacks * 4, totalDamage / 4));
                                     nimbusje.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f) * nimbusStacks;
                                 }
                             }
