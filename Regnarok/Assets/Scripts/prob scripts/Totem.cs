@@ -64,6 +64,10 @@ public class Totem : MonoBehaviour
 			{
 				GiveItem();
 			}
+			if (isBoss)
+			{
+				Destroy(gameObject);
+			}
 		}
 		for (int i = 0; i < torches.Length; i++)
 		{
@@ -125,10 +129,6 @@ public class Totem : MonoBehaviour
 				gm.GetComponent<PhotonView>().RPC("SpawnPartical", RpcTarget.MasterClient, hitInfo.point);
 				new WaitForSeconds(0.5f);
 				gm.SpawnBoss( hitInfo.point + spawnOffset, id);
-			}
-			else
-			{
-				amountOfEnemies++;
 			}
 		}
 	}

@@ -59,7 +59,12 @@ public class SeeOtherStuff : MonoBehaviour
 		totemActived = !totemActived;
 		for (int i = 0; i < bosTotems.Count; i++)
 		{
-			bosTotems[i].transform.gameObject.GetComponent<Outline>().enabled = totemActived;
+			if(bosTotems[i]!=null)
+			{
+				bosTotems[i].transform.gameObject.GetComponent<Outline>().enabled = totemActived;
+				print(bosTotems[i].transform.gameObject.GetComponent<Outline>());
+				print(bosTotems[i].transform.name);
+			}
 		}
 	}
 	public void TriggerPlayer(int i)

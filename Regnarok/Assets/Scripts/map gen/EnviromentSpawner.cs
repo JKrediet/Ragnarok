@@ -214,7 +214,7 @@ public class EnviromentSpawner : MonoBehaviour
             int newAmountSpawns = btm.amountOffBosses-= listLengt;
             for (int i = 0; i < newAmountSpawns; i++)
             {
-                spawnPoint = new Vector3(Random.Range(firstPos.position.x, secondPos.position.x), spawnItems[i].startHeight, Random.Range(firstPos.position.z, secondPos.position.z));
+                spawnPoint = new Vector3(Random.Range(firstPosInner.position.x, secondPosInner.position.x), spawnItems[i].startHeight, Random.Range(firstPosInner.position.z, secondPosInner.position.z));
                 Ray ray = new Ray(spawnPoint, -transform.up);
                 RaycastHit hitInfo;
                 if (Physics.Raycast(ray, out hitInfo))
@@ -235,6 +235,7 @@ public class EnviromentSpawner : MonoBehaviour
                 }
             }
         }
+        btm.amountOffBosses = btm.bosTotems.Count;
         BuildNavMesh();
     }
     public void InstatiateEnviorment(GameObject toSpawn, Vector3 location, Quaternion rotation, Transform parent, int index,int amount)

@@ -190,6 +190,10 @@ public class StateManager : MonoBehaviour
 	{
 		GetComponent<EnemieHealth>().SincHeal(GetComponent<EnemieHealth>().health += 40);
 	}
+	public void KillMe()
+	{
+		PhotonNetwork.Destroy(gameObject);
+	}
 	public void TogleLaserMagic(int i)
 	{
 		if (i == 1)

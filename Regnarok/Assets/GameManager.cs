@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     public ItemListScript itemlist;
     public EnemyList enemielist;
     public string miniBossName;
+    public string endBossName;
 
     public List<GameObject> playerObjectList;
 
@@ -163,6 +164,16 @@ public class GameManager : MonoBehaviour
         GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", droppedItemName), position, rotation);
         droppedItem.GetComponent<WorldItem>().SetUp(ItemList.SelectItem(droppedItemName).name, amount, ItemList.SelectItem(droppedItemName).sprite, ItemList.SelectItem(droppedItemName).type, ItemList.SelectItem(droppedItemName).maxStackSize);
         GetComponent<PhotonView>().RPC("RemoveItemFromWorld", RpcTarget.All, serialNumber);
+    }
+    public void SpawnEndBoss(Vector3 spawnPos)
+    {
+        GetComponent<PhotonView>().RPC("SpawnEndBossSyncted", RpcTarget.MasterClient, spawnPos);
+    }
+    [PunRPC]
+    public void SpawnEndBossSyncted(Vector3 spawnPos)
+    {
+        GameObject spawnedEnemie = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", endBossName), spawnPos, Quaternion.identity);
+        spawnedEnemie.GetComponent<Outline>().enabled = true;
     }
     public void SpawnBoss(Vector3 spawnPos, int id)
 	{
