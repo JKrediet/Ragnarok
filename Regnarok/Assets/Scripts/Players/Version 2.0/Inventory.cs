@@ -48,7 +48,6 @@ public class Inventory : MonoBehaviour
     public void GiveStackAbleItem(items item)
     {
         string itemName = item.itemName;
-        print(item);
         for (int i = 0; i < stackAbleItemList.Count; i++)
         {
             if(stackAbleItemList[i].name == itemName)
