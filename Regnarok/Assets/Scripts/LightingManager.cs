@@ -49,11 +49,11 @@ public class LightingManager : MonoBehaviour
                 TimeOfDay += Time.deltaTime / devideDay;
                 if (isNight)
                 {
-					if (gm.nightAudio.isPlaying)
-					{
-                       // gm.dayAudio.Play();
-                      //  gm.nightAudio.Stop();
-                    }
+					//if (gm.nightAudio.isPlaying)
+					//{
+     //                  // gm.dayAudio.Play();
+     //                 //  gm.nightAudio.Stop();
+     //               }
                     isNight = false;
                     gm.isDoingNight = false;
                     RenderSettings.fog = false;

@@ -178,8 +178,13 @@ public class EnviromentSpawner : MonoBehaviour
             }
             yield return new WaitForSecondsRealtime(1);
         }
-		for (int i = 0; i < btm.amountOffBosses; i++)
-		{
+        SpawnBossTotems(btm.amountOffBosses);
+        BuildNavMesh();
+    }
+    public void SpawnBossTotems(int amount)
+	{
+        for (int i = 0; i < amount; i++)
+        {
             spawnPoint = new Vector3(Random.Range(firstPos.position.x, secondPos.position.x), spawnItems[i].startHeight, Random.Range(firstPos.position.z, secondPos.position.z));
             Ray ray = new Ray(spawnPoint, -transform.up);
             RaycastHit hitInfo;
@@ -200,43 +205,20 @@ public class EnviromentSpawner : MonoBehaviour
                 }
             }
         }
-        List<Totem> tempTotemList = new List<Totem>(FindObjectsOfType<Totem>());
-        for (int i = 0; i < tempTotemList.Count; i++)
+        if(btm.bosTotems.Count< btm.amountOffBosses)
 		{
-			if (!tempTotemList[i].isBoss)
+            SpawnBossTotems(5 - btm.bosTotems.Count);
+        }
+		else if(btm.bosTotems.Count > btm.amountOffBosses)
+		{
+			for (int i = 0; i < btm.bosTotems.Count; i++)
 			{
-                tempTotemList.Remove(tempTotemList[i]);
+				if (i> btm.bosTotems.Count)
+				{
+                    btm.bosTotems.Remove(btm.bosTotems[i]);
+                }
 			}
 		}
-		if (tempTotemList.Count < btm.amountOffBosses)
-		{
-            int listLengt = tempTotemList.Count;
-            int newAmountSpawns = btm.amountOffBosses-= listLengt;
-            for (int i = 0; i < newAmountSpawns; i++)
-            {
-                spawnPoint = new Vector3(Random.Range(firstPosInner.position.x, secondPosInner.position.x), spawnItems[i].startHeight, Random.Range(firstPosInner.position.z, secondPosInner.position.z));
-                Ray ray = new Ray(spawnPoint, -transform.up);
-                RaycastHit hitInfo;
-                if (Physics.Raycast(ray, out hitInfo))
-                {
-
-                    if (hitInfo.transform.tag == "Water"
-                    || hitInfo.transform.tag == "Rock"
-                    || hitInfo.transform.tag == "Tree"
-                    || hitInfo.transform.tag == "Chest"
-                    || hitInfo.transform.tag == "Totem")
-                    {
-
-                    }
-					else
-					{
-                        InstatiateEnviorment(bossTotemObj, spawnPoint, Quaternion.identity, transform, i, i);
-                    }   
-                }
-            }
-        }
-        btm.amountOffBosses = btm.bosTotems.Count;
-        BuildNavMesh();
     }
     public void InstatiateEnviorment(GameObject toSpawn, Vector3 location, Quaternion rotation, Transform parent, int index,int amount)
     {
