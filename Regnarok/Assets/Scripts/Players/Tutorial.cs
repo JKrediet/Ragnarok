@@ -24,10 +24,15 @@ public class Tutorial : MonoBehaviour
     {
         objectiveTextObject.text = objectivesText[currentObjective];
         currentObjective++;
+    }
+    private void Update()
+    {
         if (currentObjective == 5)
         {
-            Invoke("CloseTutorial", 5);
-            return;
+            if(Input.GetKey(KeyCode.H) || Input.GetKey(KeyCode.T))
+            {
+                Invoke("CloseTutorial", 5);
+            }
         }
     }
     void CloseTutorial()

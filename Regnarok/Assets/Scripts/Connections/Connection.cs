@@ -21,6 +21,11 @@ public class Connection : MonoBehaviourPunCallbacks
     [SerializeField] int seed;
     [SerializeField] GameObject loadingScreen, videoplayer;
     [SerializeField] VideoClip[] videos;
+
+    //audio
+    public AudioSource audioSource;
+    bool audioShhhh;
+    public float audioOverTime;
     #region base join
     private void Awake()
     {
@@ -94,8 +99,16 @@ public class Connection : MonoBehaviourPunCallbacks
             seed = int.Parse(_seed.text);
         }
     }
+    private void Update()
+    {
+        if(audioShhhh)
+        {
+            audioSource.volume -= audioOverTime * Time.deltaTime;
+        }
+    }
     public void StartGame()
     {
+        audioShhhh = true;
         if (seed == 0)
         {
             seed = Random.Range(0, 99999);
