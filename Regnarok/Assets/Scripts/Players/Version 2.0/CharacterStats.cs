@@ -459,4 +459,11 @@ public class CharacterStats : MonoBehaviour
         public int id;
         public int amount;
     }
+
+    public void RecipeInfo(RecipeHolder _recipe)
+    {
+        nameOfItemText.text = _recipe.recipe.resultName;
+        amountOfItemText.text = _recipe.recipe.resultAmount.ToString();
+        typeOfItemText.text = _recipe.recipe.typeOfResult.ToString();
+    }
 }

@@ -195,4 +195,8 @@ public class CraftingStation : MonoBehaviour
         uipanel.gameObject.SetActive(false);
         character = null;
     }
+    public void RecipeInfo(RecipeHolder _recipe)
+    {
+        character.RecipeInfo(_recipe);
+    }
 }
