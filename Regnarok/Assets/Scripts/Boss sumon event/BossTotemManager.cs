@@ -8,6 +8,7 @@ public class BossTotemManager : MonoBehaviour
 	public GameManager gm;
     public int amountOffBosses;
 	public LayerMask groundLayer;
+	private bool bosSpawned;
 	void Update()
 	{
 		if (bosTotems.Count > 0)
@@ -20,16 +21,21 @@ public class BossTotemManager : MonoBehaviour
 				}
 			}
 		}
-		if (FindObjectOfType<GameManager>().playerObjectList.Count > 0)
-		{ 
-			if (bosTotems.Count <= 0)
-			{
-				SpawnBoss();
+		if (!bosSpawned)
+		{
+			if (FindObjectOfType<GameManager>().playerObjectList.Count > 0)
+			{ 
+				if (bosTotems.Count <= 0)
+				{
+				
+					SpawnBoss();
+				}
 			}
 		}
     }
 	public void SpawnBoss()
 	{
+		bosSpawned = true;
 		Ray ray = new Ray(GetPos(), -transform.up);
 		RaycastHit hitInfo;
 		if (Physics.Raycast(ray, out hitInfo, groundLayer))
