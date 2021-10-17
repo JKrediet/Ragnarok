@@ -101,6 +101,8 @@ public class PlayerController : MonoBehaviour
 
     //nimbus
     public GameObject nimbusObject;
+    public AudioSource hitObjectSound;
+    public List<AudioClip> hitObjectSounds;
 
     private void Awake()
     {
@@ -682,9 +684,25 @@ public class PlayerController : MonoBehaviour
                         {
                             hitObject.GetComponent<HitableObject>().TakeDamage(totalDamage + critDamage, EquipmentType.none, hitObject.ClosestPoint(attackPos.position));
                         }
+                        //sounds
+                        if (hitObject.GetComponent<HitableObject>().itemTypeNeeded == EquipmentType.pickaxe)
+                        {
+                            hitObjectSound.clip = hitObjectSounds[1];
+                        }
+                        else if (hitObject.GetComponent<HitableObject>().itemTypeNeeded == EquipmentType.axe)
+                        {
+                            hitObjectSound.clip = hitObjectSounds[0];
+                        }
+                        else
+                        {
+                            hitObjectSound.clip = hitObjectSounds[0];
+                        }
+                        hitObjectSound.Play();
                     }
-                    if (hitObject.GetComponent<EnemieHealth>())
+                    else if (hitObject.GetComponent<EnemieHealth>())
                     {
+                        hitObjectSound.clip = hitObjectSounds[3];
+                        hitObjectSound.Play();
                         //damage
                         if (heldItem != null)
                         {

@@ -8,7 +8,7 @@ public class HitableObject : MonoBehaviour
 {
     public int itemSerialNumber;
     [SerializeField] protected float health;
-    [SerializeField] protected EquipmentType itemTypeNeeded;
+    public EquipmentType itemTypeNeeded;
     protected float maxHealth;
     [Space]
     protected Rigidbody rb;
