@@ -163,6 +163,28 @@ public class Inventory : MonoBehaviour
     }
     public void AddItem(Item item)
     {
+        //tutorial stuff
+        if(item.itemName == "Stick")
+        {
+            GetComponent<Tutorial>().FirstObjective(item.itemAmount, 0);
+        }
+        else if (item.itemName == "Flint")
+        {
+            GetComponent<Tutorial>().FirstObjective(0, item.itemAmount);
+        }
+        else if(item.itemName == "FlintAxe")
+        {
+            GetComponent<Tutorial>().SecondObjective(1);
+        }
+        else if (item.itemName == "OakWood")
+        {
+            GetComponent<Tutorial>().ThirdObjective(item.itemAmount);
+        }
+        else if (item.itemName == "CraftingStation")
+        {
+            GetComponent<Tutorial>().FourthObjective(item.itemAmount);
+        }
+
         if (item.equipment == EquipmentType.coin)
         {
             AddCoin(item.itemAmount);

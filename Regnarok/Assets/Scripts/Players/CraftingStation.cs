@@ -135,6 +135,8 @@ public class CraftingStation : MonoBehaviour
     }
     public void Craft()
     {
+        itemsNeedForCraft.Clear();
+        itemSlotForCraft.Clear();
         craftThisSprite.gameObject.SetActive(false);
         //remove needed items
         if (selectedCraft.craftResult.Length > 0)

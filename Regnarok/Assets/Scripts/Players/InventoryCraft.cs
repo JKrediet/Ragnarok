@@ -123,6 +123,8 @@ public class InventoryCraft : MonoBehaviour
     {
         craftThisSprite.gameObject.SetActive(false);
         //remove needed items
+        itemSlotForCraft.Clear();
+        itemsNeedForCraft.Clear();
         if (selectedCraft.craftAmount > 0)
         {
             if (selectedCraft.craftResult.Length > 0)
