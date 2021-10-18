@@ -701,7 +701,7 @@ public class PlayerController : MonoBehaviour
                     }
                     else if (hitObject.GetComponent<EnemieHealth>())
                     {
-                        hitObjectSound.clip = hitObjectSounds[3];
+                        hitObjectSound.clip = hitObjectSounds[2];
                         hitObjectSound.Play();
                         //damage
                         if (heldItem != null)
