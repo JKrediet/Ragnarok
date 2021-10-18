@@ -23,9 +23,6 @@ public class GameManager : MonoBehaviour
     public float spawnHeight;
     private EnemySpawner es;
     public PlayerManager playerManager;
-    public VideoClip[] videos;
-    public GameObject loadingScreen, canvas;
-	public VideoPlayer videoplayer;
     public ItemListScript itemlist;
     public EnemyList enemielist;
     public string miniBossName;
@@ -47,17 +44,6 @@ public class GameManager : MonoBehaviour
     private void Start()
 	{
         es = GetComponent<EnemySpawner>();
-        Reroll();
-    }
-    void Reroll()
-    {
-        if (loadingScreen.activeSelf)
-        {
-            int roll = Random.Range(0, videos.Length);
-            videoplayer.clip = videos[roll];
-            videoplayer.Play();
-            Invoke("Reroll", 5);
-        }
     }
 	public IEnumerator IsNight()
 	{
@@ -84,8 +70,6 @@ public class GameManager : MonoBehaviour
 	}
     public void SpawnPlayers()
 	{
-        loadingScreen.SetActive(false);
-        canvas.SetActive(false);
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
 		{
             Vector3 spawnpos = new Vector3(Random.Range(spawnRadius, -spawnRadius), spawnHeight, Random.Range(-spawnRadius, spawnRadius));
