@@ -68,6 +68,15 @@ public class GameManager : MonoBehaviour
 	{
         return scalingAmount = scalingIncreaseAmount * days;
 	}
+    public void AddActivatedTotemBoss()
+	{
+        GetComponent<PhotonView>().RPC("AddActivatedTotemBossSync", RpcTarget.All);
+    }
+    [PunRPC]
+    public void AddActivatedTotemBossSync()
+	{
+        FindObjectOfType<BossTotemManager>().activatedTotems++;
+	}
     public void SpawnPlayers()
 	{
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)

@@ -113,7 +113,10 @@ public class StateManager : MonoBehaviour
 			{
 				if (target != players[i])
 				{
-					target = players[i];
+					if (players[i].activeSelf)
+					{
+						target = players[i];
+					}
 				}
 			}
 		}

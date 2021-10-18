@@ -8,6 +8,7 @@ public class BossTotemManager : MonoBehaviour
 	public GameManager gm;
     public int amountOffBosses;
 	public LayerMask groundLayer;
+	public int activatedTotems;
 	private bool bosSpawned;
 	void Update()
 	{
@@ -27,8 +28,10 @@ public class BossTotemManager : MonoBehaviour
 			{ 
 				if (bosTotems.Count <= 0)
 				{
-				
-					SpawnBoss();
+					if (activatedTotems >= amountOffBosses)
+					{
+						SpawnBoss();
+					}
 				}
 			}
 		}

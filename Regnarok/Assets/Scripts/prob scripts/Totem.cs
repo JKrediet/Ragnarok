@@ -66,6 +66,7 @@ public class Totem : MonoBehaviour
 			}
 			if (isBoss)
 			{
+				gm.AddActivatedTotemBoss();
 				Destroy(gameObject);
 			}
 		}
@@ -89,6 +90,7 @@ public class Totem : MonoBehaviour
 		{
 			gm.SpawnItem(hitInfo.point, rarity);
 		}
+		PhotonNetwork.Destroy(gameObject);
 	}
 	public void Interact()
 	{
