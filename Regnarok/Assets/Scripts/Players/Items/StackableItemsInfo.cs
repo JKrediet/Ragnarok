@@ -9,13 +9,14 @@ public class StackableItemsInfo : MonoBehaviour
     [TextArea]
     public string itemDestription;
 
-    public TextMeshProUGUI nameObject, description;
+    public TextMeshProUGUI nameObject, description, otherOne;
 
     //info stackable items
     public void On()
     {
         nameObject.text = itemName;
         description.text = itemDestription;
+        otherOne.text = string.Empty;
     }
     public void Off()
     {

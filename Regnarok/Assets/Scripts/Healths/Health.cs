@@ -24,6 +24,10 @@ public class Health : MonoBehaviour
 
     [HideInInspector]public float reviveAmount;
     public List<DropItems> dropItemList;
+    public AudioSource audioSource;
+    public GameObject bloodSpat;
+
+
     [System.Serializable]
     public struct DropItems
     {
@@ -40,9 +44,13 @@ public class Health : MonoBehaviour
         }
         health = maxHealth;
         burnDamage = maxHealth / 40;
+        audioSource = GetComponent<AudioSource>();
     }
     public virtual void Health_Damage(float damageValue, bool bleed, int burn, float poison, float execute, Vector3 hitlocation)
     {
+        audioSource.Play();
+        GameObject blood = Instantiate(bloodSpat, hitlocation, Quaternion.identity);
+        Destroy(blood, 1);
         if (PV.IsMine)
         {
             lastHitLocation = hitlocation;

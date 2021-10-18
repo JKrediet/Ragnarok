@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 using Photon.Realtime;
 using UnityEngine.Video;
+using UnityEngine.Audio;
 
 public class Connection : MonoBehaviourPunCallbacks
 {
@@ -26,6 +27,9 @@ public class Connection : MonoBehaviourPunCallbacks
     public AudioSource audioSource;
     bool audioShhhh;
     public float audioOverTime;
+
+    public AudioMixer audioMaster;
+
     #region base join
     private void Awake()
     {
@@ -151,4 +155,17 @@ public class Connection : MonoBehaviourPunCallbacks
         roomNameUI.text = roomName;
     }
     #endregion
+
+    public void ChangeMasterVolume(Slider slider)
+    {
+        audioMaster.SetFloat("Master", slider.value - 80);
+    }
+    public void ChangeSFXVolume(Slider slider)
+    {
+        audioMaster.SetFloat("SFX", slider.value - 80);
+    }
+    public void ChangeMusicVolume(Slider slider)
+    {
+        audioMaster.SetFloat("Music", slider.value - 80);
+    }
 }

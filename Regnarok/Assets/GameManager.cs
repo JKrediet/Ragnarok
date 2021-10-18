@@ -5,6 +5,8 @@ using Photon.Pun;
 using UnityEngine.Video;
 using System.IO;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using UnityEngine.Audio;
 
 public class GameManager : MonoBehaviour
 {
@@ -37,6 +39,8 @@ public class GameManager : MonoBehaviour
     public AudioSource dayAudio;
     public AudioSource nightAudio;
     public AudioSource isNight;
+
+    public AudioMixer audioMaster;
     public void GiveStats_goldmulti(float value)
     {
         goldMultiplier = value + 1;

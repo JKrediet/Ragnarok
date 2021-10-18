@@ -19,6 +19,7 @@ public class HitableObject : MonoBehaviour
     Vector3 lastHitLocation;
 
     public Vector3 dropOffset;
+    public AudioSource audioSource;
 
     [SerializeField] List<StructDropItemsList> droppedItems;
     bool justOnce;
@@ -48,6 +49,7 @@ public class HitableObject : MonoBehaviour
     public virtual void HitByPlayer(float _damage, EquipmentType itemType, Vector3 hitlocation)
     {
         wiggle.StartWiggle();
+        audioSource.Play();
         lastHitLocation = hitlocation;
         if (health > 0)
         {

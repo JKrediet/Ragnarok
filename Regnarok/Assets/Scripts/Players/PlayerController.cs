@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.Experimental.VFX;
 using UnityEngine.VFX;
 using System.IO;
+using UnityEngine.Audio;
 
 public class PlayerController : MonoBehaviour
 {
@@ -103,6 +104,8 @@ public class PlayerController : MonoBehaviour
     public GameObject nimbusObject;
     public AudioSource hitObjectSound;
     public List<AudioClip> hitObjectSounds;
+
+    public AudioMixer audioMaster;
 
     private void Awake()
     {
@@ -684,28 +687,16 @@ public class PlayerController : MonoBehaviour
                         {
                             hitObject.GetComponent<HitableObject>().TakeDamage(totalDamage + critDamage, EquipmentType.none, hitObject.ClosestPoint(attackPos.position));
                         }
-                        //sounds
-                        if (hitObject.GetComponent<HitableObject>().itemTypeNeeded == EquipmentType.pickaxe)
-                        {
-                            hitObjectSound.clip = hitObjectSounds[1];
-                        }
-                        else if (hitObject.GetComponent<HitableObject>().itemTypeNeeded == EquipmentType.axe)
-                        {
-                            hitObjectSound.clip = hitObjectSounds[0];
-                        }
-                        else
-                        {
-                            hitObjectSound.clip = hitObjectSounds[0];
-                        }
-                        hitObjectSound.Play();
                     }
                     else if (hitObject.GetComponent<EnemieHealth>())
                     {
-                        hitObjectSound.clip = hitObjectSounds[2];
-                        hitObjectSound.Play();
                         //damage
                         if (heldItem != null)
                         {
+                            if (hitObject.GetComponent<EnemieHealth>().health == 0)
+                            {
+                                return;
+                            }
                             if (totalLifeSteal > 0)
                             {
                                 float healAmount = (totalDamage + critDamage - hitObject.GetComponent<EnemieHealth>().armor) * (totalLifeSteal / 100);
@@ -888,4 +879,17 @@ public class PlayerController : MonoBehaviour
         animController.SetInteger("State", 3);
     }
     #endregion
+
+    public void ChangeMasterVolume(Slider slider)
+    {
+        audioMaster.SetFloat("Master", slider.value - 80);
+    }
+    public void ChangeSFXVolume(Slider slider)
+    {
+        audioMaster.SetFloat("SFX", slider.value - 80);
+    }
+    public void ChangeMusicVolume(Slider slider)
+    {
+        audioMaster.SetFloat("Music", slider.value - 80);
+    }
 }
