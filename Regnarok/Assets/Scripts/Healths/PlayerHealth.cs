@@ -15,6 +15,7 @@ public class PlayerHealth : Health
     public Slider HealthSlider;
     public float respawnTime=15;
     private int index;
+    private GameManager gm;
     private void Start()
     {
         if (PV.IsMine)
@@ -44,6 +45,13 @@ public class PlayerHealth : Health
             }
         }
     }
+	private void Update()
+	{
+		if (isDead)
+		{
+            gm.CheckHp();
+        }
+	}
 	public override void Health_Damage(float damageValue, bool bleed, int burn, float poison, float execute, Vector3 hitlocation)
     {
         base.Health_Damage(damageValue, bleed, burn, poison, execute, hitlocation);
@@ -93,8 +101,9 @@ public class PlayerHealth : Health
     public IEnumerator Dead()
 	{
 		GetComponent<PhotonView>().RPC("SetDeadBool", RpcTarget.All, true);
+        gm = FindObjectOfType<GameManager>();
+        gm.CheckHp();
         transform.position += new Vector3(0,100,0);
-		FindObjectOfType<GameManager>().CheckHp();
         //GetComponent<PhotonView>().RPC("SpawnGrave", RpcTarget.MasterClient);
         otherPlayersCam = new List<GameObject>(GameObject.FindGameObjectsWithTag("MainCamera"));
         //GetComponent<PhotonView>().RPC("GetGrave", RpcTarget.All);
