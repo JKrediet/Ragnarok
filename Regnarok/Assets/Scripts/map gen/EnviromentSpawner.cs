@@ -244,14 +244,17 @@ public class EnviromentSpawner : MonoBehaviour
 			{
                 tempObject.GetComponent<ChestScript>().chestId = amount;
             }
-            else if (!tempObject.GetComponent<Totem>().isBoss)
+            else if (tempObject.GetComponent<Totem>())
             {
-                tempObject.GetComponent<Totem>().id = amount;
-            }
-            else if (tempObject.GetComponent<Totem>().isBoss)
-            {
-                tempObject.GetComponent<Totem>().id = amount;
-                btm.bosTotems.Add(tempObject);
+                if (!tempObject.GetComponent<Totem>().isBoss)
+                {
+                    tempObject.GetComponent<Totem>().id = amount;
+                }
+                else if (tempObject.GetComponent<Totem>().isBoss)
+                {
+                    tempObject.GetComponent<Totem>().id = amount;
+                    btm.bosTotems.Add(tempObject);
+                }       
             }
         }
     }
