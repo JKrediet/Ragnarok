@@ -76,7 +76,6 @@ public class Tutorial : MonoBehaviour
     }
     public void FourthObjective(int craftingStation)
     {
-        print(currentObjective);
         if (currentObjective == 4)
         {
             if (craftingStation > 0)

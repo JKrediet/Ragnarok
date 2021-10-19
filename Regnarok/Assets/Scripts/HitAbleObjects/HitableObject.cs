@@ -40,6 +40,7 @@ public class HitableObject : MonoBehaviour
         rb.useGravity = false;
         manager = FindObjectOfType<GameManager>();
         wiggle = GetComponentInChildren<Wiggle>();
+        audioSource = GetComponent<AudioSource>();
     }
     protected void Start()
     {

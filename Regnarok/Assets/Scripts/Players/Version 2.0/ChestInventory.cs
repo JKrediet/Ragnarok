@@ -64,6 +64,7 @@ public class ChestInventory : MonoBehaviour
     }
     public void SincSlots(int slotId, string itemId, int itemAmount)
     {
+        print("created item for chest");
         itemSlots[slotId].item = character.CreateItemForChest(itemId, itemAmount, ItemList.SelectItem(itemId).sprite, ItemList.SelectItem(itemId).type, ItemList.SelectItem(itemId).maxStackSize);
         itemSlots[slotId].stackAmountText.text = itemSlots[slotId].item.itemAmount.ToString();
     }
