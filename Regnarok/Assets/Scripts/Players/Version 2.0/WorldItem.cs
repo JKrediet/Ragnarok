@@ -67,6 +67,30 @@ public class WorldItem : MonoBehaviour
             }
         }
     }
+    private void OnTriggerStay(Collider other)
+    {
+        if (mayBePickedUp)
+        {
+            mayBePickedUp = false;
+            if (other.CompareTag("Player"))
+            {
+                if (other.GetComponent<Inventory>().IsFull())
+                {
+                    mayBePickedUp = false;
+                    Invoke("Cooldown", 1f);
+                    return;
+                }
+                other.GetComponent<CharacterStats>().CreateItem(itemName, itemAmount, itemImage, equipment, maxStack);
+                if (GetComponent<PhotonView>().Owner != PhotonNetwork.MasterClient)
+                {
+                    GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.MasterClient);
+                    //timescale 0, build navmesh on new masterclient, timescale 1
+                }
+                GetComponent<PhotonView>().RPC("DestroyWorldItem", RpcTarget.MasterClient);
+                Invoke("SecLater", 0.1f);
+            }
+        }
+    }
     void SecLater()
     {
         GetComponent<PhotonView>().RPC("DestroyWorldItem", RpcTarget.MasterClient);

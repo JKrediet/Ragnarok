@@ -92,19 +92,7 @@ public class HitableObject : MonoBehaviour
         for (int i = 0; i < droppedItems.Count; i++)
         {
             manager.DropItems(droppedItems[i].dropItemName, lastHitLocation + dropOffset, Quaternion.identity, UnityEngine.Random.Range((int)droppedItems[i].dropAmounts.x, (int)droppedItems[i].dropAmounts.y), itemSerialNumber);
-            GiveXp();
-        }
-    }
-
-    public void GiveXp()
-    {
-        CharacterStats[] players = FindObjectsOfType<CharacterStats>();
-        foreach (CharacterStats player in players)
-        {
-            if (player.GetComponent<PhotonView>().Owner == PhotonNetwork.LocalPlayer)
-            {
-                player.GainXp(xpAmount);
-            }
+            manager.GiveXpFromHitableObject(xpAmount);
         }
     }
     public void TakeDamage(float _damage, EquipmentType _itemType, Vector3 hitlocation)

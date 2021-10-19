@@ -100,6 +100,22 @@ public class GameManager : MonoBehaviour
             }
         }
 	}
+    public void GiveXpFromHitableObject(float amount)
+    {
+        GetComponent<PhotonView>().RPC("GiveXp", RpcTarget.All, amount);
+    }
+    [PunRPC]
+    public void GiveXp(float amount)
+    {
+        CharacterStats[] players = FindObjectsOfType<CharacterStats>();
+        foreach (CharacterStats player in players)
+        {
+            if (player.GetComponent<PhotonView>().Owner == PhotonNetwork.LocalPlayer)
+            {
+                player.GainXp(amount);
+            }
+        }
+    }
     public void OpenChest(int id)
 	{
         GetComponent<PhotonView>().RPC("OpenChestInWorld", RpcTarget.All,id);

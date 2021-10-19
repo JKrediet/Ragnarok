@@ -50,10 +50,6 @@ public class ChestInventory : MonoBehaviour
     }
     public void SincSlots(int slotId, string itemId, int itemAmount)
     {
-        print("created item for chest");
-        print(slotId);
-        print(itemId);
-        print(itemAmount);
         itemSlots[slotId].item = character.CreateItemForChest(itemId, itemAmount, ItemList.SelectItem(itemId).sprite, ItemList.SelectItem(itemId).type, ItemList.SelectItem(itemId).maxStackSize);
         if (itemSlots[slotId].item != null)
         {
