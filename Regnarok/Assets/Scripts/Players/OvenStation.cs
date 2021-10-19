@@ -208,33 +208,33 @@ public class OvenStation : MonoBehaviour
         {
             if (smeltSlot.item == null)
             {
-                gam.Rpc_sincSlotsFurnace(0, default, 0, objectId);
+                gam.SincSlots(0, default, 0, objectId);
             }
             else
             {
-                gam.Rpc_sincSlotsFurnace(0, smeltSlot.item.itemName, smeltSlot.item.itemAmount, objectId);
+                gam.SincSlots(0, smeltSlot.item.itemName, smeltSlot.item.itemAmount, objectId);
             }
         }
         else if (slot == fuelSlot)
         {
             if (fuelSlot.item == null)
             {
-                gam.Rpc_sincSlotsFurnace(1, default, 0, objectId);
+                gam.SincSlots(1, default, 0, objectId);
             }
             else
             {
-                gam.Rpc_sincSlotsFurnace(1, fuelSlot.item.itemName, fuelSlot.item.itemAmount, objectId);
+                gam.SincSlots(1, fuelSlot.item.itemName, fuelSlot.item.itemAmount, objectId);
             }
         }
         else if (slot == finishedSlot)
         {
             if (finishedSlot.item == null)
             {
-                gam.Rpc_sincSlotsFurnace(2, default, 0, objectId);
+                gam.SincSlots(2, default, 0, objectId);
             }
             else
             {
-                gam.Rpc_sincSlotsFurnace(2, finishedSlot.item.itemName, finishedSlot.item.itemAmount, objectId);
+                gam.SincSlots(2, finishedSlot.item.itemName, finishedSlot.item.itemAmount, objectId);
             }
         }
         else
