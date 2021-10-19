@@ -49,6 +49,10 @@ public class GameManager : MonoBehaviour
 	{
         es = GetComponent<EnemySpawner>();
     }
+	private void Update()
+	{
+        CheckHp();
+    }
 	public IEnumerator IsNight()
 	{
 		dayAudio.Stop();
