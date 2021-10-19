@@ -11,6 +11,7 @@ public class MenuManager : MonoBehaviour
     public static MenuManager menuSwitch;
     public List<Menu> menus;
     public AudioSource hover;
+    public AudioSource pressed;
 
     private void Awake()
     {
@@ -43,5 +44,10 @@ public class MenuManager : MonoBehaviour
     public void PlayerHover()
 	{
         hover.Play();
+    }
+    public void Press()
+	{
+        pressed.Play();
+
     }
 }

@@ -19,7 +19,7 @@ public class TriggerState : State
         float dist = Vector3.Distance(transform.position, sm.target.transform.position);
         if (dist <= sm.triggerRange)
         {
-			if (sm.hasMageAttack&&sm.transform.GetComponent<EnemieHealth>().health<=15&&!sm.isHealing)
+			if (sm.hasMageAttack&&sm.transform.GetComponent<EnemieHealth>().health<= sm.transform.GetComponent<EnemieHealth>().health/4)
 			{
                 sm.HealingCoolDown();
                 return sm.healingState;
