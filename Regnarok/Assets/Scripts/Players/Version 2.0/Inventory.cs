@@ -309,7 +309,7 @@ public class Inventory : MonoBehaviour
             controller.heldItem = hotBarSlots[_location].item;
             if(handObject != null)
             {
-                PhotonNetwork.Destroy(handObject);
+                Destroy(handObject);
             }
             GetComponent<PhotonView>().RPC("ShowItemInHand", RpcTarget.All, controller.heldItem.itemName);
         }
@@ -317,7 +317,7 @@ public class Inventory : MonoBehaviour
         {
             if (handObject != null)
             {
-                PhotonNetwork.Destroy(handObject);
+                Destroy(handObject);
             }
             GetComponent<PhotonView>().RPC("ShowItemInHand", RpcTarget.All, "EmptyItem");
         }

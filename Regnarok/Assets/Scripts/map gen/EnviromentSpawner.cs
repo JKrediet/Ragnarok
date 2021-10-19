@@ -37,6 +37,8 @@ public class EnviromentSpawner : MonoBehaviour
     private Vector3 spawnPoint;
     int serialNumberForHitableObjectsl = 0;
 
+    public Camera loadingScreenCamera;
+
     public void StartGenerating()
     {
         mesh.AddComponent<MeshCollider>();
@@ -380,6 +382,7 @@ public class EnviromentSpawner : MonoBehaviour
     public void SpawnPlayers()
 	{
         new WaitForSeconds(5);
+        Destroy(loadingScreenCamera.gameObject);
         FindObjectOfType<GameManager>().SpawnPlayers();
     }
     public bool Chance()

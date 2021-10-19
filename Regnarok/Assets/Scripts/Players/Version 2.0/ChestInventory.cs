@@ -6,7 +6,6 @@ using UnityEngine.EventSystems;
 public class ChestInventory : MonoBehaviour
 {
     [SerializeField] ItemSlot[] itemSlots;
-    [SerializeField] List<Item> items;
 
     [SerializeField] Transform itemsParent;
     CharacterStats character;
@@ -22,24 +21,11 @@ public class ChestInventory : MonoBehaviour
     public void ChestRefreshUI()
     {
         int i = 0;
-        for (; i < items.Count && i < itemSlots.Length; i++)
+        for (; i < itemSlots.Length; i++)
         {
-            items[i] = itemSlots[i].item;
             if (itemSlots[i].item != null)
             {
-                if (itemSlots[i].item.itemAmount > 1)
-                {
-                    itemSlots[i].stackAmountText.text = itemSlots[i].item.itemAmount.ToString();
-                    SincSlotWithMaster(i, itemSlots[i].item.itemName, itemSlots[i].item.itemAmount);
-                }
-                else
-                {
-                    itemSlots[i].stackAmountText.text = "";
-                }
-            }
-            else
-            {
-                itemSlots[i].stackAmountText.text = "";
+                SincSlotWithMaster(i, itemSlots[i].item.itemName, itemSlots[i].item.itemAmount);
             }
         }
     }
@@ -65,7 +51,29 @@ public class ChestInventory : MonoBehaviour
     public void SincSlots(int slotId, string itemId, int itemAmount)
     {
         print("created item for chest");
+        print(slotId);
+        print(itemId);
+        print(itemAmount);
         itemSlots[slotId].item = character.CreateItemForChest(itemId, itemAmount, ItemList.SelectItem(itemId).sprite, ItemList.SelectItem(itemId).type, ItemList.SelectItem(itemId).maxStackSize);
-        itemSlots[slotId].stackAmountText.text = itemSlots[slotId].item.itemAmount.ToString();
+        if (itemSlots[slotId].item != null)
+        {
+            if (itemSlots[slotId].item.itemAmount > 1)
+            {
+                itemSlots[slotId].stackAmountText.text = itemSlots[slotId].item.itemAmount.ToString();
+            }
+            else
+            {
+                itemSlots[slotId].stackAmountText.text = "";
+            }
+        }
+        else
+        {
+            itemSlots[slotId].stackAmountText.text = "";
+        }
+    }
+
+    public void GiveInfoOfSlot(ItemSlot slot)
+    {
+        character.HoverItem(slot);
     }
 }
