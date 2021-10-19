@@ -120,13 +120,38 @@ public class GameManager : MonoBehaviour
             GetComponent<PhotonView>().RPC("DisconectAll", RpcTarget.All);
         }
 	}
+    public void DestroyTotem(int i)
+	{
+        GetComponent<PhotonView>().RPC("DestroyOnMaster", RpcTarget.All,i);
+    }
+    [PunRPC]
+    public void DestroyOnMaster(int i_i)
+	{
+        List<Totem> templist = new List<Totem>(FindObjectsOfType<Totem>());
+		for (int i = 0; i < templist.Count; i++)
+		{
+			if (templist[i].isBoss)
+			{
+                templist.Remove(templist[i]);
+			}
+			if (templist[i].id == i_i)
+			{
+                Destroy(templist[i].transform.gameObject);
+			}
+		}
+	}
     [PunRPC]
     public void DisconectAll()
 	{
         PhotonNetwork.LeaveRoom();
         SceneManager.LoadScene(0);
     }
-    public void SpawnItem(Vector3 spawnPos,int type)
+    public void SpawnItem(Vector3 spawnPos, int type)
+	{
+        GetComponent<PhotonView>().RPC("SpawnItemSynced", RpcTarget.MasterClient,  spawnPos, type);
+    }
+    [PunRPC]
+    public void SpawnItemSynced(Vector3 spawnPos,int type)
 	{
 		switch (type)
 		{
