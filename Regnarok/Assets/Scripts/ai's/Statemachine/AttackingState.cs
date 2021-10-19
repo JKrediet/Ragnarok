@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -46,7 +47,10 @@ public class AttackingState : State
         }
 		if (sm.spawned)
 		{
-            agent.destination = transform.position;
+            if (PhotonNetwork.IsMasterClient)
+            {
+                agent.destination = transform.position;
+            }
 		}
         return this;
     }

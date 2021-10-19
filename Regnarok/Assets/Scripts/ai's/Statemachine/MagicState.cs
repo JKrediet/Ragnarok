@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -76,13 +77,16 @@ public class MagicState : AttackState
     }
     public void DoAttack()
     {
-        if (StandingAttack)
+        if (PhotonNetwork.IsMasterClient)
         {
-            agent.destination = enemie.transform.position;
-        }
-        else
-        {
-            agent.destination = sm.target.transform.position;
+            if (StandingAttack)
+            {
+                agent.destination = enemie.transform.position;
+            }
+            else
+            {
+                agent.destination = sm.target.transform.position;
+            }
         }
         sm.ResetAnim();
         sm.anim.SetBool(animationName, true);

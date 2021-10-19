@@ -7,6 +7,7 @@ using System.IO;
 
 public class PlayerHealth : Health
 {
+    public bool isDead;
     public GameObject graveStone;
     public GameObject mainCam;
     public GameObject mesh;
@@ -90,11 +91,13 @@ public class PlayerHealth : Health
         StartCoroutine("HealthRegen");
 	}
     public IEnumerator Dead()
-    {
-        FindObjectOfType<GameManager>().CheckHp();
-        GetComponent<PhotonView>().RPC("SpawnGrave", RpcTarget.MasterClient);
-        graveStone.GetComponent<GraveStoneScript>().myPlayer = transform.gameObject;
+	{
+		GetComponent<PhotonView>().RPC("SetDeadBool", RpcTarget.All, true);
+        transform.position += new Vector3(0,100,0);
+		FindObjectOfType<GameManager>().CheckHp();
+        //GetComponent<PhotonView>().RPC("SpawnGrave", RpcTarget.MasterClient);
         otherPlayersCam = new List<GameObject>(GameObject.FindGameObjectsWithTag("MainCamera"));
+        //GetComponent<PhotonView>().RPC("GetGrave", RpcTarget.All);
         for (int i = 0; i < otherPlayersCam.Count; i++)
 		{
 			if (otherPlayersCam[i] == mainCam)
@@ -111,16 +114,34 @@ public class PlayerHealth : Health
 			if (otherPlayersCam[i].transform.GetComponent<AudioListener>())
 			{
 				Destroy(otherPlayersCam[i].transform.GetComponent<AudioListener>());
-
 			}
 		}
 		mainCam.SetActive(false);
 		GetComponent<PhotonView>().RPC("SetBody", RpcTarget.All, false);
-		GetComponent<PlayerController>().isDead = true;
-		otherPlayersCam[index].GetComponent<Camera>().enabled = true;
+        GetComponent<PhotonView>().RPC("SetDeadBool", RpcTarget.All, true);
+        otherPlayersCam[index].GetComponent<Camera>().enabled = true;
+        FindObjectOfType<GameManager>().CheckHp();
+       //GetComponent<PhotonView>().RPC("GetGrave", RpcTarget.All);
         yield return new WaitForSeconds(respawnTime);
         Respawn();
     }
+    [PunRPC]
+    public void GetGrave()
+	{
+        List<GraveStoneScript> templist = new List<GraveStoneScript>(FindObjectsOfType<GraveStoneScript>());
+		for (int i = 0; i < templist.Count; i++)
+		{
+            if (templist[i].myPlayer == null)
+			{
+                templist[i].myPlayer = transform.gameObject;
+            }
+		}
+    }
+    [PunRPC]
+    public void SetDeadBool(bool b)
+	{
+        isDead = b;
+	}
     [PunRPC]
     public void SpawnGrave()
 	{
@@ -128,13 +149,14 @@ public class PlayerHealth : Health
     }
 	public void Respawn()
 	{
+        GetComponent<PhotonView>().RPC("SetDeadBool", RpcTarget.All, false);
         SincHeal(100);
         otherPlayersCam[index].GetComponent<Camera>().enabled = false;
         otherPlayersCam.Clear();
         mainCam.SetActive(true);
         GetComponent<PlayerController>().isDead = false;
         GetComponent<PhotonView>().RPC("SetBody", RpcTarget.All,true);
-        GetComponent<PhotonView>().RPC("DestroyGraveStone", RpcTarget.MasterClient);
+       // GetComponent<PhotonView>().RPC("DestroyGraveStone", RpcTarget.MasterClient);
         SincHeal(100);
     }
     [PunRPC]

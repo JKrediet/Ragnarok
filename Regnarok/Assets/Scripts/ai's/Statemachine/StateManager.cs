@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.AI;
 public class StateManager : MonoBehaviour
 {
 	public State curentState;
@@ -44,6 +45,10 @@ public class StateManager : MonoBehaviour
 	{
 		players = new List<GameObject>(GameObject.FindGameObjectsWithTag("Player"));
 		target = players[0];
+		if (!PhotonNetwork.IsMasterClient)
+		{
+			GetComponent<NavMeshAgent>().enabled = false;
+		}
 	}
 	private void Update()
 	{
@@ -66,7 +71,7 @@ public class StateManager : MonoBehaviour
 			}
 		}
 		RunStateMachine();
-		if (!gettingTarget)
+		if (!gettingTarget|| target.GetComponent<PlayerHealth>().isDead)
 		{
 			StartCoroutine(GetTarget());
 		}
@@ -95,6 +100,8 @@ public class StateManager : MonoBehaviour
 	}
 	public IEnumerator GetTarget()
 	{
+		players.Clear();
+		players = new List<GameObject>(GameObject.FindGameObjectsWithTag("Player"));
 		gettingTarget = true;
 
 		for (int i = 0; i < players.Count; i++)
@@ -103,7 +110,11 @@ public class StateManager : MonoBehaviour
 			{
 				players.Remove(players[i]);
 			}
-			else if (players[i].GetComponent<PlayerHealth>().health <= 0)
+			if (players[i].GetComponent<PlayerHealth>().health <= 0)
+			{
+				players.Remove(players[i]);
+			}
+			if (players[i].GetComponent<PlayerHealth>().isDead)
 			{
 				players.Remove(players[i]);
 			}
@@ -115,7 +126,10 @@ public class StateManager : MonoBehaviour
 				{
 					if (players[i].activeSelf)
 					{
-						target = players[i];
+						if (players[i].GetComponent<PlayerHealth>().health > 0 && players[i].activeSelf)
+						{
+							target = players[i];
+						}
 					}
 				}
 			}

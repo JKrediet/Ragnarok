@@ -82,22 +82,5 @@ public class TrowState : AttackState
     }
     public void Trow()
 	{
-        GetComponent<PhotonView>().RPC("SpawnNewHamer", RpcTarget.MasterClient);
-        newTrowable.SetActive(false);
-        objectScript.curvepos = curveObject;
-        objectScript.hand = handObject;
-        objectScript.target = sm.target;
-        objectRb.isKinematic = false;
-        objectRb.useGravity = true;
-        objectScript.StartCoroutine("GotActived");
-        objectScript.activated = true;
-        objectRb = newTrowable.transform.GetComponent<Rigidbody>();
-        objectScript = newTrowable.transform.GetComponent<TrowObject>();
-        trowObject.GetComponent<MeshRenderer>().enabled = false;
-        trowObject.transform.parent = null;
-        trowObject = newTrowable;
-        newTrowable = null;
-        trowObject.SetActive(true);
-        isTrowing = false;
     }
 }

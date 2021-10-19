@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -56,11 +57,19 @@ public class IdleState : State
             sm.anim.SetBool("IsWalking", true);
 			if (sm.spawned)
 			{
+                if (!PhotonNetwork.IsMasterClient)
+                {
+                    return this;
+                }
                 agent.destination = idleDes;
             }
         }
 		if (sm.spawned&&!isWalking)
 		{
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                return this;
+            }
             agent.destination = transform.position;
             sm.ResetAnim();
         }
@@ -85,11 +94,14 @@ public class IdleState : State
                 }
                 else
                 {
-                    Vector3 rotation = transform.eulerAngles;
-                    transform.eulerAngles = rotation+new Vector3(0, 15, 0);
-                    agent.destination = transform.position;
-                    sm.ResetAnim();
-                    isWalking = false;
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        Vector3 rotation = transform.eulerAngles;
+                        transform.eulerAngles = rotation + new Vector3(0, 15, 0);
+                        agent.destination = transform.position;
+                        sm.ResetAnim();
+                        isWalking = false;
+                    }
                 }
             }
         }

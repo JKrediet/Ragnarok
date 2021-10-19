@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -76,16 +77,19 @@ public class BasicAttack : AttackState
     }
     public void DoAttack()
 	{
-		if (StandingAttack)
-		{
-            agent.destination = enemie.transform.position;
-		}
-		else
-		{
-            agent.destination = sm.target.transform.position;
-		}
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if (StandingAttack)
+            {
+                agent.destination = enemie.transform.position;
+            }
+            else
+            {
+                agent.destination = sm.target.transform.position;
+            }
+        }
         sm.ResetAnim();
         sm.anim.SetBool(animationName, true);
-        agent.speed=sm.attackMovementSpeed;
+        agent.speed = sm.attackMovementSpeed;
     }
 }

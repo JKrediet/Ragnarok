@@ -29,15 +29,18 @@ public class Totem : MonoBehaviour
 	}
 	private void Update()
 	{
-		if (!gaveItem)
+		if (PhotonNetwork.IsMasterClient)
 		{
-			if (activated)
+			if (!gaveItem)
 			{
-				if (!isChecking)
+				if (activated)
 				{
-					if (!allEnemiesDied)
+					if (!isChecking)
 					{
-						StartCoroutine(CheckEnemies());
+						if (!allEnemiesDied)
+						{
+							StartCoroutine(CheckEnemies());
+						}
 					}
 				}
 			}
@@ -90,7 +93,7 @@ public class Totem : MonoBehaviour
 		{
 			gm.SpawnItem(hitInfo.point, rarity);
 		}
-		PhotonNetwork.Destroy(gameObject);
+		gm.DestroyTotem(id);
 	}
 	public void Interact()
 	{
