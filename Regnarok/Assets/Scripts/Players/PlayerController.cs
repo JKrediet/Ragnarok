@@ -206,7 +206,7 @@ public class PlayerController : MonoBehaviour
             {
                 if (remainingJumps > 0)
                 {
-                    //jump_Audio.Play();
+                    jump_Audio.Play();
 
                     Jump();
                     Anim_Jump();
@@ -291,13 +291,13 @@ public class PlayerController : MonoBehaviour
                     combinedSpeed = sprintSpeed + totalExtraSpeed * 1.5f;
                     Anim_sprint();
                     pv.RPC("TogleRunningPartical", RpcTarget.All, true);
-                    //running_Audio.Play();
+                    running_Audio.Play();
                 }
                 else
                 {
                     Anim_movement();
                     pv.RPC("TogleRunningPartical", RpcTarget.All, false);
-                    //walking_Audio.Play();
+                    walking_Audio.Play();
                 }
             }
             else
@@ -308,6 +308,8 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            walking_Audio.Stop();
+            running_Audio.Stop();
             Anim_idle();
             staminaValue = Mathf.Clamp(staminaValue += staminaGainedPerSec * Time.deltaTime, 0, maxStamina);
         }
@@ -381,6 +383,8 @@ public class PlayerController : MonoBehaviour
     }
     void Jump()
     {
+        walking_Audio.Stop();
+        running_Audio.Stop();
         remainingJumps--;
         gravity = jumpForce;
         groundCheck = false;
