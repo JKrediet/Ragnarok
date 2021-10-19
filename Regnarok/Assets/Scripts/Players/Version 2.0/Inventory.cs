@@ -311,7 +311,7 @@ public class Inventory : MonoBehaviour
             {
                 PhotonNetwork.Destroy(handObject);
             }
-            ShowItemInHand(controller.heldItem.itemName);
+            GetComponent<PhotonView>().RPC("ShowItemInHand", RpcTarget.All, controller.heldItem.itemName);
         }
         else
         {
@@ -319,13 +319,14 @@ public class Inventory : MonoBehaviour
             {
                 PhotonNetwork.Destroy(handObject);
             }
-            controller.heldItem = null;
+            GetComponent<PhotonView>().RPC("ShowItemInHand", RpcTarget.All, "EmptyItem");
         }
         character.CalculateOffensiveStats();
     }
+    [PunRPC]
     void ShowItemInHand(string nameOfItem)
     {
-        handObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "handItems", nameOfItem), handHolder.transform.position, handHolder.transform.rotation);
+        handObject = Instantiate(Resources.Load<GameObject>(Path.Combine("PhotonPrefabs/handItems/"+nameOfItem)), handHolder.transform.position, handHolder.transform.rotation);
         handObject.transform.SetParent(handHolder.transform);
     }
     void OpenInventory()
