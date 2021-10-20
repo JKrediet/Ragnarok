@@ -246,15 +246,24 @@ public class OvenStation : MonoBehaviour
     {
         if(slotNumber == 0)
         {
-            smeltSlot.item = character.CreateItemForChest(givenItem, amount, ItemList.SelectItem(givenItem).sprite, ItemList.SelectItem(givenItem).type, ItemList.SelectItem(givenItem).maxStackSize); ;
+            if(smeltSlot.item != null)
+            {
+                smeltSlot.item = character.CreateItemForChest(givenItem, amount, ItemList.SelectItem(givenItem).sprite, ItemList.SelectItem(givenItem).type, ItemList.SelectItem(givenItem).maxStackSize); ;
+            }
         }
         else if (slotNumber == 1)
         {
-            fuelSlot.item = character.CreateItemForChest(givenItem, amount, ItemList.SelectItem(givenItem).sprite, ItemList.SelectItem(givenItem).type, ItemList.SelectItem(givenItem).maxStackSize); ;
+            if (fuelSlot.item != null)
+            {
+                fuelSlot.item = character.CreateItemForChest(givenItem, amount, ItemList.SelectItem(givenItem).sprite, ItemList.SelectItem(givenItem).type, ItemList.SelectItem(givenItem).maxStackSize); ;
+            }
         }
         else if (slotNumber == 2)
         {
-            finishedSlot.item = character.CreateItemForChest(givenItem, amount, ItemList.SelectItem(givenItem).sprite, ItemList.SelectItem(givenItem).type, ItemList.SelectItem(givenItem).maxStackSize); ;
+            if (fuelSlot.item != null)
+            {
+                finishedSlot.item = character.CreateItemForChest(givenItem, amount, ItemList.SelectItem(givenItem).sprite, ItemList.SelectItem(givenItem).type, ItemList.SelectItem(givenItem).maxStackSize); ;
+            }
         }
     }
 }
