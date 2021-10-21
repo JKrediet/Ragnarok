@@ -7,8 +7,9 @@ using System.IO;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Audio;
+using Photon.Realtime;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviourPunCallbacks
 {
 
     [Header("Scaling")]
@@ -399,4 +400,10 @@ public class GameManager : MonoBehaviour
         }
     }
     #endregion
+
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        PhotonNetwork.LeaveRoom();
+        SceneManager.LoadScene(0);
+    }
 }
