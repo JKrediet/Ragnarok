@@ -291,17 +291,27 @@ public class PlayerController : MonoBehaviour
                     combinedSpeed = sprintSpeed + totalExtraSpeed * 1.5f;
                     Anim_sprint();
                     pv.RPC("TogleRunningPartical", RpcTarget.All, true);
-                    running_Audio.Play();
+                    if (!running_Audio.isPlaying)
+                    {
+                        running_Audio.Play();
+                    }
                 }
                 else
                 {
                     Anim_movement();
                     pv.RPC("TogleRunningPartical", RpcTarget.All, false);
-                    walking_Audio.Play();
+                    if (!walking_Audio.isPlaying)
+                    {
+                        walking_Audio.Play();
+                    }
                 }
             }
             else
             {
+				if (!walking_Audio.isPlaying)
+				{
+                    walking_Audio.Play();
+                }
                 Anim_movement();
                 staminaValue = Mathf.Clamp(staminaValue += staminaGainedPerSec * Time.deltaTime, 0, maxStamina);
             }

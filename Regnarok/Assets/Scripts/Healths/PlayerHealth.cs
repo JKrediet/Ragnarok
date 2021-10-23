@@ -131,7 +131,7 @@ public class PlayerHealth : Health
         otherPlayersCam[index].GetComponent<Camera>().enabled = true;
         FindObjectOfType<GameManager>().CheckHp();
        //GetComponent<PhotonView>().RPC("GetGrave", RpcTarget.All);
-        yield return new WaitForSeconds(respawnTime);
+        yield return new WaitForSeconds(respawnTime*FindObjectOfType<GameManager>().days/2);
         Respawn();
     }
     [PunRPC]
