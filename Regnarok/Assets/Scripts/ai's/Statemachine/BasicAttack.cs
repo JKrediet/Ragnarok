@@ -38,6 +38,7 @@ public class BasicAttack : AttackState
 				else
 				{
                     sm.doAttack = false;
+                    sm.stopWalking = false;
                     return trigger;
 				}
             }
@@ -51,6 +52,7 @@ public class BasicAttack : AttackState
                         {
                             agent.speed = sm.movementSpeed;
                             sm.idleRange = 1000f;
+                            sm.stopWalking = false;
                             return trigger;                   
                         }
                     }
@@ -63,6 +65,7 @@ public class BasicAttack : AttackState
             {
                 agent.speed = sm.movementSpeed;
                 sm.idleRange = 1000f;
+                sm.stopWalking = false;
                 return idle;
             }
         }
@@ -82,10 +85,12 @@ public class BasicAttack : AttackState
             if (StandingAttack)
             {
                 agent.destination = enemie.transform.position;
+                sm.stopWalking = true;
             }
             else
             {
                 agent.destination = sm.target.transform.position;
+                sm.stopWalking = false;
             }
         }
         sm.ResetAnim();

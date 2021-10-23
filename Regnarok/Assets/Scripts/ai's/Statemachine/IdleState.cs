@@ -99,6 +99,7 @@ public class IdleState : State
                         Vector3 rotation = transform.eulerAngles;
                         transform.eulerAngles = rotation + new Vector3(0, 15, 0);
                         agent.destination = transform.position;
+                        sm.stopWalking = true;
                         sm.ResetAnim();
                         isWalking = false;
                     }
@@ -108,6 +109,7 @@ public class IdleState : State
         isIdleMoving = true;
         isWalking = true;
         yield return new WaitForSeconds(idleWalkTime);
+        sm.stopWalking = false;
         sm.idleRange = 1000;
         isIdleMoving = false;
     }

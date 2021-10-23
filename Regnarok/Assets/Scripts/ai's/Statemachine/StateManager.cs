@@ -33,11 +33,18 @@ public class StateManager : MonoBehaviour
 	public bool hasMageAttack;
 	public float healingCoolDownTime;
 	public bool isHealing;
+	public bool stopWalking;
 	public GameObject laser;
 	public GameObject healingEffect;
+	public AudioSource laserAudio;
+	[Header("Audio")]
+	public float screamTime;
+	public AudioSource walkingSound;
+	public AudioSource screamSound;
 	private bool gettingTarget;
 	private bool hitboxActive;
 	private bool doingDamage;
+	private bool scream;
 	private Health hp;
 	private Collider[] hitColliders;
 	private float hitboxRadius;
@@ -49,12 +56,32 @@ public class StateManager : MonoBehaviour
 		{
 			GetComponent<NavMeshAgent>().enabled = false;
 		}
+		screamTime = Random.Range(4, screamTime);
+		screamSound.Play();
 	}
 	private void Update()
 	{
 		if (isDead)
 		{
 			return;
+		}
+
+		if (!stopWalking)
+		{
+			if (!walkingSound.isPlaying)
+			{
+				if (GetComponent<NavMeshAgent>().destination != transform.position)
+				{
+					walkingSound.Play();
+				}
+			}
+		}
+		else
+		{
+			if (walkingSound.isPlaying)
+			{
+				walkingSound.Stop();
+			}
 		}
 		if (hitboxActive)
 		{
@@ -74,6 +101,10 @@ public class StateManager : MonoBehaviour
 		if (!gettingTarget|| target.GetComponent<PlayerHealth>().isDead)
 		{
 			StartCoroutine(GetTarget());
+		}
+		if (!scream)
+		{
+			StartCoroutine(Scream());
 		}
 		new WaitForSeconds(targetDelay);
 		delayedPos= target.transform.position;
@@ -97,6 +128,13 @@ public class StateManager : MonoBehaviour
 	private void SwitchOnNextState(State nextState)
 	{
 		curentState = nextState;
+	}
+	public IEnumerator Scream()
+	{
+		scream = true;
+		screamSound.Play();
+		yield return new WaitForSeconds(screamTime);
+		scream = false;
 	}
 	public IEnumerator GetTarget()
 	{
@@ -230,11 +268,13 @@ public class StateManager : MonoBehaviour
 			laser.SetActive(true);
 			laser.GetComponent<ParticleSystem>().Play();
 			laser.transform.LookAt(target.transform.position);
+			laserAudio.Play();
 		}
 		else
 		{
 			laser.SetActive(false);
 			laser.GetComponent<ParticleSystem>().Stop();
+			laserAudio.Stop();
 		}
 	}
 }
