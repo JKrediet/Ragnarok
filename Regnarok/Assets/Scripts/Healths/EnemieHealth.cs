@@ -17,7 +17,10 @@ public class EnemieHealth : Health
 
 	public Vector3 coinDropOffset;
 	public Vector3 itemDropOffset;
-
+	[Header("PoitionWater")]
+	public float timeBetweenDamages;
+	public float waterDamage;
+	public bool takingWaterDamage;
 	private float value;
 	private bool disolveCharachter;
 	public void Start()
@@ -64,6 +67,20 @@ public class EnemieHealth : Health
 				}
 			}
         }
+	}
+	public void DamagePoitionWater()
+	{
+		if (!takingWaterDamage)
+		{
+			StartCoroutine(TakeWaterDamage());
+		}
+	}
+	public IEnumerator TakeWaterDamage()
+	{
+		takingWaterDamage = true;
+		yield return new WaitForSeconds(timeBetweenDamages);
+		takingWaterDamage = false;
+		GetComponent<PlayerHealth>().TakeDamage(waterDamage, false, 0, 0, 0, transform.position);
 	}
 	[PunRPC]
 	public void DropMoney()

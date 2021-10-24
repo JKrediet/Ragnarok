@@ -14,6 +14,10 @@ public class PlayerHealth : Health
     public List<GameObject> otherPlayersCam;
     public Slider HealthSlider;
     public float respawnTime=15;
+    [Header("PoitionWater")]
+    public float timeBetweenDamages;
+    public float waterDamage;
+    public bool takingWaterDamage;
     private int index;
     private GameManager gm;
     private void Start()
@@ -40,7 +44,6 @@ public class PlayerHealth : Health
 				if (otherPlayersCam[i].transform.GetComponent<AudioListener>())
 				{
                     Destroy(otherPlayersCam[i].transform.GetComponent<AudioListener>());
-
                 }
             }
         }
@@ -52,6 +55,20 @@ public class PlayerHealth : Health
             gm.CheckHp();
         }
 	}
+    public void DamagePoitionWater()
+	{
+		if (!takingWaterDamage)
+		{
+            StartCoroutine(TakeWaterDamage());
+		}
+	}
+    public IEnumerator TakeWaterDamage()
+	{
+        takingWaterDamage = true;
+        yield return new WaitForSeconds(timeBetweenDamages);
+        takingWaterDamage = false;
+        GetComponent<PlayerHealth>().TakeDamage(waterDamage, false, 0, 0, 0,transform.position);
+    }
 	public override void Health_Damage(float damageValue, bool bleed, int burn, float poison, float execute, Vector3 hitlocation)
     {
         base.Health_Damage(damageValue, bleed, burn, poison, execute, hitlocation);
