@@ -27,6 +27,10 @@ public class ChestInventory : MonoBehaviour
             {
                 SincSlotWithMaster(i, itemSlots[i].item.itemName, itemSlots[i].item.itemAmount);
             }
+            else
+            {
+                SincSlotWithMaster(i, "EmptyItem", 0);
+            }
         }
     }
     public void OpenChestInventory(CharacterStats charr)

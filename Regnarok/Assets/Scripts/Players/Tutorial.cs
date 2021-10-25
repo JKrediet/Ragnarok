@@ -31,7 +31,8 @@ public class Tutorial : MonoBehaviour
         {
             if(Input.GetKey(KeyCode.H) || Input.GetKey(KeyCode.T))
             {
-                Invoke("CloseTutorial", 5);
+                NextObjective();
+                Invoke("CloseTutorial", 10);
             }
         }
     }

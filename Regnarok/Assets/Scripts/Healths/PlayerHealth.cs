@@ -67,7 +67,7 @@ public class PlayerHealth : Health
         takingWaterDamage = true;
         yield return new WaitForSeconds(timeBetweenDamages);
         takingWaterDamage = false;
-        GetComponent<PlayerHealth>().TakeDamage(waterDamage, false, 0, 0, 0,transform.position);
+        GetComponent<PlayerHealth>().TakeDamage(waterDamage, false, 0, 0, 0,transform.position + new Vector3 (Random.Range(-1, 2), 0 , (Random.Range(-1, 2))));
     }
 	public override void Health_Damage(float damageValue, bool bleed, int burn, float poison, float execute, Vector3 hitlocation)
     {
