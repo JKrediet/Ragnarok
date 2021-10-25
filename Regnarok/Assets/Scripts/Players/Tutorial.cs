@@ -35,6 +35,10 @@ public class Tutorial : MonoBehaviour
                 Invoke("CloseTutorial", 10);
             }
         }
+        if (Input.GetKey(KeyCode.X))
+        {
+            CloseTutorial();
+        }
     }
     void CloseTutorial()
     {
