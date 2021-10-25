@@ -24,6 +24,7 @@ public class PlayerHealth : Health
     {
         if (PV.IsMine)
         {
+            gm = FindObjectOfType<GameManager>();   
             HealthSlider.maxValue = maxHealth;
             HealthSlider.value = health;
             StartCoroutine("HealthRegen");
