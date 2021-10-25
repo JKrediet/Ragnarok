@@ -65,7 +65,10 @@ public class StateManager : MonoBehaviour
 		{
 			return;
 		}
-
+		if (transform.position.y >= 90)
+		{
+			PhotonNetwork.Destroy(gameObject);
+		}
 		if (!stopWalking)
 		{
 			if (!walkingSound.isPlaying)
