@@ -51,9 +51,12 @@ public class PlayerHealth : Health
     }
 	private void Update()
 	{
-		if (isDead)
-		{
-            gm.CheckHp();
+        if (PV.IsMine)
+        {
+            if (isDead)
+            {
+                gm.CheckHp();
+            }
         }
 	}
     public void DamagePoitionWater()
