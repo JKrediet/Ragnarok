@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public AudioSource dayAudio;
     public AudioSource nightAudio;
     public AudioSource isNight;
+    public AudioSource playerSpawnSound;
 
     public AudioMixer audioMaster;
 
@@ -107,9 +108,14 @@ public class GameManager : MonoBehaviourPunCallbacks
             if (playerManager.pv.Owner == PhotonNetwork.PlayerList[i])
             {
                 playerManager.SpawnPlayer(spawnpos);
+                PlayRespawnSound();
             }
         }
 	}
+    public void PlayRespawnSound()
+	{
+        playerSpawnSound.Play();
+    }
     public void GiveXpFromHitableObject(float amount)
     {
         GetComponent<PhotonView>().RPC("GiveXp", RpcTarget.All, amount);

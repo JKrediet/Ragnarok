@@ -111,7 +111,7 @@ public class EnemySpawner : MonoBehaviour
 					int random = Random.Range(0, enemielist.enemieList.Count);
 					pv.RPC("SpawnPartical", RpcTarget.MasterClient, spawnPos);
 					new WaitForSeconds(1);
-					pv.RPC("Spawn", RpcTarget.MasterClient, spawnPos + spawnOffset, random);
+					pv.RPC("Spawn", RpcTarget.MasterClient, spawnPos + spawnOffset, random);	
 				}
 			}
 		}
