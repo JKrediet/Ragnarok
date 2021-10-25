@@ -14,6 +14,7 @@ public class ChestScript : ProbScript
     public Animator anim;
     private GameManager gm;
     public List<GameObject> players;
+    public AudioSource openSound;
     private GameObject isMyPlayer;
     [Header("ui")]
     public TextMeshProUGUI costText;
@@ -28,7 +29,10 @@ public class ChestScript : ProbScript
 	{
         StartCoroutine("GetRandomItem");
         canInteract = false;
-        //doet sound dat die te weinig geld heeft
+		if (!openSound.isPlaying)
+		{
+            openSound.Play();
+		}
     }
 	public IEnumerator GetRandomItem()
     { 

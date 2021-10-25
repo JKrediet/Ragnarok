@@ -8,6 +8,7 @@ public class MagicState : AttackState
     public GameObject enemie;
     public Vector3 lookOffset;
     public bool StandingAttack;
+    public AudioSource attackSound;
     public override State RunCurrentState()
     {
         if (sm.isDead)
@@ -90,22 +91,10 @@ public class MagicState : AttackState
         }
         sm.ResetAnim();
         sm.anim.SetBool(animationName, true);
+		if (!attackSound.isPlaying)
+		{
+            attackSound.Play();
+		}
         agent.speed = sm.attackMovementSpeed;
-    }
-    public void SetParticalOn()
-	{
-
-	}
-    public void SetParticalOff()
-    {
-
-    }
-    public void SetParticalOnSynced()
-    {
-
-    }
-    public void SetParticalOffSynced()
-    {
-
     }
 }

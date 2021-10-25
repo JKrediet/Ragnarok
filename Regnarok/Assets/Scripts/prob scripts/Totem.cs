@@ -18,6 +18,7 @@ public class Totem : MonoBehaviour
 	public  ItemListScript itemlist;
 	public string spawnParticleName;
 	public List<GameObject> enemies;
+	public AudioSource activedSound;
 	private bool isChecking;
 	private bool allEnemiesDied;
 	private int type;
@@ -99,6 +100,10 @@ public class Totem : MonoBehaviour
 	{
 		if (!activated)
 		{
+			if (!activedSound.isPlaying)
+			{
+				activedSound.Play();
+			}
 			gm = FindObjectOfType<GameManager>();
 			if (isBoss)
 			{

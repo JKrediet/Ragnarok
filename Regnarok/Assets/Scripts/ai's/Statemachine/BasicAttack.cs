@@ -8,6 +8,7 @@ public class BasicAttack : AttackState
     public GameObject enemie;
     public Vector3 lookOffset;
     public bool StandingAttack;
+    public AudioSource attackSound;
     public override State RunCurrentState()
     {
         if (sm.isDead)
@@ -95,6 +96,10 @@ public class BasicAttack : AttackState
         }
         sm.ResetAnim();
         sm.anim.SetBool(animationName, true);
+		if (!attackSound.isPlaying)
+		{
+            attackSound.Play();
+		}
         agent.speed = sm.attackMovementSpeed;
     }
 }
