@@ -55,7 +55,14 @@ public class PlayerHealth : Health
         {
             if (isDead)
             {
-                gm.CheckHp();
+				if (gm == null)
+				{
+                    gm = FindObjectOfType<GameManager>();
+                }
+				else
+				{
+                    gm.CheckHp();
+				}
             }
         }
 	}
