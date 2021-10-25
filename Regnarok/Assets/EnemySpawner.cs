@@ -173,6 +173,7 @@ public class EnemySpawner : MonoBehaviour
 	{
 		GameObject spawnedEnemie = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", enemielist.enemieList[i]), spawnPos, Quaternion.identity);
 		enemies.Add(spawnedEnemie);
+		spawnedEnemie.GetComponent<Outline>().enabled = false;
 	}
 	public bool CheckDistance(float distance)
 	{

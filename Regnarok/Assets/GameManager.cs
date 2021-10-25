@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public string endBossName;
 
     public List<GameObject> playerObjectList;
-
+    public Vector3 deathPos;
     [Space]
     public float goldMultiplier =1;
 
@@ -95,6 +95,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             {
                 spawnpos.y = hitInfo.point.y+spawnHeightOffset;
             }
+            deathPos = spawnpos;
             if (playerManager.pv.Owner == PhotonNetwork.PlayerList[i])
             {
                 playerManager.SpawnPlayer(spawnpos);
@@ -127,12 +128,12 @@ public class GameManager : MonoBehaviourPunCallbacks
         amountOffDeads = 0;
         for (int i = 0; i < playerObjectList.Count; i++)
 		{
-			if (playerObjectList[i].GetComponent<PlayerHealth>().health <= 0)
+			if (playerObjectList[i].GetComponent<PlayerHealth>().isDead)
 			{
                 amountOffDeads++;
 			}
 		}
-        if(amountOffDeads== playerObjectList.Count)
+        if(amountOffDeads>= playerObjectList.Count)
 		{
             GetComponent<PhotonView>().RPC("DisconectAll", RpcTarget.All);
         }

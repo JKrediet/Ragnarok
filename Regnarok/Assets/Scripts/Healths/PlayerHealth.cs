@@ -160,6 +160,7 @@ public class PlayerHealth : Health
         FindObjectOfType<GameManager>().CheckHp();
        //GetComponent<PhotonView>().RPC("GetGrave", RpcTarget.All);
         yield return new WaitForSeconds(respawnTime*FindObjectOfType<GameManager>().days/2+5);
+        transform.position = gm.deathPos;
         Respawn();
     }
     [PunRPC]
