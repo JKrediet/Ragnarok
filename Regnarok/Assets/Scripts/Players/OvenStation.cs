@@ -244,15 +244,25 @@ public class OvenStation : MonoBehaviour
     }
     public void GetItemInSlot(int slotNumber, string givenItem, int amount)
     {
-        if(slotNumber == 0)
+        if (slotNumber == 0)
         {
-            if(smeltSlot.item == null)
+            if (amount == 0)
+            {
+                smeltSlot.item = null;
+                return;
+            }
+            if (smeltSlot.item == null)
             {
                 smeltSlot.item = character.CreateItemForChest(givenItem, amount, ItemList.SelectItem(givenItem).sprite, ItemList.SelectItem(givenItem).type, ItemList.SelectItem(givenItem).maxStackSize); ;
             }
         }
         else if (slotNumber == 1)
         {
+            if (amount == 0)
+            {
+                fuelSlot.item = null;
+                return;
+            }
             if (fuelSlot.item == null)
             {
                 fuelSlot.item = character.CreateItemForChest(givenItem, amount, ItemList.SelectItem(givenItem).sprite, ItemList.SelectItem(givenItem).type, ItemList.SelectItem(givenItem).maxStackSize); ;
@@ -260,7 +270,12 @@ public class OvenStation : MonoBehaviour
         }
         else if (slotNumber == 2)
         {
-            if (fuelSlot.item == null)
+            if (amount == 0)
+            {
+                finishedSlot.item = null;
+                return;
+            }
+            if (finishedSlot.item == null)
             {
                 finishedSlot.item = character.CreateItemForChest(givenItem, amount, ItemList.SelectItem(givenItem).sprite, ItemList.SelectItem(givenItem).type, ItemList.SelectItem(givenItem).maxStackSize); ;
             }
