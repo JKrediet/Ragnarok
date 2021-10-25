@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Audio;
 using Photon.Realtime;
+using TMPro;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
@@ -42,6 +43,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     public AudioSource isNight;
 
     public AudioMixer audioMaster;
+
+    public TextMeshProUGUI quoteText;
+
+    [TextArea]
+    public List<string> quotes;
     public void GiveStats_goldmulti(float value)
     {
         goldMultiplier = value + 1;
@@ -49,6 +55,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     private void Start()
 	{
         es = GetComponent<EnemySpawner>();
+        GetRandomQuote();
     }
 	public IEnumerator IsNight()
 	{
@@ -84,6 +91,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 	}
     public void SpawnPlayers()
 	{
+        quoteText.gameObject.SetActive(false);
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
 		{
             Vector3 spawnpos = new Vector3(Random.Range(spawnRadius, -spawnRadius), spawnHeight, Random.Range(-spawnRadius, spawnRadius));
@@ -406,5 +414,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.LeaveRoom();
         SceneManager.LoadScene(0);
+    }
+    public void GetRandomQuote()
+    {
+        int roll = Random.Range(0, quotes.Count);
+        quoteText.text = quotes[roll];
     }
 }
