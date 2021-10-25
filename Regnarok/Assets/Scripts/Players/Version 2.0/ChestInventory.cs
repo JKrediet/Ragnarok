@@ -29,7 +29,7 @@ public class ChestInventory : MonoBehaviour
             }
             else
             {
-                SincSlotWithMaster(i, "EmptyItem", 0);
+                SincSlotWithMaster(i, "", 0);
             }
         }
     }
@@ -54,6 +54,11 @@ public class ChestInventory : MonoBehaviour
     }
     public void SincSlots(int slotId, string itemId, int itemAmount)
     {
+        if(itemAmount == 0)
+        {
+            itemSlots[slotId].item = null;
+            return;
+        }
         itemSlots[slotId].item = character.CreateItemForChest(itemId, itemAmount, ItemList.SelectItem(itemId).sprite, ItemList.SelectItem(itemId).type, ItemList.SelectItem(itemId).maxStackSize);
         if (itemSlots[slotId].item != null)
         {

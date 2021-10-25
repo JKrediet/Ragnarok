@@ -246,21 +246,21 @@ public class OvenStation : MonoBehaviour
     {
         if(slotNumber == 0)
         {
-            if(smeltSlot.item != null)
+            if(smeltSlot.item == null)
             {
                 smeltSlot.item = character.CreateItemForChest(givenItem, amount, ItemList.SelectItem(givenItem).sprite, ItemList.SelectItem(givenItem).type, ItemList.SelectItem(givenItem).maxStackSize); ;
             }
         }
         else if (slotNumber == 1)
         {
-            if (fuelSlot.item != null)
+            if (fuelSlot.item == null)
             {
                 fuelSlot.item = character.CreateItemForChest(givenItem, amount, ItemList.SelectItem(givenItem).sprite, ItemList.SelectItem(givenItem).type, ItemList.SelectItem(givenItem).maxStackSize); ;
             }
         }
         else if (slotNumber == 2)
         {
-            if (fuelSlot.item != null)
+            if (fuelSlot.item == null)
             {
                 finishedSlot.item = character.CreateItemForChest(givenItem, amount, ItemList.SelectItem(givenItem).sprite, ItemList.SelectItem(givenItem).type, ItemList.SelectItem(givenItem).maxStackSize); ;
             }
