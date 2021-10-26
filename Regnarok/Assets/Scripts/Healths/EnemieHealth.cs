@@ -21,6 +21,7 @@ public class EnemieHealth : Health
 	public float timeBetweenDamages;
 	public float waterDamage;
 	public bool takingWaterDamage;
+	public AudioSource burningAudio;
 	private float value;
 	private bool disolveCharachter;
 	public void Start()
@@ -116,6 +117,10 @@ public class EnemieHealth : Health
 	}
 	public void DisolveMe()
 	{
+		if (!burningAudio.isPlaying)
+		{
+			burningAudio.Play();
+		}
 		for (int i = 0; i < toDisolve.Length; i++)
 		{
 			toDisolve[i].material.SetFloat("_Dissolve", value);
