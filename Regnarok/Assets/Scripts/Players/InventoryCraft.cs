@@ -148,13 +148,18 @@ public class InventoryCraft : MonoBehaviour
                         {
                             itemsNeedForCraft.Add(neededAmountItem);
                             itemSlotForCraft.Add(i);
+                            continue;
                         }
                         else
                         {
                             print("not enough items!: " + neededNameItem + " " + neededAmountItem);
-                            return;
+                            continue;
                         }
                     }
+                }
+                if (itemSlotForCraft.Count != selectedCraft.itemsNeeded.Count)
+                {
+                    return;
                 }
                 FinishCrafting();
             }

@@ -27,6 +27,9 @@ public class Health : MonoBehaviour
     public AudioSource audioSource;
     public GameObject bloodSpat;
 
+    //particles
+    public GameObject fireEffect;
+    public GameObject poisonEffect;
 
     [System.Serializable]
     public struct DropItems
@@ -96,16 +99,19 @@ public class Health : MonoBehaviour
             }
             if(burn > 0)
             {
-                bleedTicks += burn * 2;
+                burnTicks += burn * 2;
                 if (burnTicks > 0)
                 {
+                    fireEffect.SetActive(true);
                     StartCoroutine(Bleed());                    
                 }
             }
             if(poison > 0)
             {
+                poisonEffect.SetActive(true);
                 poisonTicks = 10;
                 poisonDamage += poison;
+                StartCoroutine(Poison());
             }
         }
     }
@@ -163,6 +169,10 @@ public class Health : MonoBehaviour
             Health_Damage(burnDamage, false, 0, 0, 0, transform.position);
             StartCoroutine(Burn());
         }
+        else
+        {
+            fireEffect.SetActive(false);
+        }
     }
     protected virtual IEnumerator Poison()
     {
@@ -177,6 +187,7 @@ public class Health : MonoBehaviour
         else
         {
             poisonDamage = 0;
+            poisonEffect.SetActive(false);
         }
     }
 

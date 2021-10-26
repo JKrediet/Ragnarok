@@ -179,6 +179,7 @@ public class EnviromentSpawner : MonoBehaviour
                 }
             }
             yield return new WaitForSecondsRealtime(1);
+            FindObjectOfType<GameManager>().GetRandomQuote();
         }
         SpawnBossTotems(btm.amountOffBosses);
         BuildNavMesh();

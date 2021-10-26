@@ -143,16 +143,16 @@ public class CraftingStation : MonoBehaviour
         {
             for (int i = 0; i < inventory.itemSlots.Length; i++)
             {
+                if (inventory.itemSlots[i].item == null)
+                {
+                    continue;
+                }
                 for (int y = 0; y < selectedCraft.itemsNeeded.Count; y++)
                 {
                     string neededNameItem = selectedCraft.itemsNeeded[y].itemNeeded;
                     int neededAmountItem = selectedCraft.itemsNeeded[y].amountNeeded;
 
-                    if(inventory.itemSlots[i].item == null)
-                    {
-                        continue;
-                    }
-                    else if(inventory.itemSlots[i].item.itemName != neededNameItem)
+                    if (inventory.itemSlots[i].item.itemName != neededNameItem)
                     {
                         continue;
                     }
@@ -160,11 +160,12 @@ public class CraftingStation : MonoBehaviour
                     {
                         itemsNeedForCraft.Add(neededAmountItem);
                         itemSlotForCraft.Add(i);
+                        continue;
                     }
                     else
                     {
                         print("not enough items!: " + neededNameItem + " " + neededAmountItem);
-                        return;
+                        continue;
                     }
                 }
             }
