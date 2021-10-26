@@ -28,11 +28,11 @@ public class ChestScript : ProbScript
 	public override void Interaction()
 	{
         StartCoroutine("GetRandomItem");
-        canInteract = false;
-		if (!openSound.isPlaying)
+		if (canInteract)
 		{
             openSound.Play();
-		}
+        }
+        canInteract = false;
     }
 	public IEnumerator GetRandomItem()
     { 
