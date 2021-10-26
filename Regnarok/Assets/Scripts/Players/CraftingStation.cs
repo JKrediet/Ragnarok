@@ -180,7 +180,6 @@ public class CraftingStation : MonoBehaviour
         inventory.RefreshUI();
         character.CreateItem(ItemList.SelectItem(selectedCraft.craftResult).name, 1, ItemList.SelectItem(selectedCraft.craftResult).sprite, ItemList.SelectItem(selectedCraft.craftResult).type, ItemList.SelectItem(selectedCraft.craftResult).maxStackSize);
         inventory.RefreshUI();
-        selectedCraft = default;
         CanCraft();
     }
 

@@ -153,6 +153,7 @@ public class Inventory : MonoBehaviour
 
     void AddCoin(int amount)
     {
+        controller.CoinSound();
         goldCoinsInPocket += amount;
         coinsText.text = "Golden coins : " + goldCoinsInPocket;
     }
@@ -328,6 +329,7 @@ public class Inventory : MonoBehaviour
     {
         handObject = Instantiate(Resources.Load<GameObject>(Path.Combine("PhotonPrefabs/handItems/"+nameOfItem)), handHolder.transform.position, handHolder.transform.rotation);
         handObject.transform.SetParent(handHolder.transform);
+        controller.doNotHitThis = handObject;
     }
     void OpenInventory()
     {

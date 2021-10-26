@@ -96,6 +96,8 @@ public class PlayerController : MonoBehaviour
     public AudioSource itemPickup_audio;
     public AudioSource itemDrop_audio;
     public AudioSource eatingSound;
+    public AudioSource attackSound;
+    public AudioSource coinpickUp;
 
     //summon
     public Queue<GameObject> listOfSummons;
@@ -107,6 +109,9 @@ public class PlayerController : MonoBehaviour
     public List<AudioClip> hitObjectSounds;
 
     public AudioMixer audioMaster;
+
+    //debug
+    public GameObject doNotHitThis;
 
     private void Awake()
     {
@@ -642,16 +647,14 @@ public class PlayerController : MonoBehaviour
     {
         if (pv.IsMine)
         {
+            AttackSound();
             Collider[] thingsHit = Physics.OverlapSphere(attackPos.position, attackRadius, playerAimMask);
 
             //check hit things
             foreach (Collider hitObject in thingsHit)
             {
-                if (hitObject.gameObject != gameObject)
+                if (hitObject.gameObject != gameObject || hitObject.gameObject != doNotHitThis)
                 {
-                    GameObject tempObject = Instantiate(testGraph, hitObject.ClosestPoint(attackPos.position), Quaternion.identity);
-                    Destroy(tempObject, 1);
-
                     RaycastHit _hit;
                     if (Physics.Linecast(attackPos.position, hitObject.ClosestPoint(attackPos.position), out _hit))
                     {
@@ -698,6 +701,8 @@ public class PlayerController : MonoBehaviour
                     //actual hit
                     if (hitObject.GetComponent<HitableObject>())
                     {
+                        GameObject tempObject = Instantiate(testGraph, hitObject.ClosestPoint(attackPos.position), Quaternion.identity);
+                        Destroy(tempObject, 1);
                         //damage
                         if (heldItem != null)
                         {
@@ -710,6 +715,8 @@ public class PlayerController : MonoBehaviour
                     }
                     else if (hitObject.GetComponent<EnemieHealth>())
                     {
+                        GameObject tempObject = Instantiate(testGraph, hitObject.ClosestPoint(attackPos.position), Quaternion.identity);
+                        Destroy(tempObject, 1);
                         //damage
                         if (heldItem != null)
                         {
@@ -911,5 +918,26 @@ public class PlayerController : MonoBehaviour
     public void ChangeMusicVolume(Slider slider)
     {
         audioMaster.SetFloat("Music", slider.value - 80);
+    }
+
+    //sound
+    public void CoinSound()
+    {
+        if(!coinpickUp.isPlaying)
+        {
+            coinpickUp.Play();
+        }
+    }
+    public void ItemSound()
+    {
+        if (!itemPickup_audio.isPlaying)
+        {
+            itemPickup_audio.Play();
+        }
+    }
+
+    public void AttackSound()
+    {
+        attackSound.Play();
     }
 }
