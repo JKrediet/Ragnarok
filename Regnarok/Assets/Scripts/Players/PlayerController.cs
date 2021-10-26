@@ -95,6 +95,7 @@ public class PlayerController : MonoBehaviour
     public AudioSource running_Audio;
     public AudioSource itemPickup_audio;
     public AudioSource itemDrop_audio;
+    public AudioSource eatingSound;
 
     //summon
     public Queue<GameObject> listOfSummons;
@@ -445,6 +446,11 @@ public class PlayerController : MonoBehaviour
                     if(!eatingOnCooldown)
                     {
                         StartEating();
+						if (!eatingSound.isPlaying)
+						{
+                            eatingSound.Play();
+
+                        }
                     }
                 }
             }

@@ -9,6 +9,7 @@ public class MagicState : AttackState
     public Vector3 lookOffset;
     public bool StandingAttack;
     public AudioSource attackSound;
+    private bool isplayingSoundje;
     public override State RunCurrentState()
     {
         if (sm.isDead)
@@ -38,6 +39,7 @@ public class MagicState : AttackState
                 }
                 else
                 {
+                    isplayingSoundje = false;
                     sm.doAttack = false;
                     return trigger;
                 }
@@ -52,6 +54,7 @@ public class MagicState : AttackState
                         {
                             agent.speed = sm.movementSpeed;
                             sm.idleRange = 1000f;
+                            isplayingSoundje = false;
                             return trigger;
                         }
                     }
@@ -64,6 +67,7 @@ public class MagicState : AttackState
             {
                 agent.speed = sm.movementSpeed;
                 sm.idleRange = 1000f;
+                isplayingSoundje = false;
                 return idle;
             }
         }
@@ -90,11 +94,15 @@ public class MagicState : AttackState
             }
         }
         sm.ResetAnim();
-        sm.anim.SetBool(animationName, true);
-		if (!attackSound.isPlaying)
-		{
-            attackSound.Play();
+        if (!attackSound.isPlaying)
+        {
+            if (!isplayingSoundje)
+            { 
+                isplayingSoundje = true;
+                attackSound.Play();
+			}
 		}
+        sm.anim.SetBool(animationName, true);
         agent.speed = sm.attackMovementSpeed;
     }
 }
