@@ -93,7 +93,6 @@ public class HitableObject : MonoBehaviour
         {
             manager.DropItems(droppedItems[i].dropItemName, lastHitLocation + dropOffset, Quaternion.identity, UnityEngine.Random.Range((int)droppedItems[i].dropAmounts.x, (int)droppedItems[i].dropAmounts.y), itemSerialNumber);
             manager.GiveXpFromHitableObject(xpAmount);
-            yield return new WaitForSeconds(0.5f);
         }
     }
     public void TakeDamage(float _damage, EquipmentType _itemType, Vector3 hitlocation)

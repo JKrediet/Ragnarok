@@ -145,7 +145,7 @@ public class Health : MonoBehaviour
         if(bleedTicks > 0)
         {
             bleedTicks--;
-            Health_Damage(bleedDamage, false, 0, 0, 0, lastHitLocation);
+            Health_Damage(bleedDamage, false, 0, 0, 0, transform.position);
             StartCoroutine(Bleed());
         }
         else
@@ -160,7 +160,7 @@ public class Health : MonoBehaviour
         if (burnTicks > 0)
         {
             burnTicks--;
-            Health_Damage(burnDamage, false, 0, 0, 0, lastHitLocation);
+            Health_Damage(burnDamage, false, 0, 0, 0, transform.position);
             StartCoroutine(Burn());
         }
     }
@@ -171,7 +171,7 @@ public class Health : MonoBehaviour
         if (poisonTicks > 0)
         {
             poisonTicks--;
-            Health_Damage(poisonDamage, false, 0, 0, 0, lastHitLocation);
+            Health_Damage(poisonDamage, false, 0, 0, 0, transform.position);
             StartCoroutine(Poison());
         }
         else

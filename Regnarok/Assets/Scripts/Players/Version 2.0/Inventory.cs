@@ -193,6 +193,7 @@ public class Inventory : MonoBehaviour
         }
         if (!IsFull())
         {
+            controller.ItemSound();
             for (int i = 0; i < itemSlots.Length; i++)
             {
                 //empty slot
