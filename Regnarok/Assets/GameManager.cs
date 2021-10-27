@@ -375,7 +375,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void SincSlotsOmMaster(int slotNumber, string givenItem, int amount, int originFurnace)
     {
-        GetComponent<PhotonView>().RPC("Rpc_sincSlotsFurnace", RpcTarget.All, slotNumber, givenItem, amount, originFurnace);
+        GetComponent<PhotonView>().RPC("Rpc_sincSlotsFurnace", RpcTarget.Others, slotNumber, givenItem, amount, originFurnace);
     }
     [PunRPC]
     public void Rpc_sincSlotsFurnace(int slotNumber, string givenItem, int amount, int originFurnace)
@@ -399,7 +399,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void Rpc_SincChestOnMaster(int slotId, string itemId, int itemAmount, int originChest)
     {
-        GetComponent<PhotonView>().RPC("Rpc_SincChestOnClients", RpcTarget.All, slotId, itemId, itemAmount, originChest);
+        GetComponent<PhotonView>().RPC("Rpc_SincChestOnClients", RpcTarget.Others, slotId, itemId, itemAmount, originChest);
     }
     [PunRPC]
     public void Rpc_SincChestOnClients(int slotId, string itemId, int itemAmount, int originChest)
@@ -423,7 +423,12 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     public void GetRandomQuote()
     {
-        int roll = Random.Range(0, quotes.Count);
-        quoteText.text = quotes[roll];
+        if (quoteText.isActiveAndEnabled)
+        {
+            int roll = Random.Range(0, quotes.Count);
+            quoteText.text = quotes[roll];
+
+            Invoke("GetRandomQuote", 5);
+        }
     }
 }
