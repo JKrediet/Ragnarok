@@ -32,6 +32,21 @@ public class ChestInventory : MonoBehaviour
                 SincSlotWithMaster(i, "", 0);
             }
         }
+        if (itemSlots[i].item != null)
+        {
+            if (itemSlots[i].item.itemAmount > 1)
+            {
+                itemSlots[i].stackAmountText.text = itemSlots[i].item.itemAmount.ToString();
+            }
+            else
+            {
+                itemSlots[i].stackAmountText.text = "";
+            }
+        }
+        else
+        {
+            itemSlots[i].stackAmountText.text = "";
+        }
     }
     public void OpenChestInventory(CharacterStats charr)
     {
