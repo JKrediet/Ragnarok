@@ -28,7 +28,7 @@ public class ChestScript : ProbScript
 	public override void Interaction()
 	{
         StartCoroutine("GetRandomItem");
-		if (canInteract)
+		if (!openSound.isPlaying)
 		{
             openSound.Play();
         }

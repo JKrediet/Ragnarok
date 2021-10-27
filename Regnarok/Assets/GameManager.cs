@@ -49,6 +49,10 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     [TextArea]
     public List<string> quotes;
+
+    public GameObject endboss;
+    private bool endBossSpawned;
+    private bool spawnedPortal;
     public void GiveStats_goldmulti(float value)
     {
         goldMultiplier = value + 1;
@@ -58,6 +62,30 @@ public class GameManager : MonoBehaviourPunCallbacks
         es = GetComponent<EnemySpawner>();
         GetRandomQuote();
     }
+	private void Update()
+	{
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if (endBossSpawned)
+            {
+                if (endboss == null)
+                {
+                    if (!spawnedPortal)
+                    {
+                        SpawnThePortal();
+                    }
+                }
+            }
+        }
+	}
+    public void SpawnThePortal()
+	{
+		if (PhotonNetwork.IsMasterClient)
+		{
+            spawnedPortal = true;
+            PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Portal"), deathPos+new Vector3(0,1,0), Quaternion.identity);
+        }
+	}
 	public IEnumerator IsNight()
 	{
 		dayAudio.Stop();
@@ -230,6 +258,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         GameObject spawnedEnemie = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", endBossName), spawnPos, Quaternion.identity);
         spawnedEnemie.GetComponent<Outline>().enabled = true;
+        endboss = spawnedEnemie;
+        endBossSpawned = true;
     }
     public void SpawnBoss(Vector3 spawnPos, int id)
 	{

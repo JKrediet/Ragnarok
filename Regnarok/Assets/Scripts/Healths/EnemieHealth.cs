@@ -11,6 +11,7 @@ public class EnemieHealth : Health
 	public float xpAmount;
 	public Renderer[] toDisolve;
 	public GameObject healthbar;
+	public MeshCollider col;
 	private GameManager gm;
 	private StateManager sm;
 	private PhotonView pv;
@@ -32,13 +33,17 @@ public class EnemieHealth : Health
 	}
 	public override void Health_Dead()
 	{
-		transform.position -= new Vector3(0, 1, 0);
+		transform.position -= new Vector3(0, 0.5f, 0);
 		sm.isDead = true;
+		col.enabled = true;
+		GetComponent<NavMeshAgent>().enabled = false;
+		GetComponent<Rigidbody>().useGravity = true;
 		sm.ResetAnim();
 		sm.anim.SetBool("IsDying", true);
 		Destroy(gameObject.GetComponent<NavMeshAgent>());
 		Destroy(gameObject.GetComponent<NavMeshObstacle>());
 		healthbar.SetActive(false);
+		
 	}
 	private void Update()
 	{
