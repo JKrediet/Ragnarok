@@ -98,6 +98,8 @@ public class PlayerController : MonoBehaviour
     public AudioSource eatingSound;
     public AudioSource attackSound;
     public AudioSource coinpickUp;
+    public AudioSource pressedSound;
+    public AudioSource hoverSound;
 
     //summon
     public Queue<GameObject> listOfSummons;
@@ -935,7 +937,14 @@ public class PlayerController : MonoBehaviour
             itemPickup_audio.Play();
         }
     }
-
+    public void PlayHover()
+	{
+        hoverSound.Play();
+	}
+    public void PlayPressed()
+	{
+        pressedSound.Play();
+    }
     public void AttackSound()
     {
         attackSound.Play();
