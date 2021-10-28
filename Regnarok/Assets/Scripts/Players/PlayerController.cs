@@ -118,6 +118,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         pv = GetComponent<PhotonView>();
+        cam.gameObject.GetComponent<Camera>().enabled = false;
         if (pv.IsMine)
         {
             controller = GetComponent<CharacterController>();
@@ -134,6 +135,7 @@ public class PlayerController : MonoBehaviour
 
             mayAttack = true;
             camOriginpos.position = cam.transform.position;
+            cam.gameObject.GetComponent<Camera>().enabled = true;
         }
         else
         {
