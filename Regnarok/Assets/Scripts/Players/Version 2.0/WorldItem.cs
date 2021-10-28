@@ -14,6 +14,7 @@ public class WorldItem : MonoBehaviour
     public bool mayBePickedUp;
 
     public EquipmentType equipment;
+    public int itemID;
 
     [Space]
     [HideInInspector] public int damageBonus;

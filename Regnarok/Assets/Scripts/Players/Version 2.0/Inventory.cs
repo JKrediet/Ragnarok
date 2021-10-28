@@ -401,6 +401,8 @@ public class Inventory : MonoBehaviour
             droppedItem.GetComponent<Rigidbody>().AddExplosionForce(100, transform.position + transform.forward - transform.up, 2);
             droppedItem.GetComponent<WorldItem>().SetUp(item.itemName, item.itemAmount, ItemList.SelectItem(item.itemName).sprite, ItemList.SelectItem(item.itemName).type, ItemList.SelectItem(item.itemName).maxStackSize);
             SelectItemInHotBar(hotbarLocation);
+            //sinc hier stacks of item
+
         }
     }
     public void OpenEscMenu()

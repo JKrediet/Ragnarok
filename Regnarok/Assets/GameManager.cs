@@ -53,7 +53,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject endboss;
     private bool endBossSpawned;
     private bool spawnedPortal;
-    public GameObject cameraOff; 
+    public GameObject cameraOff;
+    int objectInstanceID;
     public void GiveStats_goldmulti(float value)
     {
         goldMultiplier = value + 1;
@@ -242,7 +243,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     #region destroyWorldItems
     public void DropItems(string droppedItemName, Vector3 position, Quaternion rotation, int amount, int serialNumber)
     {
-        print(amount);
         GetComponent<PhotonView>().RPC("DestroyWorldItem", RpcTarget.MasterClient, droppedItemName, position, rotation, amount, serialNumber);
     }
     [PunRPC]
@@ -251,6 +251,18 @@ public class GameManager : MonoBehaviourPunCallbacks
         GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", droppedItemName), position, rotation);
         droppedItem.GetComponent<WorldItem>().SetUp(ItemList.SelectItem(droppedItemName).name, amount, ItemList.SelectItem(droppedItemName).sprite, ItemList.SelectItem(droppedItemName).type, ItemList.SelectItem(droppedItemName).maxStackSize);
         GetComponent<PhotonView>().RPC("RemoveItemFromWorld", RpcTarget.All, serialNumber);
+        GetComponent<PhotonView>().RPC("SyncStackAmount", RpcTarget.All, droppedItemName, amount, droppedItem.GetComponent<PhotonView>().ViewID);
+    }
+    public void SyncStackAmount(string droppedItemName, int amount, int objectInstanceID)
+    {
+        WorldItem[] worldItems = FindObjectsOfType<WorldItem>();
+        foreach (WorldItem worldItem in worldItems)
+        {
+            if(worldItem.GetComponent<PhotonView>().ViewID == objectInstanceID)
+            {
+                worldItem.gameObject.GetComponent<WorldItem>().SetUp(ItemList.SelectItem(droppedItemName).name, amount, ItemList.SelectItem(droppedItemName).sprite, ItemList.SelectItem(droppedItemName).type, ItemList.SelectItem(droppedItemName).maxStackSize);
+            }
+        }
     }
     public void SpawnEndBoss(Vector3 spawnPos)
     {
