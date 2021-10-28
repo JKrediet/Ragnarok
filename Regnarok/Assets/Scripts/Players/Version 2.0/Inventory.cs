@@ -322,13 +322,13 @@ public class Inventory : MonoBehaviour
     {
         for (int i = 0; i < handHolder.transform.childCount; i++)
         {
-            if (handHolder.transform.GetChild(i).GetComponent<PhotonView>())
+            if(handHolder.transform.GetChild(i).name == nameOfItem)
             {
-                PhotonNetwork.Destroy(handHolder.transform.GetChild(i).gameObject);
+                handHolder.transform.GetChild(i).gameObject.SetActive(true);
             }
             else
             {
-                Destroy(handHolder.transform.GetChild(i).gameObject);
+                handHolder.transform.GetChild(i).gameObject.SetActive(false);
             }
         }
         
