@@ -259,7 +259,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void SpawnEndBossSyncted(Vector3 spawnPos)
     {
-        GameObject spawnedEnemie = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", endBossName), spawnPos, Quaternion.identity);
+        GameObject spawnedEnemie = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", endBossName), spawnPos+new Vector3(0,0.5f,0), Quaternion.identity);
         spawnedEnemie.GetComponent<Outline>().enabled = true;
         endboss = spawnedEnemie;
         endBossSpawned = true;
