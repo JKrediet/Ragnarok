@@ -40,6 +40,7 @@ public class WorldItem : MonoBehaviour
     {
         itemName = name;
         itemAmount = amount;
+        print(amount);
         itemImage = image;
         equipment = type;
         maxStack = _maxStack;
