@@ -26,6 +26,7 @@ public class OvenStation : MonoBehaviour
     }
     public void CloseChestInventory()
     {
+        character = null;
         uipanel.gameObject.SetActive(false);
     }
     
@@ -252,7 +253,7 @@ public class OvenStation : MonoBehaviour
             }
             if (smeltSlot.item == null)
             {
-                smeltSlot.item = character.CreateItemForChest(givenItem, amount, ItemList.SelectItem(givenItem).sprite, ItemList.SelectItem(givenItem).type, ItemList.SelectItem(givenItem).maxStackSize); ;
+                smeltSlot.item = FindObjectOfType<CharacterStats>().CreateItemForChest(givenItem, amount, ItemList.SelectItem(givenItem).sprite, ItemList.SelectItem(givenItem).type, ItemList.SelectItem(givenItem).maxStackSize); ;
             }
         }
         else if (slotNumber == 1)
@@ -264,7 +265,7 @@ public class OvenStation : MonoBehaviour
             }
             if (fuelSlot.item == null)
             {
-                fuelSlot.item = character.CreateItemForChest(givenItem, amount, ItemList.SelectItem(givenItem).sprite, ItemList.SelectItem(givenItem).type, ItemList.SelectItem(givenItem).maxStackSize); ;
+                fuelSlot.item = FindObjectOfType<CharacterStats>().CreateItemForChest(givenItem, amount, ItemList.SelectItem(givenItem).sprite, ItemList.SelectItem(givenItem).type, ItemList.SelectItem(givenItem).maxStackSize); ;
             }
         }
         else if (slotNumber == 2)
@@ -276,7 +277,7 @@ public class OvenStation : MonoBehaviour
             }
             if (finishedSlot.item == null)
             {
-                finishedSlot.item = character.CreateItemForChest(givenItem, amount, ItemList.SelectItem(givenItem).sprite, ItemList.SelectItem(givenItem).type, ItemList.SelectItem(givenItem).maxStackSize); ;
+                finishedSlot.item = FindObjectOfType<CharacterStats>().CreateItemForChest(givenItem, amount, ItemList.SelectItem(givenItem).sprite, ItemList.SelectItem(givenItem).type, ItemList.SelectItem(givenItem).maxStackSize); ;
             }
         }
     }

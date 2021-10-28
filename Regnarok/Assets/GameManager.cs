@@ -242,6 +242,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     #region destroyWorldItems
     public void DropItems(string droppedItemName, Vector3 position, Quaternion rotation, int amount, int serialNumber)
     {
+        print(amount);
         GetComponent<PhotonView>().RPC("DestroyWorldItem", RpcTarget.MasterClient, droppedItemName, position, rotation, amount, serialNumber);
     }
     [PunRPC]
