@@ -140,6 +140,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             cam.gameObject.GetComponent<Camera>().enabled = false;
+            Destroy(cam.GetComponent<AudioListener>());
             nameOfPlayer.SetActive(true);
             nameOfPlayer.GetComponentInChildren<TextMeshProUGUI>().text = pv.Owner.NickName;
         }
