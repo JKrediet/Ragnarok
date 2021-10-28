@@ -321,10 +321,7 @@ public class Inventory : MonoBehaviour
     void ShowItemInHand(string nameOfItem)
     {
         Transform[] heldObjects = handHolder.GetComponentsInChildren<Transform>();
-        foreach (Transform item in heldObjects)
-        {
-            Destroy(item.gameObject);
-        }
+        
         handObject = Instantiate(Resources.Load<GameObject>(Path.Combine("PhotonPrefabs/handItems/"+nameOfItem)), handHolder.transform.position, handHolder.transform.rotation);
         handObject.transform.SetParent(handHolder.transform);
         controller.doNotHitThis = handObject;
