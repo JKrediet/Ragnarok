@@ -253,6 +253,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         GetComponent<PhotonView>().RPC("RemoveItemFromWorld", RpcTarget.All, serialNumber);
         GetComponent<PhotonView>().RPC("SyncStackAmount", RpcTarget.All, droppedItemName, amount, droppedItem.GetComponent<PhotonView>().ViewID);
     }
+    [PunRPC]
     public void SyncStackAmount(string droppedItemName, int amount, int objectInstanceID)
     {
         WorldItem[] worldItems = FindObjectsOfType<WorldItem>();
