@@ -309,18 +309,10 @@ public class Inventory : MonoBehaviour
         if(hotBarSlots[_location].item != null)
         {
             controller.heldItem = hotBarSlots[_location].item;
-            if(handObject != null)
-            {
-                Destroy(handObject);
-            }
             GetComponent<PhotonView>().RPC("ShowItemInHand", RpcTarget.All, controller.heldItem.itemName);
         }
         else
         {
-            if (handObject != null)
-            {
-                Destroy(handObject);
-            }
             GetComponent<PhotonView>().RPC("ShowItemInHand", RpcTarget.All, "EmptyItem");
         }
         character.CalculateOffensiveStats();
@@ -328,6 +320,11 @@ public class Inventory : MonoBehaviour
     [PunRPC]
     void ShowItemInHand(string nameOfItem)
     {
+        Transform[] heldObjects = handHolder.GetComponentsInChildren<Transform>();
+        foreach (Transform item in heldObjects)
+        {
+            Destroy(item.gameObject);
+        }
         handObject = Instantiate(Resources.Load<GameObject>(Path.Combine("PhotonPrefabs/handItems/"+nameOfItem)), handHolder.transform.position, handHolder.transform.rotation);
         handObject.transform.SetParent(handHolder.transform);
         controller.doNotHitThis = handObject;

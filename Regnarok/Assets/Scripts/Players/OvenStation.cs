@@ -27,7 +27,6 @@ public class OvenStation : MonoBehaviour
     public void CloseChestInventory()
     {
         uipanel.gameObject.SetActive(false);
-        character = null;
     }
     
     public void CheckSlots()
