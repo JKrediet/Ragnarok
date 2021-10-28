@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject endboss;
     private bool endBossSpawned;
     private bool spawnedPortal;
+    public GameObject cameraOff; 
     public void GiveStats_goldmulti(float value)
     {
         goldMultiplier = value + 1;
@@ -120,6 +121,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 	}
     public void SpawnPlayers()
 	{
+        Destroy(cameraOff);
         quoteText.gameObject.SetActive(false);
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
 		{
