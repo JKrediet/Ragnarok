@@ -54,65 +54,62 @@ public class Health : MonoBehaviour
         audioSource.Play();
         GameObject blood = Instantiate(bloodSpat, hitlocation, Quaternion.identity);
         Destroy(blood, 1);
-        if (PV.IsMine)
+        lastHitLocation = hitlocation;
+        if (execute > 0)
         {
-            lastHitLocation = hitlocation;
-            if(execute > 0)
-            {
-                //if crit not execute
-                //color of damage number different
-            }
-            else
-            {
-                //here normal color
-            }
+            //if crit not execute
+            //color of damage number different
+        }
+        else
+        {
+            //here normal color
+        }
 
-            damageValue = Mathf.Clamp(damageValue - armor, 1, maxHealth);
-            if (health > 0)
+        damageValue = Mathf.Clamp(damageValue - armor, 1, maxHealth);
+        if (health > 0)
+        {
+            health = Mathf.Clamp(health - damageValue, 0, maxHealth);
+            if (damageNumber != null)
             {
-                health = Mathf.Clamp(health - damageValue, 0, maxHealth);
-                if(damageNumber != null)
-                {
-                    GameObject damageNum = Instantiate(damageNumber, hitlocation, Quaternion.identity);
-                    damageNum.GetComponent<DamageNumbers>().damageAmount = damageValue;
-                }
-                if (health == 0)
-                {
-                    Health_Dead();
-                }
-                if(execute > 0 && health < maxHealth * execute)
-                {
-                    Health_Dead();
-                }
+                GameObject damageNum = Instantiate(damageNumber, hitlocation, Quaternion.identity);
+                damageNum.GetComponent<DamageNumbers>().damageAmount = damageValue;
             }
-            if (bleed)
+            if (health == 0)
             {
-                if (bleedDamage == 0)
-                {
-                    StartCoroutine(Bleed());
-                }
-                bleedTicks += 5;
-                if (bleedDamage < damageValue * 0.25f)
-                {
-                    bleedDamage = damageValue * 0.25f;
-                }
+                Health_Dead();
             }
-            if(burn > 0)
+            if (execute > 0 && health < maxHealth * execute)
             {
-                burnTicks += burn * 2;
-                if (burnTicks > 0)
-                {
-                    fireEffect.SetActive(true);
-                    StartCoroutine(Bleed());                    
-                }
+                Health_Dead();
             }
-            if(poison > 0)
+        }
+        if (bleed)
+        {
+            if (bleedDamage == 0)
             {
-                poisonEffect.SetActive(true);
-                poisonTicks = 10;
-                poisonDamage += poison;
-                StartCoroutine(Poison());
+                StartCoroutine(Bleed());
             }
+            bleedTicks += 5;
+            if (bleedDamage < damageValue * 0.25f)
+            {
+                bleedDamage = damageValue * 0.25f;
+            }
+        }
+        if (burn > 0)
+        {
+            burnTicks += burn * 2;
+            if (burnTicks > 0)
+            {
+                fireEffect.SetActive(true);
+                StartCoroutine(Bleed());
+            }
+        }
+        if (poison > 0)
+        {
+            poisonEffect.SetActive(true);
+            poisonTicks = 10;
+            poisonDamage += poison;
+            StartCoroutine(Poison());
         }
     }
     public virtual void Health_Heal(float healValue)

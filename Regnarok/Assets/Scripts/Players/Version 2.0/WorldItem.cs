@@ -50,10 +50,10 @@ public class WorldItem : MonoBehaviour
         {
             if (other.CompareTag("Player"))
             {
-                if(other.GetComponent<Inventory>().IsFull())
+                mayBePickedUp = false;
+                Invoke("Cooldown", 1f);
+                if (other.GetComponent<Inventory>().IsFull())
                 {
-                    mayBePickedUp = false;
-                    Invoke("Cooldown", 1f);
                     return;
                 }
                 other.GetComponent<CharacterStats>().CreateItem(itemName, itemAmount, itemImage, equipment, maxStack);

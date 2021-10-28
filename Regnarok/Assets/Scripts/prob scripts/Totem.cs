@@ -30,7 +30,7 @@ public class Totem : MonoBehaviour
 	}
 	private void Update()
 	{
-		if (PhotonNetwork.IsMasterClient)
+		if (gm.photonView.Owner == PhotonNetwork.MasterClient)
 		{
 			if (!gaveItem)
 			{

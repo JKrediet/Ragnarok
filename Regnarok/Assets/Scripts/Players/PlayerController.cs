@@ -502,30 +502,35 @@ public class PlayerController : MonoBehaviour
             {
                 if (heldItem.equipment == EquipmentType.staff)
                 {
-                    //hier summon activaten
-                    GameObject spawnThis;
-                    RaycastHit _hit;
-                    if (Physics.Raycast(cam.transform.position, cam.transform.forward, out _hit))
-                    {
-                        spawnThis = heldItem.summonObject;
-                        if (spawnThis != default)
-                        {
-                            GameObject spawnInObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Summons", spawnThis.name), _hit.point + Vector3.up * 2, Quaternion.identity);
-                            listOfSummons.Enqueue(spawnInObject);
-                            spawnInObject.GetComponent<SnakeBehavour>().player = transform.gameObject;
-                            if (listOfSummons.Count > maxSummons)
-                            {
-                                GameObject firstSummon = listOfSummons.Peek();
-                                listOfSummons.Dequeue();
-                                PhotonNetwork.Destroy(firstSummon);
-                            }
-                        }
-                        else
-                        {
-                            print("summon not found");
-                        }
-                    }
+                    pv.RPC("SpawnAllyOnMaster", RpcTarget.MasterClient);
                 }
+            }
+        }
+    }
+    [PunRPC]
+    public void SpawnAllyOnMaster()
+    {
+        //hier summon activaten
+        GameObject spawnThis;
+        RaycastHit _hit;
+        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out _hit))
+        {
+            spawnThis = heldItem.summonObject;
+            if (spawnThis != default)
+            {
+                GameObject spawnInObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Summons", spawnThis.name), _hit.point + Vector3.up * 2, Quaternion.identity);
+                listOfSummons.Enqueue(spawnInObject);
+                spawnInObject.GetComponent<SnakeBehavour>().player = transform.gameObject;
+                if (listOfSummons.Count > maxSummons)
+                {
+                    GameObject firstSummon = listOfSummons.Peek();
+                    listOfSummons.Dequeue();
+                    PhotonNetwork.Destroy(firstSummon);
+                }
+            }
+            else
+            {
+                print("summon not found");
             }
         }
     }
