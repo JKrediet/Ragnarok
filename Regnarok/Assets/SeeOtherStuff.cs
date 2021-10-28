@@ -56,14 +56,15 @@ public class SeeOtherStuff : MonoBehaviour
 	}
 	public void TriggerTotem()
 	{
-		totemActived = !totemActived;
-		for (int i = 0; i < bosTotems.Count; i++)
+		if (GetComponent<PhotonView>().IsMine)
 		{
-			if(bosTotems[i]!=null)
+			totemActived = !totemActived;
+			for (int i = 0; i < bosTotems.Count; i++)
 			{
-				bosTotems[i].transform.gameObject.GetComponent<Outline>().enabled = totemActived;
-				print(bosTotems[i].transform.gameObject.GetComponent<Outline>());
-				print(bosTotems[i].transform.name);
+				if (bosTotems[i] != null)
+				{
+					bosTotems[i].transform.gameObject.GetComponent<Outline>().enabled = totemActived;
+				}
 			}
 		}
 	}
