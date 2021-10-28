@@ -23,7 +23,11 @@ public class Totem : MonoBehaviour
 	private bool allEnemiesDied;
 	private int type;
 	private GameManager gm;
-	private void Start()
+    private void Awake()
+    {
+		gm = FindObjectOfType<GameManager>();
+	}
+    private void Start()
 	{
 		type = Random.Range(1, 4);
 		amountOfEnemies *= type;
