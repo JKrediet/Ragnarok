@@ -13,12 +13,5 @@ public class DamagePlayer : MonoBehaviour
 				other.GetComponent<PlayerHealth>().DamagePoitionWater();
 			}
 		}
-		else if (other.CompareTag("Enemy"))
-		{
-			if (!other.GetComponent<EnemieHealth>().takingWaterDamage)
-			{
-				other.GetComponent<EnemieHealth>().DamagePoitionWater();
-			}
-		}
 	}
 }
