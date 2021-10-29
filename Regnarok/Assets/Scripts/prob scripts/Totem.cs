@@ -51,7 +51,7 @@ public class Totem : MonoBehaviour
 	public IEnumerator CheckEnemies()
 	{	
 		isChecking = true;
-		for (var i = enemies.Count - 1; i > -1; i--)
+		for (int i = 0; i < enemies.Count; i++)
 		{
 			if (enemies[i] == null)
 			{

@@ -144,7 +144,10 @@ public class StateManager : MonoBehaviour
 		players.Clear();
 		players = new List<GameObject>(GameObject.FindGameObjectsWithTag("Player"));
 		gettingTarget = true;
-
+		if (players.Count <= 0)
+		{
+			yield break;
+		}
 		for (int i = 0; i < players.Count; i++)
 		{
 			if (players[i] == null)
