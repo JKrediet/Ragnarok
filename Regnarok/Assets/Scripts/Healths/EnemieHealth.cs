@@ -94,7 +94,7 @@ public class EnemieHealth : Health
 		coinDropOffset = new Vector3(0, 2, 0);
 		float temcoins = coinDrop * (gm.days + 1) * gm.goldMultiplier;
 		coinDrop = (int)temcoins;
-		FindObjectOfType<GameManager>().DropItems("GoldCoin", lastHitLocation + coinDropOffset, Quaternion.identity, coinDrop, -1);
+		FindObjectOfType<GameManager>().DropItems("GoldenCoin", lastHitLocation + coinDropOffset, Quaternion.identity, coinDrop, -1);
 	}
 	[PunRPC]
 	public void GiveXp()
