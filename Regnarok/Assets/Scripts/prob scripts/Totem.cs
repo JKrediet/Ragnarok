@@ -34,15 +34,18 @@ public class Totem : MonoBehaviour
 	}
 	private void Update()
 	{
-		if (!gaveItem)
+		if (gm.GetComponent<PhotonView>().Owner == PhotonNetwork.MasterClient)
 		{
-			if (activated)
+			if (!gaveItem)
 			{
-				if (!isChecking)
+				if (activated)
 				{
-					if (!allEnemiesDied)
+					if (!isChecking)
 					{
-						StartCoroutine(CheckEnemies());
+						if (!allEnemiesDied)
+						{
+							StartCoroutine(CheckEnemies());
+						}
 					}
 				}
 			}
@@ -65,14 +68,17 @@ public class Totem : MonoBehaviour
 		if (enemies.Count<=0)
 		{
 			allEnemiesDied = true;
-			if (!gaveItem)
-			{
-				GiveItem();
-			}
 			if (isBoss)
 			{
 				gm.AddActivatedTotemBoss();
 				Destroy(gameObject);
+			}
+			else
+			{
+				if (!gaveItem)
+				{
+					GiveItem();
+				}
 			}
 		}
 		for (int i = 0; i < torches.Length; i++)
