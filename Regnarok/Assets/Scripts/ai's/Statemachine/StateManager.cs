@@ -285,9 +285,9 @@ public class StateManager : MonoBehaviour
 		}
 		else
 		{
+			laserAudio.Stop();
 			laser.SetActive(false);
 			laser.GetComponent<ParticleSystem>().Stop();
-			laserAudio.Stop();
 		}
 	}
 }
