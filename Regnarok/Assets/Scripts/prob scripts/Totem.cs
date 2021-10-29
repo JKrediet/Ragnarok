@@ -34,18 +34,15 @@ public class Totem : MonoBehaviour
 	}
 	private void Update()
 	{
-		if (gm.photonView.Owner == PhotonNetwork.MasterClient)
+		if (!gaveItem)
 		{
-			if (!gaveItem)
+			if (activated)
 			{
-				if (activated)
+				if (!isChecking)
 				{
-					if (!isChecking)
+					if (!allEnemiesDied)
 					{
-						if (!allEnemiesDied)
-						{
-							StartCoroutine(CheckEnemies());
-						}
+						StartCoroutine(CheckEnemies());
 					}
 				}
 			}

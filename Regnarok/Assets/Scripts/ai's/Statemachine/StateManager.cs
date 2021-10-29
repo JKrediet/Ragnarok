@@ -163,13 +163,20 @@ public class StateManager : MonoBehaviour
 			float targetDis = Vector3.Distance(transform.position, target.transform.position);
 			if (dis < targetDis)
 			{
-				if (target != players[i])
+				if (players[i] == null)
 				{
-					if (players[i].activeSelf)
+					players.Remove(players[i]);
+				}
+				if (players[i] != null)
+				{
+					if (target != players[i])
 					{
-						if (players[i].GetComponent<PlayerHealth>().health > 0 && players[i].activeSelf)
+						if (players[i].activeSelf)
 						{
-							target = players[i];
+							if (players[i].GetComponent<PlayerHealth>().health > 0 && players[i].activeSelf)
+							{
+								target = players[i];
+							}
 						}
 					}
 				}
