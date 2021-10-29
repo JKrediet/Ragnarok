@@ -25,10 +25,6 @@ public class SnakeBehavour : MonoBehaviour
 	private void Start()
 	{
 		agent = GetComponent<NavMeshAgent>();
-		if(!PhotonNetwork.IsMasterClient)
-        {
-			enabled = false;
-        }
 		Invoke("KillMe", 300f);
 		speed = agent.speed;
 		Invoke("Started", 5);
@@ -47,10 +43,13 @@ public class SnakeBehavour : MonoBehaviour
 							transform.LookAt(targets[0].transform.position);
 						}
 						float dis = Vector3.Distance(transform.position, player.transform.position);
-						if (dis > 4)
+						if (PhotonNetwork.IsMasterClient)
 						{
-							agent.destination = targets[0].transform.position;
-							agent.speed = speed;
+							if (dis > 4)
+							{
+								agent.destination = targets[0].transform.position;
+								agent.speed = speed;
+							}
 						}
 						else
 						{
@@ -70,15 +69,18 @@ public class SnakeBehavour : MonoBehaviour
 					StopAttacking();
 				}
 				float dis = Vector3.Distance(transform.position, player.transform.position);
-				if (dis > 4)
+				if (PhotonNetwork.IsMasterClient)
 				{
-					agent.destination = player.transform.position;
-					agent.speed = speed;
-				}
-				else
-				{
-					agent.destination = transform.position;
-					agent.speed = 0;
+					if (dis > 4)
+					{
+						agent.destination = player.transform.position;
+						agent.speed = speed;
+					}
+					else
+					{
+						agent.destination = transform.position;
+						agent.speed = 0;
+					}
 				}
 			}
 			if (isAttacking)
