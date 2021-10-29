@@ -17,6 +17,8 @@ public class MenuManager : MonoBehaviour
     {
         menuSwitch = this;
         ChangeMenu("Loading");
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
     public void ChangeMenu(string _name)
     {
