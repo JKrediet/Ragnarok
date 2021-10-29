@@ -331,10 +331,6 @@ public class Inventory : MonoBehaviour
                 handHolder.transform.GetChild(i).gameObject.SetActive(false);
             }
         }
-        
-        handObject = Instantiate(Resources.Load<GameObject>(Path.Combine("PhotonPrefabs/handItems/"+nameOfItem)), handHolder.transform.position, handHolder.transform.rotation);
-        handObject.transform.SetParent(handHolder.transform);
-        controller.doNotHitThis = handObject;
     }
     void OpenInventory()
     {

@@ -250,7 +250,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         GameObject droppedItem = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", droppedItemName), position, rotation);
         droppedItem.GetComponent<WorldItem>().SetUp(ItemList.SelectItem(droppedItemName).name, amount, ItemList.SelectItem(droppedItemName).sprite, ItemList.SelectItem(droppedItemName).type, ItemList.SelectItem(droppedItemName).maxStackSize);
-        GetComponent<PhotonView>().RPC("RemoveItemFromWorld", RpcTarget.All, serialNumber);
+        if (serialNumber > -1)
+        {
+            GetComponent<PhotonView>().RPC("RemoveItemFromWorld", RpcTarget.All, serialNumber);
+        }
         GetComponent<PhotonView>().RPC("SyncStackAmount", RpcTarget.All, droppedItemName, amount, droppedItem.GetComponent<PhotonView>().ViewID);
     }
     [PunRPC]

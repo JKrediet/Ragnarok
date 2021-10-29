@@ -91,8 +91,6 @@ public class HitableObject : MonoBehaviour
         justOnce = true;
         for (int i = 0; i < droppedItems.Count; i++)
         {
-            print((int)droppedItems[i].dropAmounts.x);
-            print((int)droppedItems[i].dropAmounts.y);
             manager.DropItems(droppedItems[i].dropItemName, lastHitLocation + dropOffset, Quaternion.identity, UnityEngine.Random.Range((int)droppedItems[i].dropAmounts.x, (int)droppedItems[i].dropAmounts.y), itemSerialNumber);
             manager.GiveXpFromHitableObject(xpAmount);
         }
