@@ -309,11 +309,11 @@ public class Inventory : MonoBehaviour
         if(hotBarSlots[_location].item != null)
         {
             controller.heldItem = hotBarSlots[_location].item;
-            GetComponent<PhotonView>().RPC("ShowItemInHand", RpcTarget.MasterClient, controller.heldItem.itemName);
+            GetComponent<PhotonView>().RPC("ShowItemInHand", RpcTarget.All, controller.heldItem.itemName);
         }
         else
         {
-            GetComponent<PhotonView>().RPC("ShowItemInHand", RpcTarget.MasterClient, "EmptyItem");
+            GetComponent<PhotonView>().RPC("ShowItemInHand", RpcTarget.All, "EmptyItem");
         }
         character.CalculateOffensiveStats();
     }
