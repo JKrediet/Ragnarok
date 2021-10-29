@@ -505,20 +505,20 @@ public class PlayerController : MonoBehaviour
             {
                 if (heldItem.equipment == EquipmentType.staff)
                 {
-                    pv.RPC("SpawnAllyOnMaster", RpcTarget.MasterClient);
+                    pv.RPC("SpawnAllyOnMaster", RpcTarget.MasterClient, heldItem.itemName);
                 }
             }
         }
     }
     [PunRPC]
-    public void SpawnAllyOnMaster()
+    public void SpawnAllyOnMaster(string nameOfItem)
     {
         //hier summon activaten
         GameObject spawnThis;
         RaycastHit _hit;
         if (Physics.Raycast(cam.transform.position, cam.transform.forward, out _hit))
         {
-            spawnThis = heldItem.summonObject;
+            spawnThis = ItemList.SelectItem(nameOfItem).summonObject;
             if (spawnThis != default)
             {
                 GameObject spawnInObject = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "Summons", spawnThis.name), _hit.point + Vector3.up * 2, Quaternion.identity);
