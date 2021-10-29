@@ -111,10 +111,13 @@ public class EnemieHealth : Health
     }
 	public void GivePlayerStuff()
 	{
-		RollItem();
-		pv.RPC("DropMoney", RpcTarget.MasterClient);
-		pv.RPC("GiveXp", RpcTarget.All);
-		PhotonNetwork.Destroy(gameObject);
+		if(PhotonNetwork.IsMasterClient)
+        {
+			RollItem();
+			pv.RPC("DropMoney", RpcTarget.MasterClient);
+			pv.RPC("GiveXp", RpcTarget.All);
+			PhotonNetwork.Destroy(gameObject);
+		}
 	}
 	public void ActivateDisolve()
 	{
