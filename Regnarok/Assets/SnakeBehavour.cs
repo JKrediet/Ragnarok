@@ -42,9 +42,9 @@ public class SnakeBehavour : MonoBehaviour
 							StartCoroutine(Attack());
 							transform.LookAt(targets[0].transform.position);
 						}
-						float dis = Vector3.Distance(transform.position, player.transform.position);
 						if (PhotonNetwork.IsMasterClient)
 						{
+						float dis = Vector3.Distance(transform.position, player.transform.position);
 							if (dis > 4)
 							{
 								agent.destination = targets[0].transform.position;
