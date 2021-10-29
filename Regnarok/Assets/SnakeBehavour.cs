@@ -25,6 +25,10 @@ public class SnakeBehavour : MonoBehaviour
 	private void Start()
 	{
 		agent = GetComponent<NavMeshAgent>();
+		if(!PhotonNetwork.IsMasterClient)
+        {
+			enabled = false;
+        }
 		Invoke("KillMe", 300f);
 		speed = agent.speed;
 		Invoke("Started", 5);
