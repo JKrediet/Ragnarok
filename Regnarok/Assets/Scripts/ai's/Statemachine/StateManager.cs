@@ -141,27 +141,9 @@ public class StateManager : MonoBehaviour
 	}
 	public IEnumerator GetTarget()
 	{
-		players.Clear();
-		players = new List<GameObject>(GameObject.FindGameObjectsWithTag("Player"));
 		gettingTarget = true;
-		if (players.Count <= 0)
-		{
-			yield break;
-		}
 		for (int i = 0; i < players.Count; i++)
-		{
-			if (players[i] == null)
-			{
-				players.Remove(players[i]);
-			}
-			if (players[i].GetComponent<PlayerHealth>().health <= 0)
-			{
-				players.Remove(players[i]);
-			}
-			if (players[i].GetComponent<PlayerHealth>().isDead)
-			{
-				players.Remove(players[i]);
-			}
+		{			
 			float dis = Vector3.Distance(transform.position, players[i].transform.position);
 			float targetDis = Vector3.Distance(transform.position, target.transform.position);
 			if (dis < targetDis)
