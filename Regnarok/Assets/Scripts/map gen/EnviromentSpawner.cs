@@ -46,7 +46,7 @@ public class EnviromentSpawner : MonoBehaviour
     }
     public IEnumerator Generate()
     {
-        Random.InitState(mapGen.mapSeed);
+        //Random.InitState(mapGen.mapSeed);
         new WaitForSeconds(1);
         Transform parent;
         for (int i = 0; i < spawnItems.Length; i++)
@@ -381,7 +381,7 @@ public class EnviromentSpawner : MonoBehaviour
 	}
     public void SpawnPlayers()
 	{
-        new WaitForSeconds(5);
+        mesh.AddComponent<MeshCollider>();
         Destroy(loadingScreenCamera.gameObject);
         FindObjectOfType<GameManager>().SpawnPlayers();
     }

@@ -8,6 +8,7 @@ public static class Noise
 
 		System.Random prng = new System.Random(seed);
 		Vector2[] octaveOffsets = new Vector2[octaves];
+
 		for(int i =0;i< octaves; i++)
 		{
 			float offsetX = prng.Next(-100000,100000)+ offset.x;
@@ -32,6 +33,7 @@ public static class Noise
 				float amplitudes = 1;
 				float frequency = 1;
 				float noiseHeight = 0;
+
 				for (int i = 0; i < octaves; i++)
 				{
 					float sampleX = (x-halfWidth) / scale*frequency + octaveOffsets[i].x;
@@ -43,6 +45,8 @@ public static class Noise
 					amplitudes *= presistance;
 					frequency *= lacunarity;
 				}
+
+
 				if (noiseHeight > maxNoiseHeight)
 				{
 					maxNoiseHeight = noiseHeight;
@@ -51,9 +55,11 @@ public static class Noise
 				{
 					minNoiseHeight = noiseHeight;
 				}
+
 				noiseMap[x, y] = noiseHeight;
 			}
 		}
+
 		for (int y = 0; y < mapHeight; y++)
 		{
 			for (int x = 0; x < mapWidth; x++)
@@ -61,6 +67,7 @@ public static class Noise
 				noiseMap[x, y] = Mathf.InverseLerp(minNoiseHeight, maxNoiseHeight, noiseMap[x, y]);
 			}
 		}
-				return noiseMap;
+
+		return noiseMap;
 	}
 }
